@@ -2,6 +2,8 @@
 
 Kothak is a repository design project for Go.
 
+> Please fell free to critize my ideas and writings. I am using this repo to validate my ideas and learn how to write technical topics.
+
 The aim of the project is to design an Industrial Go Application
 
 What it means by Industrial Go Application or Go for Industrial Programming by [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/):
@@ -14,8 +16,6 @@ That’s what I’ve tried to do with the title of the talk. I’m speaking toda
 - on code that outlives any single engineer; and
 - serving highly mutable business requirements.
 ```
-
-Please fell free to critize my ideas and writings. I used this repo validate my ideas and learn how to write about technical topics.
 
 ## Design
 
