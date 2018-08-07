@@ -7,7 +7,7 @@ type Resource interface {
 }
 
 type UserService interface {
-	IsUserActive(int64) (bool, error)
+	IsUserActive(context.Context, int64) (bool, error)
 }
 
 type Service struct {

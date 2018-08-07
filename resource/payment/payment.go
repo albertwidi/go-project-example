@@ -1,6 +1,9 @@
 package payment
 
 import (
+	"context"
+
+	"github.com/albertwidi/kothak/service/payment"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -15,4 +18,8 @@ func New(masterDB, followerDB *sqlx.DB) *Resource {
 		followerDB: followerDB,
 	}
 	return &r
+}
+
+func (r *Resource) CreatePayment(ctx context.Context, pym payment.Payment) error {
+	return nil
 }

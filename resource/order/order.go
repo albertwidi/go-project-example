@@ -3,8 +3,8 @@ package order
 import (
 	"context"
 
+	orderservice "github.com/albertwidi/kothak/service/order"
 	"github.com/jmoiron/sqlx"
-	orderservice "gitlab.com/kosanapp/kothak/services/order"
 )
 
 type Resource struct {

@@ -2,19 +2,23 @@ package server
 
 import (
 	"io/ioutil"
+	"net"
 
+	httpapi "github.com/albertwidi/kothak/api/http"
+	orderresource "github.com/albertwidi/kothak/resource/order"
+	paymentresource "github.com/albertwidi/kothak/resource/payment"
+	userresource "github.com/albertwidi/kothak/resource/user"
+	orderservice "github.com/albertwidi/kothak/service/order"
+	paymentservice "github.com/albertwidi/kothak/service/payment"
+	userservice "github.com/albertwidi/kothak/service/user"
 	"github.com/jmoiron/sqlx"
-	orderresource "gitlab.com/kosanapp/kothak/resource/order"
-	userresource "gitlab.com/kosanapp/kothak/resource/user"
-	orderservice "gitlab.com/kosanapp/kothak/services/order"
-	userservice "gitlab.com/kosanapp/kothak/services/user"
 	"gopkg.in/yaml.v2"
 )
 
-// Execute or run the server
+// Main program or run the server
 func Main() error {
 	// read config from config directory
-	out, err := ioutil.ReadFile("../config/kothak.config.yml")
+	out, err := ioutil.ReadFile("config/kothak.config.yml")
 	if err != nil {
 		return err
 	}
@@ -31,10 +35,26 @@ func Main() error {
 		return err
 	}
 
+	// user
 	userres := userresource.New(masterDB, followerDB)
 	usersvc := userservice.New(userres)
-
+	// order
 	orderres := orderresource.New(masterDB, followerDB)
 	ordersvc := orderservice.New(orderres, usersvc)
-	return nil
+	// payment
+	paymentres := paymentresource.New(masterDB, followerDB)
+	paymentsvc := paymentservice.New(paymentres, usersvc)
+
+	// create a new listener for http and grpc server
+	listener, err := net.Listen("tcp", "8000")
+	if err != nil {
+		return err
+	}
+
+	httpserver := httpapi.Server{
+		UserService:    usersvc,
+		OrderService:   ordersvc,
+		PaymentService: paymentsvc,
+	}
+	return httpserver.Serve(listener)
 }

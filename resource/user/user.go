@@ -1,8 +1,8 @@
 package user
 
 import (
+	"github.com/albertwidi/kothak/service/user"
 	"github.com/jmoiron/sqlx"
-	"gitlab.com/kosanapp/kothak/services/user"
 )
 
 type Resource struct {

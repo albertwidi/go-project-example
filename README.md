@@ -4,15 +4,32 @@ Kothak is a repository design project for Go.
 
 The aim of the project is to design an Industrial Go Application
 
+What it means by Industrial Go Application or Go for Industrial Programming by [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/):
+
+```
+That’s what I’ve tried to do with the title of the talk. I’m speaking today about programming in an industrial context. By that I mean
+
+- in a startup or corporate environment;
+- within a team where engineers come and go;
+- on code that outlives any single engineer; and
+- serving highly mutable business requirements.
+```
+
+Please fell free to critize my ideas and writings. I used this repo validate my ideas and learn how to write about technical topics.
+
+## Design
+
+![design](/docs/images/design.png)
+
 ## Services
 
-Services contains a group of services exists in a repository. For example one `server` might have several kind of services: `user service`, `order service`, `payment service`
+Services contains a group of service that exists in a repository. For example one `server` might have several kind of services: `user service`, `order service`, `payment service`
 
 The services itself can be related to each others or not at all. For example `order service` might need `user service` help to check wether the user is active or not. Or maybe `payment service` need `order service` to check the status of the order itself.
 
 ### Service
 
-The dependencies in a service managed by `interfaces` exists within the service. For example the `order service` has `IsUserActive` method for `UserService` interface:
+The dependencies in a service managed by `interfaces` exists within the service itself. For example the `order service` has `IsUserActive` method for `UserService` interface:
 
 ```go
 type UserService interface {
@@ -20,7 +37,7 @@ type UserService interface {
 }
 ```
 
-This happens because `order service` needs some help/method from `user service` to check wether the user is active or not. But because the `order service` need `user service`, that doesn't mean the `order service` needs to know all APIs available in the `user service`. `Order service` might only need to know some of the APIs and is abstracted by using `interface{}`.
+This happens because `order service` needs some help/method from `user service` to check wether the user is active or not. But because the `order service` need `user service`, it doesn't mean the `order service` needs to know all APIs available in the `user service`. `Order service` might only need to know some of the APIs and is abstracted by using the `interface`.
 
 By using `interface` for dependencies to the `service` itself, it is easier to maintain what is needed. It is also easier to test without care much about the depdendencies. We can mock the dependencies or just using `docker` for database/redis test.
 
@@ -38,11 +55,11 @@ type Resource interface {
 }
 ```
 
-When creating a resource, it is recommended to inject the resource dependencies itself. For example database or redis. It might be true in a `microservice` project we not need to throw `resource dependencies`(for example db) to the `resource`, and open the dependencies inside. But this approach is not good for a big monolithic project.
+When creating a resource, it is recommended to inject the resource dependencies. For example database or redis. It might be true in `microservice` project, we don't need to throw `resource dependencies`(for example db) to the `resource`, and open the dependencies inside the `resource` instead. But this approach is not good for a monolithic project.
 
-A big monolithic project usually share dependencies, and if the dependencies is not injected into the `resource`, all `resource` that need the same dependencies to open the same connection again and again. For example `order` and `payment` using the same `redis` to store some data, `order` and `payment` need to connect to the same `redis` independently if the connection is not injected.
+A monolithic project usually share dependencies, and if the dependencies is not injected into the `resource`, all `resource` that need the same dependencies to open the same connection again and again. For example `order` and `payment` using the same `redis` to store some data, `order` and `payment` need to connect to the same `redis` independently if the connection is not injected.
 
-### Recommended
+### Do
 
 Server:
 
@@ -50,8 +67,8 @@ Server:
 func Main() error {
     // open connection to redis
     r := redis.Connect(addr)
-    ordersvc := orderservice.New(r)
-    paymentsvc := paymentservice.New(r)
+    orderres := orderresource.New(r)
+    paymentres := paymentresource.New(r)
 }
 ```
 
@@ -60,7 +77,7 @@ Order Service:
 ```go
 package order
 
-func New(r redis.Redis) OrderService {
+func New(r redis.Redis) OrderResource {
     // some code
     return ordersvc
 }
@@ -70,7 +87,7 @@ Payment Service:
 ```go
 package payment
 
-func New(r redis.Redis) PaymentService {
+func New(r redis.Redis) PaymentResource {
     // some code
     return paymentsvc
 }
@@ -82,8 +99,8 @@ Server:
 
 ```go
 func Main() error {
-    ordersvc := orderservice.New()
-    paymentsvc := paymentservice.New()
+    orderres := orderresource.New()
+    paymentres := paymentresource.New()
 }
 ```
 
@@ -92,11 +109,11 @@ Order Service:
 ```go
 package order
 
-func New(r redis.Redis) OrderService {
+func New(r redis.Redis) OrderResource {
     // open connection to redis
     r := redis.Connect(addr)
     // some code
-    return ordersvc
+    return orderres
 }
 ```
 Payment Service:
@@ -104,28 +121,42 @@ Payment Service:
 ```go
 package payment
 
-func New(r redis.Redis) PaymentService {
+func New(r redis.Redis) PaymentResource {
     // open connection to redis
     r := redis.Connect(addr)
     // some code
-    return paymentsvc
+    return paymentres
 }
 ```
 
-as we can see in above example, `order service` and `payment service` has the same redis connection, reusing the connectin object would be much simpler.
+As we can see in above example, `order service` and `payment service` has the same redis connection. Reusing the connection object would be much simpler instead of re-creating the connection.
 
-## Transport
+## API
 
-## Pkgs
+Api is a bridge between service and http/grpc service.
+
+In `api`, contains all remote API declaration that available in the application. The service used in the `api` is declared in `api/interface.go`. It is expected to call APIs `Init()` as `api` is using global function and `service` object need to be injected to the `api` in order to use the global function.
+
+## Pkg
 
 Contains all shared libraries used by the repository.
 
 ## Server
 
-This is where the applications began
+Is where the `server` application begin.
+
+This is the main `user space`.
 
 ## Cmd
 
-Kothak keeps `main.go` simple. It is only executing `server.Main()`.
+Keeps `main.go` simple. It is only executing `server.Main()` for now.
 
 Separating the `main` program itself(maybe flags declaration and recover) from the `server` program.
+
+## Tips
+
+Some tips
+
+### Using init() only when needed
+
+Do not use `init()` unless you really-really need it. Using `init()` is confusing sometimes, because it will be executed when a package is imported. The package that import your package might not aware you are using `init()` for some initialization, for eaxmple `parsing flags`

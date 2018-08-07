@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"gitlab.com/kosanapp/kothak/server"
+	"github.com/albertwidi/kothak/server"
 )
 
 // main function to keep all controls
