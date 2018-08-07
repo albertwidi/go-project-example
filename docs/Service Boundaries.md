@@ -14,7 +14,7 @@ Services in picture above are interacting with each others. While it might sound
 
 As the `microservice` grow, the interaction between microservice become more complex. Why `service B` need to contact `service C` to be able to reach `service F`, what is the purpose of `service C`? Is `service C` really needed? The domains can become really blurry sometimes, it becomes worse as we design it over network and no tools are able to validate our design.
 
-External service dependencies are common, and sometimes service depends to each others. But, in `microservice` world, this can be a serious problem. Cyclic problem might coming from flaw when designing the `microservice` dependencies, and might lead to a very serious problem. For example, we have service `A`, `B, and `C`. And the conditions are:
+External service dependencies are common, and sometimes service depends to each others. But, in `microservice` world, this can be a serious problem. Cyclic problem might coming from flaw when designing the `microservice` dependencies, and might lead to a very serious problem. For example, we have service `A`, `B`, and `C`. And the conditions are:
 
 1. Service `A` can be called from public network and depends on service `B`
 2. Service `B` can be called from public network and depends on service `A` and `C`
