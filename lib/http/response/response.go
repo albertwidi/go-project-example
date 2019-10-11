@@ -75,7 +75,9 @@ func (jresp *JSONResponse) Error(err error, errResp *JSONError) *JSONResponse {
 
 // WriteHeader set the header of JSONResponse writer
 func (jresp *JSONResponse) WriteHeader(statusCode int) *JSONResponse {
-	jresp.writer.WriteHeader(statusCode)
+	if jresp.xerr == nil {
+		jresp.writer.WriteHeader(statusCode)
+	}
 	return jresp
 }
 
