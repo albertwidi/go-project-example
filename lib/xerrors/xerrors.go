@@ -8,7 +8,7 @@ import (
 
 // xerrors global var
 var (
-	caller bool
+	_caller bool
 )
 
 // Kind of errors
@@ -49,8 +49,8 @@ func New(v ...interface{}) error {
 		line int
 	)
 
-	// only cal caller when xerrors caller is true
-	if caller {
+	// only cal _caller when xerrors _caller is true
+	if _caller {
 		_, file, line, _ = runtime.Caller(1)
 	}
 
@@ -60,7 +60,7 @@ func New(v ...interface{}) error {
 			xerr.op = val
 
 		case string:
-			if caller {
+			if _caller {
 				xerr.Err = fmt.Errorf("%s: %s: [file=%s, line=%d]", val, xerr.op, file, line)
 				continue
 			}
@@ -74,14 +74,14 @@ func New(v ...interface{}) error {
 			xerr.kind = val.kind
 			xerr.op = val.op
 
-			if caller {
+			if _caller {
 				xerr.Err = fmt.Errorf("error executing %s: [file=%s, line=%d] \n%w", lastOp, file, line, val.Err)
 				continue
 			}
 			xerr.Err = fmt.Errorf("error executing %s: %w", lastOp, val.Err)
 
 		case error:
-			if caller {
+			if _caller {
 				xerr.Err = fmt.Errorf("%w: %s: [file=%s, line=%d]", val, xerr.op, file, line)
 				continue
 			}
@@ -137,5 +137,5 @@ func XUnwrap(err error) *Errors {
 
 // SetCaller to print the stack-trace of the error
 func SetCaller(c bool) {
-	caller = c
+	_caller = c
 }

@@ -1,21 +1,54 @@
-# Kothak
+# Project Design
 
-Kothak is a repository design project for Go.
+This is an example for Go project design.
 
-> Please fell free to critize my ideas and writings. I am using this repo to validate my ideas and learn how to write technical topics.
+The design is based on layered design, which contains several layers and components.
 
-The aim of the project is to design an Industrial Go Application
+## Designing Project For Industrial Programming
 
-What it means by Industrial Go Application or Go for Industrial Programming by [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/)
+What is industrial programming? [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/) explain the terms in a very good way.
+
+At least, in my understanding, it is consists of theese:
 
 ```text
-That’s what I’ve tried to do with the title of the talk. I’m speaking today about programming in an industrial context. By that I mean
-
-- in a startup or corporate environment;
-- within a team where engineers come and go;
-- on code that outlives any single engineer; and
-- serving highly mutable business requirements.
+- In a startup or corporate environment.
+- Within a team where engineers come and go.
+- On code that outlives any single engineer.
+- Serving highly mutable business requirements.
 ```
+
+## The Design
+
+As stated at the top of this document, the design contains several layers and components and very much similar to onion ring or clean architecture attempt.
+
+But, let's talk about the components first.
+
+### Components
+
+1. Server
+2. Usecase
+3. Repository
+4. Entity
+
+#### Server
+
+Is where all the `http` handler exists. This layer is responsible to hold all the `http` handlers and request validation.
+
+#### Usecase
+
+To be added
+
+#### Repository
+
+To be added
+
+#### Entity
+
+To be added
+
+#### Layers
+
+To be added
 
 ## Index
 
