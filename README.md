@@ -6,9 +6,9 @@ Kothak is a repository design project for Go.
 
 The aim of the project is to design an Industrial Go Application
 
-What it means by Industrial Go Application or Go for Industrial Programming by [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/):
+What it means by Industrial Go Application or Go for Industrial Programming by [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/)
 
-```
+```text
 That’s what I’ve tried to do with the title of the talk. I’m speaking today about programming in an industrial context. By that I mean
 
 - in a startup or corporate environment;
