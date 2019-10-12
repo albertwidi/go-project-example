@@ -27,8 +27,8 @@ type ChainedMiddlewares struct {
 	r           *Router
 }
 
-// NewChainMiddleware function
-func NewChainMiddleware(r *Router, middlewares ...MiddlewareFunc) *ChainedMiddlewares {
+// NewChainedMiddleware function
+func NewChainedMiddleware(r *Router, middlewares ...MiddlewareFunc) *ChainedMiddlewares {
 	return &ChainedMiddlewares{
 		middlewares: middlewares,
 		r:           r,

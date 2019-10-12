@@ -44,7 +44,7 @@ type Errors struct {
 // New errors
 func New(v ...interface{}) error {
 	var (
-		xerr = new(Errors)
+		xerr = &Errors{}
 		file string
 		line int
 	)
@@ -71,8 +71,8 @@ func New(v ...interface{}) error {
 
 		case *Errors:
 			lastOp := xerr.op
-			xerr.kind = val.kind
-			xerr.op = val.op
+			// copy the errors
+			xerr = val
 
 			if _caller {
 				xerr.Err = fmt.Errorf("error executing %s: [file=%s, line=%d] \n%w", lastOp, file, line, val.Err)

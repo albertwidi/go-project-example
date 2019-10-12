@@ -1,7 +1,6 @@
 package booking
 
 import (
-	"errors"
 	"time"
 )
 
@@ -14,7 +13,7 @@ func (t Type) Validate() error {
 	case TypeMonthly:
 	case TypeDaily:
 	default:
-		return errors.New("booking type not valid")
+		return ErrInvalidType
 	}
 
 	return nil

@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	invoiceentity "github.com/kosanapp/kosan-backend/entity/invoice"
-	"github.com/kosanapp/kosan-backend/pkg/sqldb"
+	invoiceentity "github.com/albertwidi/kothak/entity/invoice"
+	"github.com/albertwidi/kothak/lib/sqldb"
 	"github.com/lib/pq"
 )
 

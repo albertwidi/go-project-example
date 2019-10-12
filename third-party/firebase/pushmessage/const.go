@@ -1,0 +1,5 @@
+package pushmessage
+
+const (
+	dummyToken = "fzA7f5yE774:APA91bFNWhZYgfmJpWFi-R3xQ9BJuSCA6aHDKxUAO2TdjjrqvxOPnmOcEVIWv5bZ2ZNyed-rVKoiV32lVEJfGLaG-R73kt7F3Hy-n0pg73aYnmY0SkKmI4EP_RdcF4cADQDKx562LROQ"
+)
