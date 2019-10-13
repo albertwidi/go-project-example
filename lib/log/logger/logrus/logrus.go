@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/albertwidi/kothak/lib/log/logger"
-	"github.com/albertwidi/kothak/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -231,22 +230,6 @@ func (l *Logger) Errorln(args ...interface{}) {
 // Errorw function
 func (l *Logger) Errorw(message string, fields logger.KV) {
 	l.logger.WithFields(logrus.Fields(fields)).Errorln(message)
-}
-
-// Errors function
-func (l *Logger) Errors(err error) {
-	switch e := err.(type) {
-	case *errors.Error:
-		fields := e.GetFields()
-		if fields == nil {
-			fields = make(errors.Fields)
-		}
-		fields["operations"] = e.OpTraces
-
-		l.logger.WithFields(logrus.Fields(fields)).Errorln(e.Error())
-	case error:
-		l.logger.Errorln(err.Error())
-	}
 }
 
 // Fatal function

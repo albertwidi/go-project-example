@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/albertwidi/kothak/lib/errors"
 	"github.com/albertwidi/kothak/lib/log/logger"
 	"github.com/rs/zerolog"
 )
@@ -204,22 +203,6 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 // Errorw function
 func (l *Logger) Errorw(msg string, KV logger.KV) {
 	l.logger.Error().Timestamp().Fields(KV).Msg(msg)
-}
-
-// Errors function to log errors package
-func (l *Logger) Errors(err error) {
-	switch e := err.(type) {
-	case *errors.Error:
-		fields := e.GetFields()
-		if fields == nil {
-			fields = make(errors.Fields)
-		}
-		fields["operations"] = e.OpTraces
-
-		l.logger.Error().Timestamp().Fields(fields).Msg(e.Error())
-	case error:
-		l.logger.Error().Timestamp().Msg(err.Error())
-	}
 }
 
 // Fatal function

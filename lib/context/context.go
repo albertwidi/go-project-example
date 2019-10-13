@@ -1,6 +1,7 @@
 package context
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -38,6 +39,16 @@ func New(constructor Constructor) *RequestContext {
 // Request return http request from request context
 func (rc *RequestContext) Request() *http.Request {
 	return rc.httpRequest
+}
+
+// RequestHeader return http.Request.Header
+func (rc *RequestContext) RequestHeader() http.Header {
+	return rc.httpRequest.Header
+}
+
+// Context return the http.Request.Context
+func (rc *RequestContext) Context() context.Context {
+	return rc.httpRequest.Context()
 }
 
 // ResponseWriter return http response writer from request context

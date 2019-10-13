@@ -45,7 +45,9 @@ type JSONError struct {
 
 // JSON create a new JSON response
 func JSON(w http.ResponseWriter) *JSONResponse {
-	resp := JSONResponse{}
+	resp := JSONResponse{
+		writer: w,
+	}
 	return &resp
 }
 

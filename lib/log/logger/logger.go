@@ -28,7 +28,6 @@ type (
 		Error(args ...interface{})
 		Errorf(format string, args ...interface{})
 		Errorw(msg string, KV KV)
-		Errors(err error)
 		Fatal(args ...interface{})
 		Fatalf(format string, args ...interface{})
 		Fatalw(msg string, KV KV)

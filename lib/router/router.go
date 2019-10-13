@@ -203,9 +203,8 @@ func (r *Router) handleRoute(route *mux.Route, method string, handler HandlerFun
 	if err != nil {
 		log.Fatal(err)
 	}
-	// handlerName := convertPathToName(pathTemplate)
 
-	routerHandler := func(writer http.ResponseWriter, request *http.Request) {
+	handlerFunc := func(writer http.ResponseWriter, request *http.Request) {
 		requestContext := requestcontext.New(requestcontext.Constructor{
 			HTTPResponseWriter: writer,
 			HTTPRequest:        request,
@@ -220,7 +219,7 @@ func (r *Router) handleRoute(route *mux.Route, method string, handler HandlerFun
 		h(requestContext)
 	}
 
-	route.HandlerFunc(routerHandler)
+	route.HandlerFunc(handlerFunc)
 }
 
 // ServeHTTP function

@@ -166,11 +166,6 @@ func Errorw(msg string, keyValues logger.KV) {
 	errorLogger.Errorw(msg, keyValues)
 }
 
-// Errors function to log errors package
-func Errors(err error) {
-	errorLogger.Errors(err)
-}
-
 // Fatal function
 func Fatal(args ...interface{}) {
 	fatalLogger.Fatal(args...)

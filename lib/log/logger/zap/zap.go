@@ -1,7 +1,6 @@
 package zap
 
 import (
-	"github.com/albertwidi/kothak/lib/errors"
 	"github.com/albertwidi/kothak/lib/log/logger"
 	"go.uber.org/zap"
 )
@@ -199,22 +198,6 @@ func (l *Logger) Errorln(args ...interface{}) {
 // Errorw function
 func (l *Logger) Errorw(message string, fields logger.KV) {
 	l.sugared.Errorw(message, fieldsToKV(fields))
-}
-
-// Errors function
-func (l *Logger) Errors(err error) {
-	switch e := err.(type) {
-	case *errors.Error:
-		fields := e.GetFields()
-		if fields == nil {
-			fields = make(errors.Fields)
-		}
-		fields["operations"] = e.OpTraces
-
-		l.sugared.Errorw(e.Error(), fieldsToKV(logger.KV(fields)))
-	case error:
-		l.sugared.Error(err.Error())
-	}
 }
 
 // Fatal function
