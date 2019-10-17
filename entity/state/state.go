@@ -1,7 +1,6 @@
 package state
 
 import (
-	"errors"
 	"time"
 
 	authentity "github.com/albertwidi/kothak/entity/authentication"
@@ -10,7 +9,6 @@ import (
 // New to create a new state
 func New() State {
 	s := State{
-		Data:     make(map[string]interface{}),
 		MetaData: make(map[string]string),
 	}
 
@@ -19,21 +17,12 @@ func New() State {
 
 // State data
 type State struct {
-	// CreatedBy is a validator that state is created by some user
+	// CreatedBy define by whom the state is created
 	CreatedBy string
 	// CreatedByHashID is a hash of user id used externally
 	CreatedByHashID string
-	// identifier can be anything, from phone_number, user_id or unique_id, depends on needs
-	// this is useful for authenticating request
-	Identifier string
-	// state might be used for authentication
-	// so we need to record the authentication data
+	// Authentication data of state
 	Authentication authentity.Authentication
-	// navigation when using state
-	// we might want to redirect or pointing to some pages after state validation
-	Navigation Navigation
-	// data that might want to be stored in the creation of state
-	Data map[string]interface{}
 	// metadata that want to be stored in the creation of state
 	MetaData   map[string]string
 	ExpiryTime time.Duration
@@ -44,17 +33,13 @@ type State struct {
 // Validate state
 func (s State) Validate() error {
 	if s.CreatedBy == "" {
-		return errors.New("state created by cannot be empty")
-	}
-
-	if s.Identifier == "" {
-		return errors.New("state identifier cannot be empty")
+		return ErrCreatedByEmpty
 	}
 
 	if s.ExpiryTime > MaxStateExpiryTime {
-		return errors.New("expiry time is more than max expiry time")
+		return ErrExpiryTimeMoreThanMax
 	} else if s.ExpiryTime < MinStateExpiryTime {
-		return errors.New("expirty time is less than min expiry time")
+		return ErrExpiryTimeLessThanMin
 	}
 
 	return nil
@@ -69,9 +54,4 @@ func (s State) IsExpired() (bool, error) {
 	}
 
 	return false, nil
-}
-
-// Navigation of state
-type Navigation struct {
-	AppRoute string
 }

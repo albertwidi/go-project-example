@@ -15,7 +15,7 @@ type Usecase struct {
 }
 
 type stateUsecase interface {
-	Create() error
+	Create(ctx context.Context) error
 	Get(ctx context.Context, id string) (stateentity.State, error)
 }
 
@@ -49,8 +49,13 @@ func (u *Usecase) Authenticate(ctx context.Context, username, password, stateID 
 	return nil
 }
 
-// ResendAuthenticationCode for resend the code that used for authentication
+// ResendCode for resend the code that used for authentication
 // for example the OTP code
-func (u *Usecase) ResendAuthenticationCode(ctx context.Context, stateID string) error {
+func (u *Usecase) ResendCode(ctx context.Context, stateID string) error {
 	return nil
+}
+
+// IsAuthenticated to check whether state is used and authenticated for particular username
+func (u *Usecase) IsAuthenticated(ctx context.Context, username, stateID string, action authentity.Action) (bool, error) {
+	return false, nil
 }

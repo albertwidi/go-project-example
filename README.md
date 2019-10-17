@@ -17,6 +17,7 @@ Items covered in this project:
 - Property registration
   - Uploading property image
 - Booking And Order creation
+- Notification inbox
 
 ## Designing Project For Industrial Programming
 

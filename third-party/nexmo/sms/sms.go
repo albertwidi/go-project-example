@@ -118,15 +118,13 @@ type NexmoSMSCallback struct {
 }
 
 // Send sms using nexmo
+// currently, the API only expect to send 1 message
 func (c *Client) Send(ctx context.Context, payload Payload) (Response, error) {
 	req := Request{}
 	// set default callback to the configuration callback
 	if c.config.CallbackEndpoint != "" {
 		req.Callback = c.config.CallbackEndpoint
 	}
-
-	log.Println("TO", payload.To)
-	log.Println("FROM", payload.From)
 
 	data := url.Values{}
 	data.Set("api_key", c.config.APIKey)
