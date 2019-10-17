@@ -2,7 +2,21 @@
 
 This is an example for Go project.
 
-The motivaition of this project is for me to learn and implement my ideas into a project. While share the project to the open-source community, so I can learn from the community and help the community by providing a Go project example.
+The motivaition of this project is for me to learn and widen my limited knowledge about programming and implementation concepts.
+
+## The Project
+
+Project theme: `Property`
+
+This project is about implementing business logic/flow into your Go program. From registering a new user into the system, uploading content to the system and use the content itself.
+
+Items covered in this project:
+
+- User reigstration
+- User authentication
+- Property registration
+  - Uploading property image
+- Booking And Order creation
 
 ## Designing Project For Industrial Programming
 

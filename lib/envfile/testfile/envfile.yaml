@@ -1,0 +1,5 @@
+envs:
+  - name: "TEST1"
+    value: "TEST1"
+  - name: "TEST2"
+    value: "TEST2"

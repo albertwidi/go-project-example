@@ -36,9 +36,10 @@ type Fields map[string]interface{}
 
 // Errors of xerrors
 type Errors struct {
-	Err  error
-	kind Kind
-	op   Op
+	Err      error
+	InnerErr error
+	kind     Kind
+	op       Op
 }
 
 // New errors
@@ -70,15 +71,15 @@ func New(v ...interface{}) error {
 			xerr.kind = val
 
 		case *Errors:
-			lastOp := xerr.op
+			val.op = xerr.op
 			// copy the errors
 			xerr = val
 
 			if _caller {
-				xerr.Err = fmt.Errorf("error executing %s: [file=%s, line=%d] \n%w", lastOp, file, line, val.Err)
+				xerr.Err = fmt.Errorf("error executing %s: [file=%s, line=%d] \n%w", xerr.op, file, line, val.Err)
 				continue
 			}
-			xerr.Err = fmt.Errorf("error executing %s: %w", lastOp, val.Err)
+			xerr.Err = fmt.Errorf("error executing %s: %w", xerr.op, val.Err)
 
 		case error:
 			if _caller {

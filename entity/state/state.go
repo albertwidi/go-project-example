@@ -20,7 +20,7 @@ func New() State {
 // State data
 type State struct {
 	// CreatedBy is a validator that state is created by some user
-	CreatedBy int64
+	CreatedBy string
 	// CreatedByHashID is a hash of user id used externally
 	CreatedByHashID string
 	// identifier can be anything, from phone_number, user_id or unique_id, depends on needs
@@ -43,7 +43,7 @@ type State struct {
 
 // Validate state
 func (s State) Validate() error {
-	if s.CreatedBy == 0 {
+	if s.CreatedBy == "" {
 		return errors.New("state created by cannot be empty")
 	}
 
