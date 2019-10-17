@@ -21,8 +21,11 @@ const (
 
 // JSONResponse struct for http json response
 type JSONResponse struct {
-	writer         http.ResponseWriter
-	xerr           *xerrors.Errors
+	writer        http.ResponseWriter
+	xerr          *xerrors.Errors
+	headerWritten bool
+
+	// response part
 	ResponseStatus Status             `json:"status"`
 	ResponseData   interface{}        `json:"data"`
 	ResponseRetry  *JSONRetryResponse `json:"retry,omitempty"`
@@ -79,9 +82,12 @@ func (jresp *JSONResponse) Error(err error, errResp *JSONError) *JSONResponse {
 // the value of statusCode will be ignored if xerr is not nil
 // xerr will determine the statusCode via kind
 func (jresp *JSONResponse) WriteHeader(statusCode int) *JSONResponse {
-	if jresp.xerr == nil {
-		jresp.writer.WriteHeader(statusCode)
+	if jresp.headerWritten {
+		return jresp
 	}
+
+	jresp.writer.WriteHeader(statusCode)
+	jresp.headerWritten = true
 	return jresp
 }
 
