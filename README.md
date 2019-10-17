@@ -1,8 +1,8 @@
-# Project Design
+# Go Project Example
 
-This is an example for Go project design.
+This is an example for Go project.
 
-The design is based on layered design, which contains several layers and components.
+The motivaition of this project is for me to learn and implement my ideas into a project. While share the project to the open-source community, so I can learn from the community and help the community by providing a Go project example.
 
 ## Designing Project For Industrial Programming
 
@@ -10,12 +10,28 @@ What is industrial programming? [Peter Bourgon](https://peter.bourgon.org/go-for
 
 At least, in my understanding, it is consists of theese:
 
-```text
 - In a startup or corporate environment.
 - Within a team where engineers come and go.
 - On code that outlives any single engineer.
 - Serving highly mutable business requirements.
-```
+
+## Getting Started
+
+This is guide to get started with this project and installing dependencies required for running this project locally
+
+### Requirements
+
+1. Make
+2. Docker
+3. Soda CLI from [gobuffalo](https://gobuffalo.io/en/docs/db/toolbox). You can install this by using `make install-deps`
+
+### Create Database And Migrate
+
+To create and migrate the database, we will use `soda CLI` created by `gobuffalo`. The command is wrapper by this [script](/database/setup.sh).
+
+Use this command to fully create and migrate the databse schema:
+
+`make dbup`
 
 ## The Design
 
@@ -55,3 +71,7 @@ To be added
 1. [Project Design](/docs/project_design.md)
 2. [Service Boundaries](/docs/service_boundaries.md)
 3. [Tips](/docs/tips.md)
+
+## License
+
+To be added

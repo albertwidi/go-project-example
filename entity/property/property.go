@@ -39,6 +39,17 @@ type Detail struct {
 	IsDeleted  bool
 }
 
+// Address of property
+type Address struct {
+	Address   string
+	City      string
+	State     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	IsTest    bool
+	IsDeleted bool
+}
+
 // AddressMap of the property
 type AddressMap struct {
 	PropertyID string

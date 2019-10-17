@@ -25,7 +25,7 @@ func (h Hash) Validate() error {
 
 // User struct
 type User struct {
-	ID          int64
+	ID          string
 	HashID      Hash
 	UserStatus  int
 	UserType    Type
@@ -70,18 +70,5 @@ type Bio struct {
 	Birthday   time.Time
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	IsTest     bool
-}
-
-// KTP struct
-type KTP struct {
-	ID         int64
-	UserID     int64
-	ImagePath  string
-	Verified   bool
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	VerifiedAt time.Time
-	VerifiedBy int64
 	IsTest     bool
 }
