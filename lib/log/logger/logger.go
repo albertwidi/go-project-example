@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -103,4 +105,18 @@ func LevelToString(l Level) string {
 	default:
 		return InfoLevelString
 	}
+}
+
+// CreateLogFile create a file and return io.Writer for file manipulation
+func CreateLogFile(filename string) (*os.File, error) {
+	err := os.MkdirAll(filepath.Dir(filename), 0744)
+	if err != nil && err != os.ErrExist {
+		return nil, err
+	}
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
 }

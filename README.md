@@ -6,9 +6,9 @@ The motivaition of this project is for me to learn and widen my limited knowledg
 
 ## The Project
 
-Project theme: `Property`
+This project is about implementing business logic/flow into the Go program for various usecases.
 
-This project is about implementing business logic/flow into your Go program. From registering a new user into the system, uploading content to the system and use the content itself.
+Project theme: `Property`
 
 Items covered in this project:
 

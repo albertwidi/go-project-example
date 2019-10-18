@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/albertwidi/kothak/lib/log/logger"
+	"github.com/albertwidi/kothak/lib/log/logger/std"
 )
 
 // Config of log
@@ -35,8 +36,17 @@ var (
 	errInvalidLogger = errors.New("invalid logger")
 )
 
-// Init log package
-func Init(backend logger.Logger) {
+func init() {
+	backend, err := std.New(nil)
+	if err != nil {
+		return
+	}
+
+	SetLogger(backend)
+}
+
+// SetLogger to set default logger backend
+func SetLogger(backend logger.Logger) {
 	debugLogger = backend
 	infoLogger = backend
 	warnLogger = backend
