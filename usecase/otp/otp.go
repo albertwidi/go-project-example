@@ -11,7 +11,6 @@ import (
 	"github.com/kosanapp/kosan-backend/pkg/errors"
 	"github.com/kosanapp/kosan-backend/pkg/randgen"
 	"github.com/kosanapp/kosan-backend/pkg/redis"
-	"github.com/kosanapp/kosan-backend/pkg/timeutil"
 )
 
 // Usecase of otp
@@ -56,7 +55,7 @@ func (u Usecase) Create(ctx context.Context, uniqueID string, action authentity.
 		return otpentity.OTP{}, err
 	}
 
-	now, err := timeutil.TimeNowWIB()
+	now := time.Now()
 	if err != nil {
 		return otpentity.OTP{}, err
 	}
@@ -133,7 +132,7 @@ func (u Usecase) Validate(ctx context.Context, uniqueID string, action authentit
 		return err
 	}
 
-	now, err := timeutil.TimeNowWIB()
+	now := time.Now()
 	if err != nil {
 		return err
 	}
@@ -151,6 +150,7 @@ func (u Usecase) Validate(ctx context.Context, uniqueID string, action authentit
 			return err
 		}
 
+		// if otp validation reach its threshold, invalidate and expire otp immediately
 		if validateAttempt%otpentity.ThresholdOTPValidate == 0 {
 			otp.ExpiryTime = 0
 			otp.ExpiredAt = now

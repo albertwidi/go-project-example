@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	entity "github.com/albertwidi/kothak/entity/amenities"
+	"github.com/albertwidi/kothak/lib/sqldb"
 	"github.com/lib/pq"
 )
 
 // Repository of amenities
 type Repository struct {
-	db *sqlx.DB
+	db *sqldb.DB
 }
 
 // Amenities struct
@@ -22,7 +22,7 @@ type Amenities struct {
 	ImagePath string      `db:"image_path"`
 	CreatedAt time.Time   `db:"created_at"`
 	UpdatedAt pq.NullTime `db:"updated_at"`
-	Deleted   bool        `db:"deleted"`
+	IsDeleted bool        `db:"is_deleted"`
 	IsTest    bool        `db:"is_test"`
 }
 

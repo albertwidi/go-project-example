@@ -1,5 +1,12 @@
 package project
 
+import (
+	"fmt"
+	"time"
+
+	"github.com/albertwidi/kothak/lib/log/logger"
+)
+
 type arrayFlags []string
 
 // String return string implementation of array flags
@@ -19,9 +26,11 @@ type Flags struct {
 	TimeZone          string
 	ConfigurationFile string
 	EnvironmentFiles  arrayFlags
+	LogFile           string
 }
 
 // Run the project
-func Run(f Flags) error {
+func Run(f Flags, logger logger.Logger) error {
+	fmt.Println(time.Now())
 	return nil
 }

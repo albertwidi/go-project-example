@@ -26,11 +26,11 @@ type Config struct {
 }
 
 var (
-	debugLogger logger.Logger
-	infoLogger  logger.Logger
-	warnLogger  logger.Logger
-	errorLogger logger.Logger
-	fatalLogger logger.Logger
+	_debugLogger logger.Logger
+	_infoLogger  logger.Logger
+	_warnLogger  logger.Logger
+	_errorLogger logger.Logger
+	_fatalLogger logger.Logger
 
 	errInvalidLevel  = errors.New("invalid log level")
 	errInvalidLogger = errors.New("invalid logger")
@@ -47,32 +47,32 @@ func init() {
 
 // SetLogger to set default logger backend
 func SetLogger(backend logger.Logger) {
-	debugLogger = backend
-	infoLogger = backend
-	warnLogger = backend
-	errorLogger = backend
-	fatalLogger = backend
+	_debugLogger = backend
+	_infoLogger = backend
+	_warnLogger = backend
+	_errorLogger = backend
+	_fatalLogger = backend
 }
 
 // SetConfig to the current logger
 func SetConfig(config *logger.Config) error {
-	if err := debugLogger.SetConfig(config); err != nil {
+	if err := _debugLogger.SetConfig(config); err != nil {
 		return err
 	}
 
-	if err := infoLogger.SetConfig(config); err != nil {
+	if err := _infoLogger.SetConfig(config); err != nil {
 		return err
 	}
 
-	if err := warnLogger.SetConfig(config); err != nil {
+	if err := _warnLogger.SetConfig(config); err != nil {
 		return err
 	}
 
-	if err := errorLogger.SetConfig(config); err != nil {
+	if err := _errorLogger.SetConfig(config); err != nil {
 		return err
 	}
 
-	if err := fatalLogger.SetConfig(config); err != nil {
+	if err := _fatalLogger.SetConfig(config); err != nil {
 		return err
 	}
 
@@ -89,104 +89,104 @@ func SetLevelString(level string) {
 	setLevel(logger.StringToLevel(level))
 }
 
-// setLevel function set the log level to the desired level for defaultLogger and debugLogger
-// debugLogger level can go to any level, but not with defaultLogger
-// this to make sure debugLogger to be disabled when level is > debug
-// and defaultLogger to not overlap with debugLogger
+// setLevel function set the log level to the desired level for defaultLogger and _debugLogger
+// _debugLogger level can go to any level, but not with defaultLogger
+// this to make sure _debugLogger to be disabled when level is > debug
+// and defaultLogger to not overlap with _debugLogger
 func setLevel(level logger.Level) {
-	debugLogger.SetLevel(level)
-	infoLogger.SetLevel(level)
-	warnLogger.SetLevel(level)
-	errorLogger.SetLevel(level)
-	fatalLogger.SetLevel(level)
+	_debugLogger.SetLevel(level)
+	_infoLogger.SetLevel(level)
+	_warnLogger.SetLevel(level)
+	_errorLogger.SetLevel(level)
+	_fatalLogger.SetLevel(level)
 }
 
 // Debug function
 func Debug(args ...interface{}) {
-	debugLogger.Debug(args...)
+	_debugLogger.Debug(args...)
 }
 
 // Debugf function
 func Debugf(format string, v ...interface{}) {
-	debugLogger.Debugf(format, v...)
+	_debugLogger.Debugf(format, v...)
 }
 
 // Debugw function
 func Debugw(msg string, keyValues logger.KV) {
-	debugLogger.Debugw(msg, keyValues)
+	_debugLogger.Debugw(msg, keyValues)
 }
 
 // Print function
 func Print(v ...interface{}) {
-	infoLogger.Info(v...)
+	_infoLogger.Info(v...)
 }
 
 // Println function
 func Println(v ...interface{}) {
-	infoLogger.Info(v...)
+	_infoLogger.Info(v...)
 }
 
 // Printf function
 func Printf(format string, v ...interface{}) {
-	infoLogger.Infof(format, v...)
+	_infoLogger.Infof(format, v...)
 }
 
 // Info function
 func Info(args ...interface{}) {
-	infoLogger.Info(args...)
+	_infoLogger.Info(args...)
 }
 
 // Infof function
 func Infof(format string, v ...interface{}) {
-	infoLogger.Infof(format, v...)
+	_infoLogger.Infof(format, v...)
 }
 
 // Infow function
 func Infow(msg string, keyValues logger.KV) {
-	infoLogger.Infow(msg, keyValues)
+	_infoLogger.Infow(msg, keyValues)
 }
 
 // Warn function
 func Warn(args ...interface{}) {
-	warnLogger.Warn(args...)
+	_warnLogger.Warn(args...)
 }
 
 // Warnf function
 func Warnf(format string, v ...interface{}) {
-	warnLogger.Warnf(format, v...)
+	_warnLogger.Warnf(format, v...)
 }
 
 // Warnw function
 func Warnw(msg string, keyValues logger.KV) {
-	warnLogger.Warnw(msg, keyValues)
+	_warnLogger.Warnw(msg, keyValues)
 }
 
 // Error function
 func Error(args ...interface{}) {
-	errorLogger.Error(args...)
+	_errorLogger.Error(args...)
 }
 
 // Errorf function
 func Errorf(format string, v ...interface{}) {
-	errorLogger.Errorf(format, v...)
+	_errorLogger.Errorf(format, v...)
 }
 
 // Errorw function
 func Errorw(msg string, keyValues logger.KV) {
-	errorLogger.Errorw(msg, keyValues)
+	_errorLogger.Errorw(msg, keyValues)
 }
 
 // Fatal function
 func Fatal(args ...interface{}) {
-	fatalLogger.Fatal(args...)
+	_fatalLogger.Fatal(args...)
 }
 
 // Fatalf function
 func Fatalf(format string, v ...interface{}) {
-	fatalLogger.Fatalf(format, v...)
+	_fatalLogger.Fatalf(format, v...)
 }
 
 // Fatalw function
 func Fatalw(msg string, keyValues logger.KV) {
-	fatalLogger.Fatalw(msg, keyValues)
+	_fatalLogger.Fatalw(msg, keyValues)
 }
