@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/albertwidi/go_project_example/cmd/project/internal"
-	"github.com/albertwidi/go_project_example/lib/log/logger"
-	"github.com/albertwidi/go_project_example/lib/log/logger/zap"
+	project "github.com/albertwidi/go_project_example/cmd/project/internal"
+	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
+	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/zap"
 )
 
 func main() {
-	f := internal.Flags{}
+	f := project.Flags{}
 	flag.StringVar(&f.ConfigurationFile, "config_file", "./project_config.yaml", "configuration file of the project")
 	flag.Var(&f.EnvironmentFiles, "env_files", "environment files for project configuration")
 	flag.StringVar(&f.LogFile, "log_file", "", "log file output")
@@ -32,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := internal.Run(f, logger); err != nil {
+	if err := project.Run(f, logger); err != nil {
 		fmt.Printf("%v", err)
 		os.Exit(1)
 	}

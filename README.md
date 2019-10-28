@@ -48,7 +48,17 @@ Use this command to fully create and migrate the databse schema:
 
 `make dbup`
 
-## The Design
+## Project Structure
+
+### Cmd
+
+All Go main programs is located in `go_project_example/cmd/*` folder.
+
+### Internal
+
+To be added
+
+## Code Structure
 
 As stated at the top of this document, the design contains several layers and components and very much similar to onion ring or clean architecture attempt.
 

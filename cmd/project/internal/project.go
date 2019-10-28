@@ -1,10 +1,10 @@
-package internal
+package project
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/albertwidi/go_project_example/lib/log/logger"
+	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 )
 
 type arrayFlags []string
