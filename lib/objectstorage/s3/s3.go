@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/albertwidi/kothak/lib/objectstorage"
+	"github.com/albertwidi/go_project_example/lib/objectstorage"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/s3blob"
 )

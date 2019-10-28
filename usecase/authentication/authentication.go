@@ -3,9 +3,9 @@ package authentication
 import (
 	"context"
 
-	authentity "github.com/albertwidi/kothak/entity/authentication"
-	stateentity "github.com/albertwidi/kothak/entity/state"
-	"github.com/albertwidi/kothak/lib/xerrors"
+	authentity "github.com/albertwidi/go_project_example/entity/authentication"
+	stateentity "github.com/albertwidi/go_project_example/entity/state"
+	"github.com/albertwidi/go_project_example/lib/xerrors"
 )
 
 // Usecase of authentication

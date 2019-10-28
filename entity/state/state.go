@@ -3,7 +3,7 @@ package state
 import (
 	"time"
 
-	authentity "github.com/albertwidi/kothak/entity/authentication"
+	authentity "github.com/albertwidi/go_project_example/entity/authentication"
 )
 
 // New to create a new state

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	sessionentity "github.com/albertwidi/kothak/entity/session"
-	userentity "github.com/albertwidi/kothak/entity/user"
+	sessionentity "github.com/albertwidi/go_project_example/entity/session"
+	userentity "github.com/albertwidi/go_project_example/entity/user"
 	guuid "github.com/google/uuid"
 )
 

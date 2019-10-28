@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/albertwidi/kothak/lib/xerrors"
+	"github.com/albertwidi/go_project_example/lib/xerrors"
 )
 
 // Status of json response

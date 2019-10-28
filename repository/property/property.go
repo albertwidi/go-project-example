@@ -3,8 +3,8 @@ package property
 import (
 	"context"
 
-	entity "github.com/albertwidi/kothak/entity/property"
-	"github.com/albertwidi/kothak/lib/sqldb"
+	entity "github.com/albertwidi/go_project_example/entity/property"
+	"github.com/albertwidi/go_project_example/lib/sqldb"
 )
 
 // Repository of property

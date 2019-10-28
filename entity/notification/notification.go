@@ -3,7 +3,7 @@ package notification
 import (
 	"time"
 
-	"github.com/albertwidi/kothak/entity/device"
+	"github.com/albertwidi/go_project_example/entity/device"
 )
 
 // Client interface

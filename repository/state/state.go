@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	stateentity "github.com/albertwidi/kothak/entity/state"
-	"github.com/albertwidi/kothak/lib/redis"
-	"github.com/albertwidi/kothak/lib/ulid"
+	stateentity "github.com/albertwidi/go_project_example/entity/state"
+	"github.com/albertwidi/go_project_example/lib/redis"
+	"github.com/albertwidi/go_project_example/lib/ulid"
 )
 
 // Repository struct
@@ -41,7 +41,7 @@ func (r *Repository) Save(ctx context.Context, id string, data stateentity.State
 		return err
 	}
 
-	_, err = r.Redis.SetEX(stateID, string(out), int(data.ExpiryTime.Seconds()))
+	_, err = r.Redis.SetEX(ctx, stateID, string(out), int(data.ExpiryTime.Seconds()))
 	if err != nil {
 		return err
 	}

@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	imageentity "github.com/albertwidi/kothak/entity/image"
-	userentity "github.com/albertwidi/kothak/entity/user"
-	"github.com/albertwidi/kothak/lib/imagepath"
-	"github.com/albertwidi/kothak/lib/objectstorage"
-	"github.com/albertwidi/kothak/lib/xerrors"
+	imageentity "github.com/albertwidi/go_project_example/entity/image"
+	userentity "github.com/albertwidi/go_project_example/entity/user"
+	"github.com/albertwidi/go_project_example/lib/imagepath"
+	"github.com/albertwidi/go_project_example/lib/objectstorage"
+	"github.com/albertwidi/go_project_example/lib/xerrors"
 	guuid "github.com/google/uuid"
 )
 

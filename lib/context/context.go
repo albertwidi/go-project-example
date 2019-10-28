@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/albertwidi/kothak/lib/http/response"
+	"github.com/albertwidi/go_project_example/lib/http/response"
 )
 
 // RequestContext struct

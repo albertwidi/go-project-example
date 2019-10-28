@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	otpentity "github.com/albertwidi/kothak/entity/otp"
-	"github.com/albertwidi/kothak/lib/randgen"
-	"github.com/albertwidi/kothak/lib/xerrors"
+	otpentity "github.com/albertwidi/go_project_example/entity/otp"
+	"github.com/albertwidi/go_project_example/lib/randgen"
+	"github.com/albertwidi/go_project_example/lib/xerrors"
 )
 
 // Usecase of otp

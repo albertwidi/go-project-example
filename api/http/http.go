@@ -5,10 +5,10 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/albertwidi/kothak/api"
-	"github.com/albertwidi/kothak/api/http/order"
-	"github.com/albertwidi/kothak/api/http/payment"
-	"github.com/albertwidi/kothak/api/http/user"
+	"github.com/albertwidi/go_project_example/api"
+	"github.com/albertwidi/go_project_example/api/http/order"
+	"github.com/albertwidi/go_project_example/api/http/payment"
+	"github.com/albertwidi/go_project_example/api/http/user"
 	"github.com/gorilla/mux"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/albertwidi/kothak/lib/log/logger"
+	"github.com/albertwidi/go_project_example/lib/log/logger"
 )
 
 type arrayFlags []string

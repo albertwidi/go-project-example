@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/albertwidi/kothak/cmd/project/internal"
-	"github.com/albertwidi/kothak/lib/log/logger"
-	"github.com/albertwidi/kothak/lib/log/logger/zap"
+	"github.com/albertwidi/go_project_example/cmd/project/internal"
+	"github.com/albertwidi/go_project_example/lib/log/logger"
+	"github.com/albertwidi/go_project_example/lib/log/logger/zap"
 )
 
 func main() {

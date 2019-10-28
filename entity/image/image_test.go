@@ -3,7 +3,7 @@ package image_test
 import (
 	"testing"
 
-	"github.com/albertwidi/kothak/entity/image"
+	"github.com/albertwidi/go_project_example/entity/image"
 )
 
 func TestValidateMode(t *testing.T) {

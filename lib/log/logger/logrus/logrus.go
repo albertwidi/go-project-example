@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/albertwidi/kothak/lib/log/logger"
+	"github.com/albertwidi/go_project_example/lib/log/logger"
 	"github.com/sirupsen/logrus"
 )
 

@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/albertwidi/kothak/lib/objectstorage"
+	"github.com/albertwidi/go_project_example/lib/objectstorage"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/fileblob"
 )

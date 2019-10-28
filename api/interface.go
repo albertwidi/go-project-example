@@ -3,8 +3,8 @@ package api
 import (
 	"context"
 
-	"github.com/albertwidi/kothak/service/order"
-	"github.com/albertwidi/kothak/service/payment"
+	"github.com/albertwidi/go_project_example/service/order"
+	"github.com/albertwidi/go_project_example/service/payment"
 )
 
 type UserService interface {

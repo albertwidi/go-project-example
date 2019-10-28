@@ -3,7 +3,7 @@ package user
 import (
 	"net/http"
 
-	"github.com/albertwidi/kothak/api"
+	"github.com/albertwidi/go_project_example/api"
 )
 
 var userService api.UserService

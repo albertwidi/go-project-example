@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	authentity "github.com/albertwidi/kothak/entity/auth"
-	otpentity "github.com/albertwidi/kothak/entity/otp"
-	"github.com/albertwidi/kothak/lib/conv"
-	"github.com/albertwidi/kothak/lib/errors"
-	"github.com/albertwidi/kothak/lib/redis"
+	authentity "github.com/albertwidi/go_project_example/entity/auth"
+	otpentity "github.com/albertwidi/go_project_example/entity/otp"
+	"github.com/albertwidi/go_project_example/lib/conv"
+	"github.com/albertwidi/go_project_example/lib/errors"
+	"github.com/albertwidi/go_project_example/lib/redis"
 )
 
 // Repository for otp

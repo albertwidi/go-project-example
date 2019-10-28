@@ -11,8 +11,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/albertwidi/kothak/lib/objectstorage"
-	"github.com/albertwidi/kothak/lib/objectstorage/local"
+	"github.com/albertwidi/go_project_example/lib/objectstorage"
+	"github.com/albertwidi/go_project_example/lib/objectstorage/local"
 )
 
 // File struct

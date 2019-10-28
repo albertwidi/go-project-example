@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	requestcontext "github.com/albertwidi/kothak/lib/context"
-	"github.com/albertwidi/kothak/lib/http/misc"
+	requestcontext "github.com/albertwidi/go_project_example/lib/context"
+	"github.com/albertwidi/go_project_example/lib/http/misc"
 	"github.com/gorilla/mux"
 )
 

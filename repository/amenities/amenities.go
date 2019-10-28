@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	entity "github.com/albertwidi/kothak/entity/amenities"
-	"github.com/albertwidi/kothak/lib/sqldb"
+	entity "github.com/albertwidi/go_project_example/entity/amenities"
+	"github.com/albertwidi/go_project_example/lib/sqldb"
 	"github.com/lib/pq"
 )
 

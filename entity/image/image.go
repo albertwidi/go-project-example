@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/textproto"
 
-	userentity "github.com/albertwidi/kothak/entity/user"
+	userentity "github.com/albertwidi/go_project_example/entity/user"
 )
 
 // Mode of image

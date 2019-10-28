@@ -3,7 +3,7 @@ package grpc
 import (
 	"net"
 
-	"github.com/albertwidi/kothak/api"
+	"github.com/albertwidi/go_project_example/api"
 	"google.golang.org/grpc"
 )
 

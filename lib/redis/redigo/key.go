@@ -3,7 +3,7 @@ package redigo
 import (
 	"context"
 
-	"github.com/albertwidi/kothak/lib/redis"
+	"github.com/albertwidi/go_project_example/lib/redis"
 	redigo "github.com/gomodule/redigo/redis"
 )
 

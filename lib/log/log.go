@@ -3,8 +3,8 @@ package log
 import (
 	"errors"
 
-	"github.com/albertwidi/kothak/lib/log/logger"
-	"github.com/albertwidi/kothak/lib/log/logger/std"
+	"github.com/albertwidi/go_project_example/lib/log/logger"
+	"github.com/albertwidi/go_project_example/lib/log/logger/std"
 )
 
 // Config of log

@@ -3,7 +3,7 @@ package payment
 import (
 	"net/http"
 
-	"github.com/albertwidi/kothak/api"
+	"github.com/albertwidi/go_project_example/api"
 )
 
 var paymentService api.PaymentService

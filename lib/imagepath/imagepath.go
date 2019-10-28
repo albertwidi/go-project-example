@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	imageentity "github.com/albertwidi/kothak/entity/image"
+	imageentity "github.com/albertwidi/go_project_example/entity/image"
 )
 
 // Config of image path library
