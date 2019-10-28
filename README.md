@@ -8,6 +8,8 @@ The motivaition of this project is for me to learn and widen my limited knowledg
 
 This project is about implementing business logic/flow into the Go program for various usecases.
 
+Some of them might not follow existing specs/standards, feel free to open an issue and please let me know.
+
 Project theme: `Property`
 
 Items covered in this project:

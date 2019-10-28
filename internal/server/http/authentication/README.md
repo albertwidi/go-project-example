@@ -8,8 +8,8 @@ List of Authentication APIs
 
 header:
 
-- Authorization: `sessionid`
-- X-Project-User-ID: `userid`
+- sid: `my_session_id`
+- uid: `my_user_id`
 
 url value:
 
