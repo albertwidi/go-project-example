@@ -7,13 +7,13 @@ import (
 	"time"
 
 	stateentity "github.com/albertwidi/kothak/entity/state"
+	"github.com/albertwidi/kothak/lib/redis"
 	"github.com/albertwidi/kothak/lib/ulid"
-	"github.com/kosanapp/kosan-backend/pkg/redis"
 )
 
 // Repository struct
 type Repository struct {
-	Redis *redis.Redis
+	Redis redis.Redis
 	// ulid generator
 	ulidgen *ulid.Ulid
 }

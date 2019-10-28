@@ -2,7 +2,7 @@
 
 This is an example for Go project.
 
-The motivaition of this project is for me to learn and widen my limited knowledge about programming and implementation concepts.
+The motivaition of this project is for me to learn and widen my limited knowledge about programming, project design, and concepts implementation.
 
 ## The Project
 
@@ -78,15 +78,5 @@ To be added
 To be added
 
 #### Layers
-
-To be added
-
-## Index
-
-1. [Project Design](/docs/project_design.md)
-2. [Service Boundaries](/docs/service_boundaries.md)
-3. [Tips](/docs/tips.md)
-
-## License
 
 To be added

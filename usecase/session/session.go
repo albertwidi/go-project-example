@@ -6,10 +6,9 @@ import (
 	"strings"
 	"time"
 
+	sessionentity "github.com/albertwidi/kothak/entity/session"
+	userentity "github.com/albertwidi/kothak/entity/user"
 	guuid "github.com/google/uuid"
-	sessionentity "github.com/kosanapp/kosan-backend/entity/session"
-	userentity "github.com/kosanapp/kosan-backend/entity/user"
-	kosanerr "github.com/kosanapp/kosan-backend/kosan/errors"
 )
 
 // UseCase struct

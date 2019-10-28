@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	entity "github.com/kosanapp/kosan-backend/entity/state"
-	"github.com/kosanapp/kosan-backend/pkg/ulid"
+	entity "github.com/albertwidi/kothak/entity/state"
+	"github.com/albertwidi/kothak/lib/ulid"
 )
 
 // Usecase of state
