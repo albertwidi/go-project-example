@@ -5,72 +5,74 @@ import (
 	"strconv"
 	"time"
 
-	authentity "github.com/kosanapp/kosan-backend/entity/auth"
-	otpentity "github.com/kosanapp/kosan-backend/entity/otp"
-	kosanerr "github.com/kosanapp/kosan-backend/kosan/errors"
-	"github.com/kosanapp/kosan-backend/pkg/errors"
-	"github.com/kosanapp/kosan-backend/pkg/randgen"
-	"github.com/kosanapp/kosan-backend/pkg/redis"
+	otpentity "github.com/albertwidi/kothak/entity/otp"
+	"github.com/albertwidi/kothak/lib/randgen"
+	"github.com/albertwidi/kothak/lib/xerrors"
 )
 
 // Usecase of otp
 type Usecase struct {
 	repo otpRepo
-	rgen *randgen.Generator
+	// code generator
+	rgen map[otpentity.CodeLength]*randgen.Generator
 }
 
 type otpRepo interface {
 	Save(ctx context.Context, otp otpentity.OTP) error
 	SetLast(ctx context.Context, otp otpentity.OTP) error
-	GetLast(ctx context.Context, uniqueID string, action authentity.Action) (otpentity.OTP, error)
-	Len(ctx context.Context, uniqueID string, action authentity.Action) (int, error)
+	GetLast(ctx context.Context, uniqueID string) (otpentity.OTP, error)
+	Len(ctx context.Context, uniqueID string) (int, error)
 	IncreaseValidateAttempt(ctx context.Context, uniqueID string, attempt int) (int, error)
 	DeleteValidateAttempt(ctx context.Context, uniqueID string) error
-	DeleteAll(ctx context.Context, uniqueID string, action authentity.Action) error
+	DeleteAll(ctx context.Context, uniqueID string) error
 }
 
 // New otp usecase
 func New(otpRepo otpRepo) (*Usecase, error) {
 	workerNumber := 3
-	minOTP := 100000
-	maxOTP := 999999
+	rgen := make(map[otpentity.CodeLength]*randgen.Generator)
+	rgen[otpentity.CodeLength4] = randgen.New(workerNumber, 1000, 9999, time.Now().UnixNano())
+	rgen[otpentity.CodeLength6] = randgen.New(workerNumber, 100000, 999999, time.Now().UnixNano())
 
 	u := Usecase{
 		repo: otpRepo,
-		rgen: randgen.New(workerNumber, minOTP, maxOTP, time.Now().UnixNano()),
+		rgen: rgen,
 	}
-
 	return &u, nil
 }
 
 // Create OTP
-func (u Usecase) Create(ctx context.Context, uniqueID string, action authentity.Action) (otpentity.OTP, error) {
+func (u Usecase) Create(ctx context.Context, uniqueID string, codeLength otpentity.CodeLength) (*otpentity.OTP, error) {
+	if err := codeLength.Validate(); err != nil {
+		return nil, err
+	}
+
 	var (
-		otpcode        = strconv.Itoa(u.rgen.Generate())
+		otpcode        = strconv.Itoa(u.rgen[codeLength].Generate())
 		resendDuration = otpentity.ResendTimeDefault
 	)
 
-	lastOTP, err := u.repo.GetLast(ctx, uniqueID, action)
-	if err != nil && !redis.IsErrNil(err) {
-		return otpentity.OTP{}, err
+	lastOTP, err := u.repo.GetLast(ctx, uniqueID)
+	if err != nil {
+		return nil, err
 	}
 
 	now := time.Now()
 	if err != nil {
-		return otpentity.OTP{}, err
+		return nil, err
 	}
 
 	// means the last otp is not exists
 	if lastOTP.Code != "" {
 		// make sure that otp is not resendable before the duration
 		if now.Before(lastOTP.ResendableAt) {
-			return lastOTP, errors.E(kosanerr.ErrOTPSendNeedToWait)
+			return nil, xerrors.New(otpentity.ErrOTPNotResendable)
 		}
 
 		// get the length of current otp
-		otpLen, err := u.repo.Len(ctx, uniqueID, action)
+		otpLen, err := u.repo.Len(ctx, uniqueID)
 		if err != nil {
-			return otpentity.OTP{}, err
+			return nil, err
 		}
 
 		// means otp is on its threshold
@@ -81,7 +83,6 @@ func (u Usecase) Create(ctx context.Context, uniqueID string, action authentity.
 
 	otp := otpentity.OTP{
 		UniqueID:     uniqueID,
-		Action:       action,
 		Code:         otpcode,
 		CreatedAt:    now,
 		ExpiryTime:   otpentity.ExpiryTimeDefault,
@@ -92,42 +93,17 @@ func (u Usecase) Create(ctx context.Context, uniqueID string, action authentity.
 
 	err = u.repo.Save(ctx, otp)
 	if err != nil {
-		return otp, err
+		return nil, err
 	}
 
-	return otp, nil
-}
-
-// Recreate otp using last otp
-// TODO: reuse create function
-func (u Usecase) Recreate(ctx context.Context, uniqueID string, action authentity.Action) (otpentity.OTP, error) {
-	otp, err := u.repo.GetLast(ctx, uniqueID, action)
-	if err != nil {
-		return otp, err
-	}
-
-	ok, err := otp.IsResendable()
-	if err != nil {
-		return otp, err
-	}
-
-	if !ok {
-		return otp, err
-	}
-
-	otp, err = u.Create(ctx, otp.UniqueID, otp.Action)
-	if err != nil {
-		return otp, err
-	}
-
-	return otp, nil
+	return &otp, nil
 }
 
 // Validate the otpcode
-func (u Usecase) Validate(ctx context.Context, uniqueID string, action authentity.Action, otpCode string) error {
+func (u Usecase) Validate(ctx context.Context, uniqueID string, otpCode string) error {
 	// always get the last otp from certain uniqueid and action
 	// this is because otp is grouped per uniqueid and action
-	otp, err := u.repo.GetLast(ctx, uniqueID, action)
+	otp, err := u.repo.GetLast(ctx, uniqueID)
 	if err != nil {
 		return err
 	}
@@ -139,8 +115,7 @@ func (u Usecase) Validate(ctx context.Context, uniqueID string, action authentit
 
 	// check whether the otp already expired
 	if now.After(otp.ExpiredAt) {
-		err = errors.E(kosanerr.ErrOTPAlreadyExpired)
-		return err
+		return xerrors.New(otpentity.ErrOTPExpired)
 	}
 
 	// check whether the otp is valid
@@ -162,8 +137,7 @@ func (u Usecase) Validate(ctx context.Context, uniqueID string, action authentit
 			return err
 		}
 
-		err = kosanerr.ErrOTPInvalid
-		return err
+		return xerrors.New(otpentity.ErrOTPInvalid)
 	}
 
 	err = u.repo.DeleteValidateAttempt(ctx, uniqueID)
@@ -175,8 +149,8 @@ func (u Usecase) Validate(ctx context.Context, uniqueID string, action authentit
 }
 
 // Delete OTP
-func (u Usecase) Delete(ctx context.Context, uniqueID string, action authentity.Action) error {
-	err := u.repo.DeleteAll(ctx, uniqueID, action)
+func (u Usecase) Delete(ctx context.Context, uniqueID string) error {
+	err := u.repo.DeleteAll(ctx, uniqueID)
 	if err != nil {
 		return err
 	}

@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/albertwidi/kothak/cmd/project"
+	"github.com/albertwidi/kothak/cmd/project/internal"
 	"github.com/albertwidi/kothak/lib/log/logger"
 	"github.com/albertwidi/kothak/lib/log/logger/zap"
 )
 
 func main() {
-	f := project.Flags{}
+	f := internal.Flags{}
 	flag.StringVar(&f.ConfigurationFile, "config_file", "./project_config.yaml", "configuration file of the project")
 	flag.Var(&f.EnvironmentFiles, "env_files", "environment files for project configuration")
 	flag.StringVar(&f.LogFile, "log_file", "", "log file output")
@@ -32,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := project.Run(f, logger); err != nil {
+	if err := internal.Run(f, logger); err != nil {
 		fmt.Printf("%v", err)
 		os.Exit(1)
 	}

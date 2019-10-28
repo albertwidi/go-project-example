@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/albertwidi/kothak/lib/log"
 	"github.com/albertwidi/kothak/lib/log/logger"
 	"github.com/albertwidi/kothak/lib/log/logger/std"
 	"github.com/jmoiron/sqlx"
@@ -20,7 +19,7 @@ var (
 
 // DB struct to hold all database connections
 type DB struct {
-	master   *sqlx.DB
+	leader   *sqlx.DB
 	follower *sqlx.DB
 
 	logger logger.Logger
@@ -30,7 +29,7 @@ type DB struct {
 // Config of the db
 type Config struct {
 	Driver   string
-	Master   string
+	leader   string
 	Follower string
 	Retry    int
 	Logger   logger.Logger
@@ -54,13 +53,13 @@ func New(ctx context.Context, config *Config) (*DB, error) {
 	db := DB{
 		config: config,
 	}
-	master, err := db.connectWithRetry(ctx, config.Driver, config.Master, config.Retry)
+	leader, err := db.connectWithRetry(ctx, config.Driver, config.leader, config.Retry)
 	if err != nil {
 		return nil, err
 	}
-	db.master = master
+	db.leader = leader
 
-	follower, err := db.connectWithRetry(ctx, config.Driver, config.Master, config.Retry)
+	follower, err := db.connectWithRetry(ctx, config.Driver, config.leader, config.Retry)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +97,7 @@ func (db *DB) connectWithRetry(ctx context.Context, driver, dsn string, retry in
 		db.logger.Warnf("sqldb: retrying to connect to %s. Retry: %d", dsn, x+1)
 
 		if x+1 == retry && err != nil {
-			log.Errorf("sqldb: retry time exhausted, cannot connect to database: %s", err.Error())
+			db.logger.Errorf("sqldb: retry time exhausted, cannot connect to database: %s", err.Error())
 			return nil, fmt.Errorf("sqldb: failed connect to database: %s", err.Error())
 		}
 		time.Sleep(time.Second * 3)
@@ -106,9 +105,9 @@ func (db *DB) connectWithRetry(ctx context.Context, driver, dsn string, retry in
 	return sqlxdb, err
 }
 
-// Master return master database connection
-func (db *DB) Master() *sqlx.DB {
-	return db.master
+// Leader return leader database connection
+func (db *DB) Leader() *sqlx.DB {
+	return db.leader
 }
 
 // Follower return follower database connection
@@ -118,19 +117,19 @@ func (db *DB) Follower() *sqlx.DB {
 
 // SetMaxIdleConns to sql database
 func (db *DB) SetMaxIdleConns(n int) {
-	db.Master().SetMaxIdleConns(n)
+	db.Leader().SetMaxIdleConns(n)
 	db.Follower().SetMaxIdleConns(n)
 }
 
 // SetMaxOpenConns to sql database
 func (db *DB) SetMaxOpenConns(n int) {
-	db.Master().SetMaxOpenConns(n)
+	db.Leader().SetMaxOpenConns(n)
 	db.Follower().SetMaxOpenConns(n)
 }
 
 // SetConnMaxLifetime to sql database
 func (db *DB) SetConnMaxLifetime(t time.Duration) {
-	db.Master().SetConnMaxLifetime(t)
+	db.Leader().SetConnMaxLifetime(t)
 	db.Follower().SetConnMaxLifetime(t)
 }
 
@@ -161,22 +160,22 @@ func (db *DB) QueryRow(query string, args ...interface{}) *sql.Row {
 
 // Exec function
 func (db *DB) Exec(query string, args ...interface{}) (sql.Result, error) {
-	return db.master.Exec(query, args...)
+	return db.leader.Exec(query, args...)
 }
 
 // NamedExec execute query with named parameter
 func (db *DB) NamedExec(query string, arg interface{}) (sql.Result, error) {
-	return db.master.NamedExec(query, arg)
+	return db.leader.NamedExec(query, arg)
 }
 
 // Begin return sql transaction object, begin a transaction
 func (db *DB) Begin() (*sql.Tx, error) {
-	return db.master.Begin()
+	return db.leader.Begin()
 }
 
 // Beginx return sqlx transaction object, begin a transaction
 func (db *DB) Beginx() (*sqlx.Tx, error) {
-	return db.master.Beginx()
+	return db.leader.Beginx()
 }
 
 // Rebind query

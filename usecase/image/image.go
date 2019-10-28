@@ -25,20 +25,6 @@ type Usecase struct {
 	publicStorage  *objectstorage.Storage
 	privateStorage *objectstorage.Storage
 	imageRepo      imageRepository
-	config         Config
-}
-
-// Config of image usecase
-type Config struct {
-	Public  DownloadConfig
-	Private DownloadConfig
-}
-
-// DownloadConfig struct
-type DownloadConfig struct {
-	DownloadProto string
-	DownloadHost  string
-	DownloadPath  string
 }
 
 type imageRepository interface {
@@ -80,7 +66,6 @@ type Image struct {
 }
 
 // Upload image
-// TODO: change how upload image works for security. Should use some kind of state
 func (u Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.FileInfo) (Image, error) {
 	image := Image{}
 
@@ -229,9 +214,8 @@ func (u Usecase) Download(ctx context.Context, imagePath string, userHash useren
 	return out, err
 }
 
-// GenerateSignedURL for generating temporary path to download image directly from object storage bucket
-// this method is slightly different from temporary as we are not serving the download from our server
-// RECOMMENDED to use this instead of temporary in most cases
+// GenerateSignedURL for generating temporary path to download image directly from object storage provider
+// this method is different from temporary as we are not serving the download from our server
 func (u Usecase) GenerateSignedURL(ctx context.Context, filePath string, expiry time.Duration) (string, error) {
 	var (
 		url string

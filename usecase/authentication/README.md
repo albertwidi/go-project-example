@@ -1,3 +1,3 @@
 # Authentication
 
-To be added
+Authentication usecase handle all authentication request for the project.

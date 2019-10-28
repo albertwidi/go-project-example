@@ -6,6 +6,7 @@ import (
 
 // list of otp errors
 var (
+	ErrCodeLengthInvalid          = errors.New("otp: code length is invalid")
 	ErrOTPInvalid                 = errors.New("otp: password invalid")
 	ErrOTPExpired                 = errors.New("otp: otp already expired")
 	ErrOTPReachResendMaxAttempt   = errors.New("otp: reach maximum resend attempt")

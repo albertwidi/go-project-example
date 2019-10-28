@@ -2,6 +2,23 @@ package otp
 
 import "time"
 
+// CodeLength type
+type CodeLength int
+
+// Validate code length
+func (clength CodeLength) Validate() error {
+	if clength < CodeLength4 || clength > CodeLength6 {
+		return ErrCodeLengthInvalid
+	}
+	return nil
+}
+
+// legnth of code for otp
+const (
+	CodeLength4 = 4
+	CodeLength6 = 6
+)
+
 // list of otp threshold
 const (
 	ThresholdOTPResend   int = 3
