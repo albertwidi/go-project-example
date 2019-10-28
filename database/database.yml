@@ -1,0 +1,7 @@
+user:
+  dialect: postgres
+  database: user
+  host: localhost
+  port: 5444
+  user: go_project_example
+  password: go_project_example

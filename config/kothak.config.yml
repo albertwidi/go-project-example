@@ -1,7 +1,0 @@
-server:
-  port: 8000
-database:
-  master: "localhost:5432"
-  follower: "localhost:5432"
-redis:
-  address: "localhost:6437"
