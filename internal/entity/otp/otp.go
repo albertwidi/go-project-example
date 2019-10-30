@@ -3,7 +3,7 @@ package otp
 import (
 	"time"
 
-	authentity "github.com/albertwidi/go_project_example/entity/authentication"
+	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
 )
 
 // OTP struct

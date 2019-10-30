@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	invoiceentity "github.com/albertwidi/go_project_example/entity/invoice"
+	invoiceentity "github.com/albertwidi/go_project_example/internal/entity/invoice"
 	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
-	"github.com/internal/pkg/pq"
 )
 
 // Repository of invoice

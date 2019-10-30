@@ -28,11 +28,11 @@ type DB struct {
 
 // Config of the db
 type Config struct {
-	Driver   string
-	leader   string
-	Follower string
-	Retry    int
-	Logger   logger.Logger
+	Driver      string
+	LeaderDSN   string
+	FollowerDSN string
+	Retry       int
+	Logger      logger.Logger
 }
 
 // New sqldb object
@@ -53,13 +53,13 @@ func New(ctx context.Context, config *Config) (*DB, error) {
 	db := DB{
 		config: config,
 	}
-	leader, err := db.connectWithRetry(ctx, config.Driver, config.leader, config.Retry)
+	leader, err := db.connectWithRetry(ctx, config.Driver, config.LeaderDSN, config.Retry)
 	if err != nil {
 		return nil, err
 	}
 	db.leader = leader
 
-	follower, err := db.connectWithRetry(ctx, config.Driver, config.leader, config.Retry)
+	follower, err := db.connectWithRetry(ctx, config.Driver, config.FollowerDSN, config.Retry)
 	if err != nil {
 		return nil, err
 	}

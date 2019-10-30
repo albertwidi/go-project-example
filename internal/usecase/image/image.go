@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	imageentity "github.com/albertwidi/go_project_example/entity/image"
-	userentity "github.com/albertwidi/go_project_example/entity/user"
+	imageentity "github.com/albertwidi/go_project_example/internal/entity/image"
+	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
 	"github.com/albertwidi/go_project_example/internal/pkg/imagepath"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
 	"github.com/albertwidi/go_project_example/internal/pkg/xerrors"

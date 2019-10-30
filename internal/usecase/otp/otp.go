@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	otpentity "github.com/albertwidi/go_project_example/entity/otp"
+	otpentity "github.com/albertwidi/go_project_example/internal/entity/otp"
 	"github.com/albertwidi/go_project_example/internal/pkg/randgen"
 	"github.com/albertwidi/go_project_example/internal/pkg/xerrors"
 )

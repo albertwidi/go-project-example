@@ -3,7 +3,7 @@ package property
 import (
 	"context"
 
-	entity "github.com/albertwidi/go_project_example/entity/property"
+	entity "github.com/albertwidi/go_project_example/internal/entity/property"
 	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
 )
 

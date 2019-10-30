@@ -3,8 +3,8 @@ package authentication
 import (
 	"context"
 
-	authentity "github.com/albertwidi/go_project_example/entity/authentication"
-	stateentity "github.com/albertwidi/go_project_example/entity/state"
+	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
+	stateentity "github.com/albertwidi/go_project_example/internal/entity/state"
 	"github.com/albertwidi/go_project_example/internal/pkg/xerrors"
 )
 

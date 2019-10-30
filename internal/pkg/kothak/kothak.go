@@ -8,28 +8,30 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/albertwidi/go_project_example/internal/pkg/redis"
+
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/gcs"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/local"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/s3"
-	redis "github.com/albertwidi/go_project_example/internal/pkg/redis/redigo"
+	redigo "github.com/albertwidi/go_project_example/internal/pkg/redis/redigo"
 	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
 	"go.opencensus.io/trace"
 )
 
 // Config of kothak
 type Config struct {
-	DBConfig            DBConfig              `yaml:"database"`
-	RedisConfig         RedisConfig           `yaml:"redis"`
-	ObjectStorageConfig []ObjectStorageConfig `yaml:"object_storage"`
+	DBConfig            DBConfig              `yaml:"database toml:"database""`
+	RedisConfig         RedisConfig           `yaml:"redis" toml:"redis"`
+	ObjectStorageConfig []ObjectStorageConfig `yaml:"object_storage" toml:"object_storage"`
 }
 
 // Kothak struct
 type Kothak struct {
 	objStorages map[string]*objectstorage.Storage
 	dbs         map[string]*sqldb.DB
-	rds         map[string]*redis.Redis
+	rds         map[string]redis.Redis
 	logger      logger.Logger
 }
 
@@ -42,7 +44,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 		kothak = Kothak{
 			objStorages: make(map[string]*objectstorage.Storage),
 			dbs:         make(map[string]*sqldb.DB),
-			rds:         make(map[string]*redis.Redis),
+			rds:         make(map[string]redis.Redis),
 		}
 
 		group = sync.WaitGroup{}
@@ -153,15 +155,19 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				span.End()
 			}()
 
-			conf := redis.Config{
-				Address:   redisconfig.Address,
+			conf := redigo.Config{
 				MaxActive: kothakConfig.RedisConfig.MaxActive,
 				MaxIdle:   kothakConfig.RedisConfig.MaxIdle,
 				Timeout:   kothakConfig.RedisConfig.Timeout,
 			}
-			r := redis.Init(conf)
 
-			_, err = r.Ping()
+			r, err := redigo.New(ctx, redisconfig.Address, &conf)
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
+
+			_, err = r.Ping(ctx)
 			if err != nil {
 				err = fmt.Errorf("kothak: failed to ping redis %s. Error: %s", redisconfig.Name, err.Error())
 				errs = append(errs, err)
@@ -189,9 +195,9 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				return
 			}
 
-			config := sqldb.DBConfig{
+			config := sqldb.Config{
 				Driver:                dbconfig.Driver,
-				MasterDSN:             dbconfig.MasterDSN,
+				LeaderDSN:             dbconfig.LeaderDSN,
 				FollowerDSN:           dbconfig.FollowerDSN,
 				MaxIdleConnections:    dbconfig.MaxIdleConnections,
 				MaxOpenConnections:    dbconfig.MaxOpenConnections,

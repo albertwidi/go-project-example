@@ -2,35 +2,34 @@ package kothak
 
 import (
 	"time"
+
+	"github.com/albertwidi/go_project_example/internal/pkg/defaults"
+)
+
+// list of constant for sqldb
+const (
+	SQLDBMaxRetryDefault        = 1
+	SQLDBMaxOpenConnsDefault    = 100
+	SQLDBMaxIdleConnsDefault    = 10
+	SQLDBConnMaxLifetimeDefault = "5s"
 )
 
 // DBConfig define sql databases configuration
 type DBConfig struct {
-	MaxRetry              int           `yaml:"max_retry"`
-	MaxOpenConnections    int           `yaml:"max_open_conns"`
-	MaxIdleConnections    int           `yaml:"max_idle_conns"`
-	ConnectionMaxLifetime string        `yaml:"conn_max_lifetime"`
-	SQLDBs                []SQLDBConfig `yaml:"connect"`
-
-	connMaxLifetime time.Duration
+	MaxRetry              int           `yaml:"max_retry" toml:"max_retry" default:"1"`
+	MaxOpenConnections    int           `yaml:"max_open_conns" toml:"max_open_conns" default:"100"`
+	MaxIdleConnections    int           `yaml:"max_idle_conns" toml:"max_idle_conns" default:"10"`
+	ConnectionMaxLifetime string        `yaml:"conn_max_lifetime" toml:"conn_max_lifetime" default:"5s"`
+	SQLDBs                []SQLDBConfig `yaml:"connect" toml:"connect"`
+	connMaxLifetime       time.Duration
 }
 
 // SetDefault configuration
 func (dbconf *DBConfig) SetDefault() error {
-	// check max retry default
-	if dbconf.MaxRetry == 0 {
-		dbconf.MaxRetry = 1
+	if err := defaults.SetDefault(dbconf); err != nil {
+		return err
 	}
 
-	if dbconf.MaxOpenConnections == 0 {
-		dbconf.MaxOpenConnections = 100
-	}
-
-	if dbconf.MaxIdleConnections == 0 {
-		dbconf.MaxIdleConnections = 20
-	}
-
-	dbconf.connMaxLifetime = time.Second * 30
 	if dbconf.ConnectionMaxLifetime != "" {
 		dur, err := time.ParseDuration(dbconf.ConnectionMaxLifetime)
 		if err != nil {
@@ -43,45 +42,47 @@ func (dbconf *DBConfig) SetDefault() error {
 
 // SQLDBConfig of kothak
 type SQLDBConfig struct {
-	Name                  string `yaml:"name"`
-	Driver                string `yaml:"driver"`
-	MasterDSN             string `yaml:"master"`
-	FollowerDSN           string `yaml:"follower"`
-	MaxOpenConnections    int    `yaml:"max_open_conns"`
-	MaxIdleConnections    int    `yaml:"max_idle_conns"`
-	ConnectionMaxLifetime string `yaml:"conn_max_lifetime"`
-	MaxRetry              int    `yaml:"max_retry"`
+	Name               string                `yaml:"name" toml:"name"`
+	Driver             string                `yaml:"driver" toml:"driver"`
+	LeaderConnConfig   SQLDBConnectionConfig `yaml:"leader" toml:"leader"`
+	FollowerConnConfig SQLDBConnectionConfig `yaml:"follower" toml:"follower"`
+}
 
-	connMaxLifetime time.Duration
+// SQLDBConnectionConfig struct
+type SQLDBConnectionConfig struct {
+	DSN                   string `yaml:"dsn" toml:"name"`
+	MaxOpenConnections    int    `yaml:"max_open_conns" toml:"max_open_conns"`
+	MaxIdleConnections    int    `yaml:"max_idle_conns" toml:"max_idle_conns"`
+	ConnectionMaxLifetime string `yaml:"conn_max_lifetime" toml:"conn_max_lifetime"`
+	MaxRetry              int    `yaml:"max_retry" toml:"max_retry"`
+	connMaxLifeTime       time.Duration
 }
 
 // SetDefault configuration
-func (sqlconf *SQLDBConfig) SetDefault(dbconfig DBConfig) error {
-	if sqlconf.MaxRetry == 0 {
-		sqlconf.MaxRetry = dbconfig.MaxRetry
+func (connConfig *SQLDBConnectionConfig) SetDefault(dbconfig DBConfig) error {
+	if connConfig.MaxRetry == 0 {
+		connConfig.MaxRetry = dbconfig.MaxRetry
 	}
 
-	if sqlconf.MaxOpenConnections == 0 {
-		sqlconf.MaxOpenConnections = dbconfig.MaxOpenConnections
+	if connConfig.MaxOpenConnections == 0 {
+		connConfig.MaxOpenConnections = dbconfig.MaxOpenConnections
 	}
 
-	if sqlconf.MaxIdleConnections == 0 {
-		sqlconf.MaxIdleConnections = dbconfig.MaxIdleConnections
+	if connConfig.MaxIdleConnections == 0 {
+		connConfig.MaxIdleConnections = dbconfig.MaxIdleConnections
 	}
 
-	if sqlconf.ConnectionMaxLifetime == "" {
-		sqlconf.ConnectionMaxLifetime = dbconfig.ConnectionMaxLifetime
+	if connConfig.ConnectionMaxLifetime == "" {
+		connConfig.ConnectionMaxLifetime = dbconfig.ConnectionMaxLifetime
 	}
 
-	if sqlconf.ConnectionMaxLifetime != "" {
-		dur, err := time.ParseDuration(sqlconf.ConnectionMaxLifetime)
+	connConfig.connMaxLifeTime = dbconfig.connMaxLifetime
+	if connConfig.ConnectionMaxLifetime != "" {
+		dur, err := time.ParseDuration(connConfig.ConnectionMaxLifetime)
 		if err != nil {
 			return err
 		}
-		sqlconf.connMaxLifetime = dur
-	} else {
-		sqlconf.connMaxLifetime = dbconfig.connMaxLifetime
+		connConfig.connMaxLifeTime = dur
 	}
-
 	return nil
 }

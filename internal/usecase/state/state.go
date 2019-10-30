@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	entity "github.com/albertwidi/go_project_example/entity/state"
+	entity "github.com/albertwidi/go_project_example/internal/entity/state"
 	"github.com/albertwidi/go_project_example/internal/pkg/ulid"
 )
 

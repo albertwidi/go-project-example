@@ -13,8 +13,8 @@ var (
 // Redis interface
 type Redis interface {
 	Set(ctx context.Context, key string, value interface{}) (string, error)
-	SetNX(ctx context.Context, key string, value interface{}) (int, error)
-	SetEx(ctx context.Context, key string, value interface{}, expire int) (string, error)
+	SetNX(ctx context.Context, key string, value interface{}, expire int) (int, error)
+	SetEX(ctx context.Context, key string, value interface{}, expire int) (string, error)
 	Get(ctx context.Context, key string) (string, error)
 	MSet(ctx context.Context, pairs ...interface{}) (string, error)
 	MGet(ctx context.Context, keys ...string) ([]string, error)
@@ -23,7 +23,7 @@ type Redis interface {
 	HGet(ctx context.Context, key, field string) (string, error)
 	HGetAll(ctx context.Context, key string) (map[string]string, error)
 	HMSet(ctx context.Context, key string, kv map[string]interface{}) (string, error)
-	HMGEt(ctx context.Context, key string, fields ...string) ([]string, error)
+	HMGet(ctx context.Context, key string, fields ...string) ([]string, error)
 	HDel(ctx context.Context, key string, fields ...string) (int, error)
 	LLen(ctx context.Context, key string) (int, error)
 	LIndex(ctx context.Context, key string, index int) (string, error)

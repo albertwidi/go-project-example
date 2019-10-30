@@ -62,7 +62,7 @@ func GenderToString(gender Gender) (string, error) {
 
 // Bio of user
 type Bio struct {
-	UserID     int64
+	UserID     string
 	FullName   string
 	Gender     Gender
 	Occupation string

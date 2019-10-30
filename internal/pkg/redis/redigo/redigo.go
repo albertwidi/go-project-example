@@ -14,6 +14,9 @@ type Redigo struct {
 
 // Config of connection
 type Config struct {
+	MaxActive int
+	MaxIdle   int
+	Timeout   int
 }
 
 // New redis connection using redigo library

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	authentity "github.com/albertwidi/go_project_example/entity/auth"
-	otpentity "github.com/albertwidi/go_project_example/entity/otp"
+	authentity "github.com/albertwidi/go_project_example/internal/entity/auth"
+	otpentity "github.com/albertwidi/go_project_example/internal/entity/otp"
 	"github.com/albertwidi/go_project_example/internal/pkg/conv"
 	"github.com/albertwidi/go_project_example/internal/pkg/errors"
 	"github.com/albertwidi/go_project_example/internal/pkg/redis"

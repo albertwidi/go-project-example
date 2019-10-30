@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	imageentity "github.com/albertwidi/go_project_example/entity/image"
+	imageentity "github.com/albertwidi/go_project_example/internal/entity/image"
 	"github.com/albertwidi/go_project_example/internal/pkg/redis"
 )
 

@@ -2,24 +2,20 @@
 
 This is an example for Go project.
 
-The motivaition of this project is for me to learn and widen my limited knowledge about programming, project design, and concepts implementation.
+The motivaition of this project is for me to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, we will try to implement business logic/flow into Go program for various use-cases.
+
+Some of them might not follow existing specs/standards, feel free to open an issue, and please let me know.
 
 ## The Project
 
-This project is about implementing business logic/flow into the Go program for various usecases.
+The project theme is `Property`. We will try to build a Property application, where people able to search and book the property.
 
-Some of them might not follow existing specs/standards, feel free to open an issue and please let me know.
+### Use-cases
 
-Project theme: `Property`
-
-Items covered in this project:
-
-- User reigstration
-- User authentication
-- Property registration
-  - Uploading property image
-- Booking And Order creation
-- Notification inbox
+1. Users were able to register and log in.
+2. Users were able to register their Properties.
+3. Users were able to book a Property.
+4. Users were able to receive notifications and have a notification inbox.
 
 ## Designing Project For Industrial Programming
 

@@ -1,0 +1,53 @@
+[servers]
+    # only open main port to public
+    [servers.main]
+    address = "${MAIN_SERVER_ADDRESS}"
+    [servers.dev]
+    address = "${DEV_SERVER_ADDRESS}"
+    [servers.admin]
+    address = "${ADMIN_SERVER_ADDRESS}"
+
+[resources]
+    # object storage
+    [[object_storage]]
+    name = "image-private"
+    bucket = "${STORAGE_IMAGE_PRIVATE_BUCKET}"
+    provider = "${STORAGE_IMAGE_PRIVATE_PROVIDER}"
+    region = "${STORAGE_IMAGE_PRIVATE_REGION}"
+    endpoint = "${STORAGE_IMAGE_PRIVATE_ENDPOINT}"
+        [object_storage.s3]
+        client_id = "${STORAGE_IMAGE_CLIENT_ID}"
+        client_secret = "${STORAGE_IMAGE_CLIENT_SECRET}"
+        disable_ssl = "${STORAGE_IMAGE_DISABLE_SSL}"
+        force_path_style = "${STORAGE_IMAGE_FOCE_PATH_STYLE}"
+    
+    # database
+    [database]
+    # default options
+    max_open_conn = 100
+        [[database.connect]]
+        name = "user"
+        driver = "postgres"
+            [database.connect.leader]
+            dsn = "${DATABASE_USER_LEADER_DSN}"
+            max_open_conn = 100
+            [database.connect.follower]
+            dsn = "${DATABASE_USER_FOLLOWER_DSN}"
+            max_open_conn = 100
+
+        [[database.connect]]
+        name = "notification"
+        driver = "postgres"
+            [database.connect.leader]
+            dsn = "${DATABASE_NOTIFICATION_LEADER_DSN}"
+            max_open_conn = 100
+            [database.connect.follower]
+            dsn = "${DATABASE_NOTIFICATION_FOLLOWER_DSN}"
+            max_open_conn = 100
+
+    # redis
+    [redis]
+    max_active_conn = 100
+        [[redis.connect]]
+        name = "session"
+        address = "${REDIS_SESSION_ADDRESS}"

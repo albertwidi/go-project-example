@@ -29,6 +29,13 @@ type Flags struct {
 	LogFile           string
 }
 
+// Config of project
+type Config struct {
+	Servers []struct {
+		Address string `toml:"address"`
+	}
+}
+
 // Run the project
 func Run(f Flags, logger logger.Logger) error {
 	fmt.Println(time.Now())

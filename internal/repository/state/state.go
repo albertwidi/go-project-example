@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	stateentity "github.com/albertwidi/go_project_example/entity/state"
+	stateentity "github.com/albertwidi/go_project_example/internal/entity/state"
 	"github.com/albertwidi/go_project_example/internal/pkg/redis"
 	"github.com/albertwidi/go_project_example/internal/pkg/ulid"
 )
