@@ -8,15 +8,15 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/redis"
-
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/gcs"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/local"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/s3"
+	"github.com/albertwidi/go_project_example/internal/pkg/redis"
 	redigo "github.com/albertwidi/go_project_example/internal/pkg/redis/redigo"
 	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
+	"github.com/jmoiron/sqlx"
 	"go.opencensus.io/trace"
 )
 
@@ -52,6 +52,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 		err   error
 	)
 
+	// set default configuration for DBConfig
 	if err := kothakConfig.DBConfig.SetDefault(); err != nil {
 		return nil, err
 	}
@@ -190,39 +191,50 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				span.End()
 			}()
 
-			if err := dbconfig.SetDefault(kothakConfig.DBConfig); err != nil {
+			var (
+				err        error
+				leaderDB   *sqlx.DB
+				followerDB *sqlx.DB
+			)
+
+			if dbconfig.Driver == "" {
+
+			}
+
+			// setup leader connection
+			if err := dbconfig.LeaderConnConfig.SetDefault(kothakConfig.DBConfig); err != nil {
 				errs = append(errs, err)
 				return
 			}
 
-			config := sqldb.Config{
-				Driver:                dbconfig.Driver,
-				LeaderDSN:             dbconfig.LeaderDSN,
-				FollowerDSN:           dbconfig.FollowerDSN,
-				MaxIdleConnections:    dbconfig.MaxIdleConnections,
-				MaxOpenConnections:    dbconfig.MaxOpenConnections,
-				ConnectionMaxLifetime: dbconfig.connMaxLifetime,
-				Retry:                 dbconfig.MaxRetry,
-			}
-
-			if config.Driver == "" {
-				logger.Warnf("kothak: Skip to connect to %s because driver is empty", dbconfig.Name)
-				return
-			}
-
-			// a hack, need to check later
-			if config.MasterDSN == "" || config.FollowerDSN == "" {
-				return
-			}
-
-			db, err := sqldb.Connect(ctx, config)
+			leaderDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.LeaderConnConfig.DSN, &sqldb.ConnectOptions{
+				MaxOpenConnections: dbconfig.LeaderConnConfig.MaxOpenConnections,
+				MaxIdleConnections: dbconfig.LeaderConnConfig.MaxIdleConnections,
+			})
 			if err != nil {
 				errs = append(errs, err)
 				return
 			}
-			db.SetMaxOpenConns(config.MaxOpenConnections)
-			db.SetMaxIdleConns(config.MaxIdleConnections)
-			db.SetConnMaxLifetime(config.ConnectionMaxLifetime)
+
+			// by default, set follower to leader
+			followerDB = leaderDB
+
+			if dbconfig.FollowerConnConfig.DSN != "" {
+				followerDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.FollowerConnConfig.DSN, &sqldb.ConnectOptions{
+					MaxOpenConnections: dbconfig.FollowerConnConfig.MaxOpenConnections,
+					MaxIdleConnections: dbconfig.FollowerConnConfig.MaxIdleConnections,
+				})
+				if err != nil {
+					errs = append(errs, err)
+					return
+				}
+			}
+
+			db, err := sqldb.New(ctx, leaderDB, followerDB)
+			if err != nil {
+				errs = append(errs, err)
+				return
+			}
 
 			logger.Debugf("kothak: connected to DB %s", dbconfig.Name)
 
@@ -266,7 +278,7 @@ func (k *Kothak) MustGetSQLDB(dbname string) *sqldb.DB {
 }
 
 // GetRedis from kothak object
-func (k *Kothak) GetRedis(redisname string) (*redis.Redis, error) {
+func (k *Kothak) GetRedis(redisname string) (redis.Redis, error) {
 	i, ok := k.rds[redisname]
 	if !ok {
 		err := fmt.Errorf("kothak: redis with name %s does not exists", redisname)
@@ -276,7 +288,7 @@ func (k *Kothak) GetRedis(redisname string) (*redis.Redis, error) {
 }
 
 // MustGetRedis from kothak object
-func (k *Kothak) MustGetRedis(redisname string) *redis.Redis {
+func (k *Kothak) MustGetRedis(redisname string) redis.Redis {
 	i, ok := k.rds[redisname]
 	if !ok {
 		log.Fatalf("Kothak: redis with name %s does not exists", redisname)

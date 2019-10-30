@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/std"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -19,56 +18,59 @@ var (
 
 // DB struct to hold all database connections
 type DB struct {
+	driver   string
 	leader   *sqlx.DB
 	follower *sqlx.DB
 
 	logger logger.Logger
-	config *Config
 }
 
-// Config of the db
-type Config struct {
-	Driver      string
-	LeaderDSN   string
-	FollowerDSN string
-	Retry       int
-	Logger      logger.Logger
-}
-
-// New sqldb object
-func New(ctx context.Context, config *Config) (*DB, error) {
-	var err error
-
-	if config == nil {
-		return nil, errConfigNil
-	}
-
-	if config.Logger == nil {
-		config.Logger, err = std.New(nil)
-		if err != nil {
-			return nil, err
-		}
+// New sqldb wrapper object
+func New(ctx context.Context, leader, follower *sqlx.DB) (*DB, error) {
+	if leader.DriverName() != follower.DriverName() {
+		return nil, fmt.Errorf("sqldb: leader and follower driver is not match. leader = %s follower = %s", leader.DriverName(), follower.DriverName())
 	}
 
 	db := DB{
-		config: config,
+		driver:   leader.DriverName(),
+		leader:   leader,
+		follower: follower,
 	}
-	leader, err := db.connectWithRetry(ctx, config.Driver, config.LeaderDSN, config.Retry)
-	if err != nil {
-		return nil, err
-	}
-	db.leader = leader
-
-	follower, err := db.connectWithRetry(ctx, config.Driver, config.FollowerDSN, config.Retry)
-	if err != nil {
-		return nil, err
-	}
-	db.follower = follower
 
 	return &db, nil
 }
 
-func (db *DB) connect(ctx context.Context, driver, dsn string) (*sqlx.DB, error) {
+// ConnectOptions to list options when connect to the db
+type ConnectOptions struct {
+	Retry                 int
+	MaxOpenConnections    int
+	MaxIdleConnections    int
+	ConnectionMaxLifetime time.Duration
+}
+
+// Connect to a new database
+func Connect(ctx context.Context, driver, dsn string, connOpts *ConnectOptions) (*sqlx.DB, error) {
+	opts := connOpts
+	if opts == nil {
+		opts = &ConnectOptions{}
+	}
+
+	db, err := connectWithRetry(ctx, driver, dsn, opts.Retry)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.PingContext(ctx); err != nil {
+		return nil, err
+	}
+
+	db.SetMaxOpenConns(opts.MaxOpenConnections)
+	db.SetMaxIdleConns(opts.MaxIdleConnections)
+	db.SetConnMaxLifetime(opts.ConnectionMaxLifetime)
+	return db, nil
+}
+
+func connect(ctx context.Context, driver, dsn string) (*sqlx.DB, error) {
 	sqlxdb, err := sqlx.ConnectContext(ctx, driver, dsn)
 	if err != nil {
 		return nil, err
@@ -76,28 +78,28 @@ func (db *DB) connect(ctx context.Context, driver, dsn string) (*sqlx.DB, error)
 	return sqlxdb, err
 }
 
-func (db *DB) connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx.DB, error) {
+func connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx.DB, error) {
 	var (
 		sqlxdb *sqlx.DB
 		err    error
 	)
 
 	if retry == 0 {
-		sqlxdb, err = db.connect(ctx, driver, dsn)
+		sqlxdb, err = connect(ctx, driver, dsn)
 		return nil, err
 	}
 
 	for x := 0; x < retry; x++ {
-		sqlxdb, err = db.connect(ctx, driver, dsn)
+		sqlxdb, err = connect(ctx, driver, dsn)
 		if err == nil {
 			break
 		}
 
-		db.logger.Warnf("sqldb: failed to connect to %s with error %s", dsn, err.Error())
-		db.logger.Warnf("sqldb: retrying to connect to %s. Retry: %d", dsn, x+1)
+		// db.logger.Warnf("sqldb: failed to connect to %s with error %s", dsn, err.Error())
+		// db.logger.Warnf("sqldb: retrying to connect to %s. Retry: %d", dsn, x+1)
 
 		if x+1 == retry && err != nil {
-			db.logger.Errorf("sqldb: retry time exhausted, cannot connect to database: %s", err.Error())
+			// db.logger.Errorf("sqldb: retry time exhausted, cannot connect to database: %s", err.Error())
 			return nil, fmt.Errorf("sqldb: failed connect to database: %s", err.Error())
 		}
 		time.Sleep(time.Second * 3)
@@ -180,7 +182,7 @@ func (db *DB) Beginx() (*sqlx.Tx, error) {
 
 // Rebind query
 func (db *DB) Rebind(query string) string {
-	return sqlx.Rebind(sqlx.BindType(db.config.Driver), query)
+	return sqlx.Rebind(sqlx.BindType(db.driver), query)
 }
 
 // Named return named query and parameters
@@ -190,5 +192,5 @@ func (db *DB) Named(query string, arg interface{}) (string, interface{}, error) 
 
 // BindNamed return named query wrapped with bind
 func (db *DB) BindNamed(query string, arg interface{}) (string, interface{}, error) {
-	return sqlx.BindNamed(sqlx.BindType(db.config.Driver), query, arg)
+	return sqlx.BindNamed(sqlx.BindType(db.driver), query, arg)
 }
