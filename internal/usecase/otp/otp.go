@@ -42,7 +42,7 @@ func New(otpRepo otpRepo) (*Usecase, error) {
 }
 
 // Create OTP
-func (u Usecase) Create(ctx context.Context, uniqueID string, codeLength otpentity.CodeLength) (*otpentity.OTP, error) {
+func (u Usecase) Create(ctx context.Context, uniqueID string, codeLength otpentity.CodeLength, expire time.Duration) (*otpentity.OTP, error) {
 	if err := codeLength.Validate(); err != nil {
 		return nil, err
 	}
@@ -81,12 +81,16 @@ func (u Usecase) Create(ctx context.Context, uniqueID string, codeLength otpenti
 		}
 	}
 
+	if expire == 0 {
+		expire = otpentity.ExpiryTimeDefault
+	}
+
 	otp := otpentity.OTP{
 		UniqueID:     uniqueID,
 		Code:         otpcode,
 		CreatedAt:    now,
-		ExpiryTime:   otpentity.ExpiryTimeDefault,
-		ExpiredAt:    now.Add(otpentity.ExpiryTimeDefault),
+		ExpiryTime:   expire,
+		ExpiredAt:    now.Add(expire),
 		ResendTime:   otpentity.ResendTimeDefault,
 		ResendableAt: now.Add(resendDuration),
 	}

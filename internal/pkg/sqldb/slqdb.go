@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -21,12 +20,12 @@ type DB struct {
 	driver   string
 	leader   *sqlx.DB
 	follower *sqlx.DB
-
-	logger logger.Logger
 }
 
-// New sqldb wrapper object
-func New(ctx context.Context, leader, follower *sqlx.DB) (*DB, error) {
+// Wrap leader and follower sqlx object to one DB object
+// this is for easier usage, so user doesn't have to specify leader or follower
+// all exec is going to leader, all query is going to follower
+func Wrap(ctx context.Context, leader, follower *sqlx.DB) (*DB, error) {
 	if leader.DriverName() != follower.DriverName() {
 		return nil, fmt.Errorf("sqldb: leader and follower driver is not match. leader = %s follower = %s", leader.DriverName(), follower.DriverName())
 	}
@@ -70,14 +69,6 @@ func Connect(ctx context.Context, driver, dsn string, connOpts *ConnectOptions) 
 	return db, nil
 }
 
-func connect(ctx context.Context, driver, dsn string) (*sqlx.DB, error) {
-	sqlxdb, err := sqlx.ConnectContext(ctx, driver, dsn)
-	if err != nil {
-		return nil, err
-	}
-	return sqlxdb, err
-}
-
 func connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx.DB, error) {
 	var (
 		sqlxdb *sqlx.DB
@@ -85,12 +76,12 @@ func connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx
 	)
 
 	if retry == 0 {
-		sqlxdb, err = connect(ctx, driver, dsn)
+		sqlxdb, err = sqlx.ConnectContext(ctx, driver, dsn)
 		return nil, err
 	}
 
 	for x := 0; x < retry; x++ {
-		sqlxdb, err = connect(ctx, driver, dsn)
+		sqlxdb, err = sqlx.ConnectContext(ctx, driver, dsn)
 		if err == nil {
 			break
 		}

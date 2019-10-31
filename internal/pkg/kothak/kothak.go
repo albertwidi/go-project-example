@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 	"sync"
 
@@ -22,7 +21,7 @@ import (
 
 // Config of kothak
 type Config struct {
-	DBConfig            DBConfig              `yaml:"database toml:"database""`
+	DBConfig            DBConfig              `yaml:"database" toml:"database"`
 	RedisConfig         RedisConfig           `yaml:"redis" toml:"redis"`
 	ObjectStorageConfig []ObjectStorageConfig `yaml:"object_storage" toml:"object_storage"`
 }
@@ -45,6 +44,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 			objStorages: make(map[string]*objectstorage.Storage),
 			dbs:         make(map[string]*sqldb.DB),
 			rds:         make(map[string]redis.Redis),
+			logger:      logger,
 		}
 
 		group = sync.WaitGroup{}
@@ -208,6 +208,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 			}
 
 			leaderDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.LeaderConnConfig.DSN, &sqldb.ConnectOptions{
+				Retry:              dbconfig.LeaderConnConfig.MaxRetry,
 				MaxOpenConnections: dbconfig.LeaderConnConfig.MaxOpenConnections,
 				MaxIdleConnections: dbconfig.LeaderConnConfig.MaxIdleConnections,
 			})
@@ -221,6 +222,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 
 			if dbconfig.FollowerConnConfig.DSN != "" {
 				followerDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.FollowerConnConfig.DSN, &sqldb.ConnectOptions{
+					Retry:              dbconfig.FollowerConnConfig.MaxRetry,
 					MaxOpenConnections: dbconfig.FollowerConnConfig.MaxOpenConnections,
 					MaxIdleConnections: dbconfig.FollowerConnConfig.MaxIdleConnections,
 				})
@@ -230,7 +232,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				}
 			}
 
-			db, err := sqldb.New(ctx, leaderDB, followerDB)
+			db, err := sqldb.Wrap(ctx, leaderDB, followerDB)
 			if err != nil {
 				errs = append(errs, err)
 				return
@@ -272,7 +274,7 @@ func (k *Kothak) GetSQLDB(dbname string) (*sqldb.DB, error) {
 func (k *Kothak) MustGetSQLDB(dbname string) *sqldb.DB {
 	i, ok := k.dbs[dbname]
 	if !ok {
-		log.Fatalf("kothak: sql database with name %s does not exists", dbname)
+		k.logger.Fatalf("kothak: sql database with name %s does not exists", dbname)
 	}
 	return i
 }
@@ -291,7 +293,7 @@ func (k *Kothak) GetRedis(redisname string) (redis.Redis, error) {
 func (k *Kothak) MustGetRedis(redisname string) redis.Redis {
 	i, ok := k.rds[redisname]
 	if !ok {
-		log.Fatalf("Kothak: redis with name %s does not exists", redisname)
+		k.logger.Fatalf("Kothak: redis with name %s does not exists", redisname)
 	}
 	return i
 }
@@ -310,7 +312,7 @@ func (k *Kothak) GetObjectStorage(objStorageName string) (*objectstorage.Storage
 func (k *Kothak) MustGetObjectStorage(objStorageName string) *objectstorage.Storage {
 	i, ok := k.objStorages[objStorageName]
 	if !ok {
-		log.Fatalf("kothak: object storage with name %s does not exists", objStorageName)
+		k.logger.Fatalf("kothak: object storage with name %s does not exists", objStorageName)
 	}
 	return i
 }
