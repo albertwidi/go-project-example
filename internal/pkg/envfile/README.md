@@ -1,13 +1,5 @@
 # Envfile
 
-Is a simple environment variable loader from `.yaml` file
+Helper file for environment variable loader
 
-## Spec
-
-Specification for envfile.yaml
-
-```yaml
-envs:
-    - key: KEY1
-      value:  VALUE1
-```
+This is useful for local environment

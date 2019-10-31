@@ -73,6 +73,28 @@ But, let's talk about the components first.
 
 Is where all the `http` handler exists. This layer is responsible to hold all the `http` handlers and request validation.
 
+**Main Server**
+
+Main server for serving main application. All business use-case handler exists within this server.
+
+**Admin Server**
+
+Admin server is a server for administrational purpose. On by default and should not open to public.
+
+Use-case for admin server:
+
+- `/metrics` endpoint
+- check current configuration value
+
+**Dev Server**
+
+Dev server is a server for experimental purpose, and should be enabled with a spesific flag. This server should not be triggered in production environment.
+
+Use-case for dev server:
+
+- Login bypass
+- Serve fileserver for local object storage
+
 #### Usecase
 
 To be added

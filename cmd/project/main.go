@@ -13,7 +13,7 @@ import (
 func main() {
 	f := project.Flags{}
 	flag.StringVar(&f.ConfigurationFile, "config_file", "./project_config.yaml", "configuration file of the project")
-	flag.Var(&f.EnvironmentFiles, "env_files", "environment files for project configuration")
+	flag.Var(&f.EnvironmentFiles, "env_files", "helper file for environment variable configuration")
 	flag.StringVar(&f.LogFile, "log_file", "", "log file output")
 	flag.StringVar(&f.TimeZone, "tz", "Asia/Jakarta", "time zone of the project")
 	flag.BoolVar(&f.DebugMode, "debug", false, "turn on debug mode, this will set log level to debug")

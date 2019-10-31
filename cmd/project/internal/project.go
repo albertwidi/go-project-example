@@ -1,9 +1,7 @@
 package project
 
 import (
-	"fmt"
-	"time"
-
+	"github.com/albertwidi/go_project_example/internal/config"
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 )
 
@@ -31,13 +29,15 @@ type Flags struct {
 
 // Config of project
 type Config struct {
-	Servers []struct {
-		Address string `toml:"address"`
-	}
+	config.DefaultConfig
 }
 
 // Run the project
 func Run(f Flags, logger logger.Logger) error {
-	fmt.Println(time.Now())
+	// load project configuration
+	projectConfig := Config{}
+	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFiles...); err != nil {
+		return err
+	}
 	return nil
 }

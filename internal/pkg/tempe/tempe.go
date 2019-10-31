@@ -18,6 +18,9 @@ type Tempe struct {
 	replcer ReplaceFunc
 }
 
+// EnvVarPattern define environment variable pattern with ${ENV_VAR}
+const EnvVarPattern = "\\${[a-zA-Z0-9/-_--]+}"
+
 // EnvVarReplacerFunc for replacing environment variable with the regex
 var EnvVarReplacerFunc = func(matches [][]byte) (map[string]string, error) {
 	kv := make(map[string]string)
