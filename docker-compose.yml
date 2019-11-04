@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgres:
+    image: library/postgres:11.5-alpine
+    restart: unless-stopped
+    ports:
+    - "5444:5432"
+    environment:
+      LC_ALL: C.UTF-8
+      POSTGRES_USER: projectdb 
+      POSTGRES_PASSWORD: projectdb 
+  
+  redis:  
+    image: library/redis:4.0.10
+    restart: unless-stopped
+    ports:
+      - "6379:6379"

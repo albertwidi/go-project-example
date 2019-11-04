@@ -1,6 +1,9 @@
-# IDE
+# ide 
 .vscode
 
-# EXPERIMENT 
+# experiment 
 experiment
 tmp
+
+# bin
+\projectbackend

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	yaml "gopkg.in/yaml.v2"
@@ -48,7 +49,7 @@ func Load(files ...string) error {
 
 		// insert all value in the yaml file into env variable
 		for k, v := range kv {
-			if err := os.Setenv(k, v); err != nil {
+			if err := os.Setenv(strings.ToUpper(k), v); err != nil {
 				return err
 			}
 		}

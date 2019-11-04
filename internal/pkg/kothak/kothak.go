@@ -220,11 +220,11 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 			// by default, set follower to leader
 			followerDB = leaderDB
 
-			if dbconfig.FollowerConnConfig.DSN != "" {
-				followerDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.FollowerConnConfig.DSN, &sqldb.ConnectOptions{
-					Retry:              dbconfig.FollowerConnConfig.MaxRetry,
-					MaxOpenConnections: dbconfig.FollowerConnConfig.MaxOpenConnections,
-					MaxIdleConnections: dbconfig.FollowerConnConfig.MaxIdleConnections,
+			if dbconfig.ReplicaConnConfig.DSN != "" {
+				followerDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.ReplicaConnConfig.DSN, &sqldb.ConnectOptions{
+					Retry:              dbconfig.ReplicaConnConfig.MaxRetry,
+					MaxOpenConnections: dbconfig.ReplicaConnConfig.MaxOpenConnections,
+					MaxIdleConnections: dbconfig.ReplicaConnConfig.MaxIdleConnections,
 				})
 				if err != nil {
 					errs = append(errs, err)

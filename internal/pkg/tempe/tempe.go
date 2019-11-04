@@ -18,7 +18,7 @@ type Tempe struct {
 	replcer ReplaceFunc
 }
 
-// EnvVarPattern define environment variable pattern with ${ENV_VAR}
+// EnvVarPattern define environment variable pattern with ${MY_ENV_VAR}
 const EnvVarPattern = "\\${[a-zA-Z0-9/-_--]+}"
 
 // EnvVarReplacerFunc for replacing environment variable with the regex

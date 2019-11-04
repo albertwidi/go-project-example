@@ -59,6 +59,11 @@ func (rdg *Redigo) Ping(ctx context.Context) (string, error) {
 	return redigo.String(val, err)
 }
 
+// Close all redis connection
+func (rdg *Redigo) Close(ctx context.Context) error {
+	return rdg.pool.Close()
+}
+
 // IsErrNil return true if error is nil
 func IsErrNil(err error) bool {
 	if !errors.Is(err, redigo.ErrNil) {

@@ -6,20 +6,12 @@ import (
 	"github.com/albertwidi/go_project_example/internal/pkg/defaults"
 )
 
-// list of constant for sqldb
-const (
-	SQLDBMaxRetryDefault        = 1
-	SQLDBMaxOpenConnsDefault    = 100
-	SQLDBMaxIdleConnsDefault    = 10
-	SQLDBConnMaxLifetimeDefault = "5s"
-)
-
 // DBConfig define sql databases configuration
 type DBConfig struct {
 	MaxRetry              int           `yaml:"max_retry" toml:"max_retry" default:"1"`
-	MaxOpenConnections    int           `yaml:"max_open_conns" toml:"max_open_conns" default:"100"`
-	MaxIdleConnections    int           `yaml:"max_idle_conns" toml:"max_idle_conns" default:"10"`
-	ConnectionMaxLifetime string        `yaml:"conn_max_lifetime" toml:"conn_max_lifetime" default:"5s"`
+	MaxOpenConnections    int           `yaml:"max_open_conns" toml:"max_open_conns" default:"10"`
+	MaxIdleConnections    int           `yaml:"max_idle_conns" toml:"max_idle_conns" default:"2"`
+	ConnectionMaxLifetime string        `yaml:"conn_max_lifetime" toml:"conn_max_lifetime" default:"30s"`
 	SQLDBs                []SQLDBConfig `yaml:"connect" toml:"connect"`
 	connMaxLifetime       time.Duration
 }
@@ -42,15 +34,15 @@ func (dbconf *DBConfig) SetDefault() error {
 
 // SQLDBConfig of kothak
 type SQLDBConfig struct {
-	Name               string                `yaml:"name" toml:"name"`
-	Driver             string                `yaml:"driver" toml:"driver"`
-	LeaderConnConfig   SQLDBConnectionConfig `yaml:"leader" toml:"leader"`
-	FollowerConnConfig SQLDBConnectionConfig `yaml:"follower" toml:"follower"`
+	Name              string                `yaml:"name" toml:"name"`
+	Driver            string                `yaml:"driver" toml:"driver"`
+	LeaderConnConfig  SQLDBConnectionConfig `yaml:"leader" toml:"leader"`
+	ReplicaConnConfig SQLDBConnectionConfig `yaml:"replica" toml:"replica"`
 }
 
 // SQLDBConnectionConfig struct
 type SQLDBConnectionConfig struct {
-	DSN                   string `yaml:"dsn" toml:"name"`
+	DSN                   string `yaml:"dsn" toml:"dsn"`
 	MaxOpenConnections    int    `yaml:"max_open_conns" toml:"max_open_conns"`
 	MaxIdleConnections    int    `yaml:"max_idle_conns" toml:"max_idle_conns"`
 	ConnectionMaxLifetime string `yaml:"conn_max_lifetime" toml:"conn_max_lifetime"`
