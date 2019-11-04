@@ -8,19 +8,6 @@ import (
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 )
 
-type arrayFlags []string
-
-// String return string implementation of array flags
-func (af *arrayFlags) String() string {
-	return ""
-}
-
-// Set for append the value of arrayFlags
-func (af *arrayFlags) Set(value string) error {
-	*af = append(*af, value)
-	return nil
-}
-
 // Flags of project
 type Flags struct {
 	Debug             debugFlag
@@ -28,7 +15,7 @@ type Flags struct {
 	Dev               bool
 	TimeZone          string
 	ConfigurationFile string
-	EnvironmentFiles  arrayFlags
+	EnvironmentFiles  envFileFlag
 	LogFile           string
 }
 
@@ -41,7 +28,7 @@ type Config struct {
 func Run(f Flags, logger logger.Logger) error {
 	// load project configuration
 	projectConfig := Config{}
-	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFiles...); err != nil {
+	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFiles.envFiles...); err != nil {
 		return err
 	}
 

@@ -6,17 +6,16 @@ import (
 	"strings"
 )
 
-// parseFlags with comma seperated value spesification
+// parseFlags with comma seperated value spec
 // for example: --log=level=info,file=./somefile.log
-func parseFlags(value string) (map[string]interface{}, error) {
-	fkv := make(map[string]interface{})
+func parseFlags(value string) (map[string]string, error) {
+	fkv := make(map[string]string)
 	flags := strings.Split(value, ",")
 	for _, flag := range flags {
 		kv := strings.Split(flag, "=")
 		if len(kv) < 2 {
 			return nil, fmt.Errorf("debugflag: flag is not in kv format: %s", flag)
 		}
-
 		fkv[kv[0]] = kv[1]
 	}
 
@@ -54,13 +53,13 @@ func (df *debugFlag) Set(value string) error {
 	for k, v := range kv {
 		switch k {
 		case "devserver":
-			bint, err := strconv.Atoi(v.(string))
+			bint, err := strconv.Atoi(v)
 			if err != nil {
 				return err
 			}
 			df.DevServer = bint == 1
 		case "testconfig":
-			bint, err := strconv.Atoi(v.(string))
+			bint, err := strconv.Atoi(v)
 			if err != nil {
 				return err
 			}
@@ -95,20 +94,27 @@ func (lf *logFlag) Set(value string) error {
 		return err
 	}
 
-	var ok bool
 	for k, v := range kv {
 		switch k {
 		case "level":
-			lf.Level, ok = v.(string)
-			if !ok {
-				return fmt.Errorf("logflag: expcect string value for level flag, got %v", v)
-			}
+			lf.Level = v
 		case "file":
-			lf.File, ok = v.(string)
-			if !ok {
-				return fmt.Errorf("logflag: expcect string value for file flag, got %v", v)
-			}
+			lf.File = v
 		}
 	}
+	return nil
+}
+
+type envFileFlag struct {
+	flag     string
+	envFiles []string
+}
+
+func (vf *envFileFlag) String() string {
+	return vf.flag
+}
+
+func (vf *envFileFlag) Set(value string) error {
+	vf.envFiles = append(vf.envFiles, value)
 	return nil
 }
