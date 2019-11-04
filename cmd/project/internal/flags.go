@@ -76,6 +76,7 @@ type logFlag struct {
 	flag  string
 	File  string
 	Level string
+	Color bool
 }
 
 // String return the value of the flag
@@ -100,6 +101,12 @@ func (lf *logFlag) Set(value string) error {
 			lf.Level = v
 		case "file":
 			lf.File = v
+		case "color":
+			bint, err := strconv.Atoi(v)
+			if err != nil {
+				return err
+			}
+			lf.Color = bint == 1
 		}
 	}
 	return nil

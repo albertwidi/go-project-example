@@ -12,7 +12,6 @@ var (
 
 	// ErrPassValue is returned if the caller pass a value instead of a pointer
 	ErrPassValue = errors.New("must pass a pointer, not a value")
-
 	// ErrNotStruct is returned if the caller pass a pointer of non struct
 	ErrNotStruct = errors.New("must pass a pointer of struct")
 )

@@ -168,13 +168,6 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				return
 			}
 
-			_, err = r.Ping(ctx)
-			if err != nil {
-				err = fmt.Errorf("kothak: failed to ping redis %s. Error: %s", redisconfig.Name, err.Error())
-				errs = append(errs, err)
-				return
-			}
-
 			logger.Debugf("Kothak: Connected to Redis %s", redisconfig.Name)
 
 			kothak.rds[redisconfig.Name] = r
@@ -217,7 +210,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				return
 			}
 
-			// by default, set follower to leader
+			// by default, set replica to leader
 			followerDB = leaderDB
 
 			if dbconfig.ReplicaConnConfig.DSN != "" {

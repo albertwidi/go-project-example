@@ -5,17 +5,17 @@ import (
 
 	"github.com/albertwidi/go_project_example/internal/config"
 	"github.com/albertwidi/go_project_example/internal/pkg/kothak"
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
+	lg "github.com/albertwidi/go_project_example/internal/pkg/log/logger"
+	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/zap"
 )
 
 // Flags of project
 type Flags struct {
 	Debug             debugFlag
 	Log               logFlag
-	Dev               bool
+	EnvironmentFiles  envFileFlag
 	TimeZone          string
 	ConfigurationFile string
-	EnvironmentFiles  envFileFlag
 	LogFile           string
 }
 
@@ -25,7 +25,17 @@ type Config struct {
 }
 
 // Run the project
-func Run(f Flags, logger logger.Logger) error {
+func Run(f Flags) error {
+	// initiate project logger
+	logger, err := zap.New(&lg.Config{
+		Level:    lg.StringToLevel(f.Log.Level),
+		LogFile:  f.Log.File,
+		UseColor: f.Log.Color,
+	})
+	if err != nil {
+		return err
+	}
+
 	// load project configuration
 	projectConfig := Config{}
 	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFiles.envFiles...); err != nil {

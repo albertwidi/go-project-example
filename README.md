@@ -19,9 +19,7 @@ The project theme is `Property`. We will try to build a Property application, wh
 
 ## Designing Project For Industrial Programming
 
-What is industrial programming? [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/) explain the terms in a very good way.
-
-At least, in my understanding, it is consists of theese:
+What is industrial programming? [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/) explain the terms, as:
 
 - In a startup or corporate environment.
 - Within a team where engineers come and go.
@@ -45,6 +43,48 @@ To create and migrate the database, we will use `soda CLI` created by `gobuffalo
 Use this command to fully create and migrate the databse schema:
 
 `make dbup`
+
+### Flags
+
+The following flags is avaiable to help the project configuration and debug parameters.
+
+- `--config_file` define where the configuration file is located
+- `--env_file` define where environment variable file is located, this is a helper file to set environment variable.
+- `--log` define the log configuration for the project. The flag contains comma separated value:
+    - `--log=file=./to_your_file.log` the location of log file.
+    - `--log=level=debug|info|warning|error|fatal` the level of log.
+    - `--log=color=1` to set if color to console/terminal is enabled.
+- `--debug` define the debug configuration for the project. The flag contains comma separated value:
+    - `--debug=devserver=1` to turn on the dev server.
+    - `--debug=testconfig=1` to test the configuration of the project.
+
+### Configuration
+
+For applicatoin configuration, config-file is used and located on the root project directory. The [configuration-file](./project.config.toml) is written in `toml` grammar.
+
+The configuration value in the `configuration-file` is embed as environment-variable value. The value will be replaced by the environment-variable value in runtime or when program started. To help the process, the project use the help of [environment-variable](./project.env.toml) file.
+
+The mixed of `configuration-variable` and `environment-variable` is used to help people in project to see what configuration structure is exists within the project, and also able to dynamically changed based on the environment variables.
+
+### Environment State
+
+Some projects is using environment state, for example `dev`, `staging`, and `production`. From the experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and make many conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and harder to maintain.
+
+Worse, some projects might use the state for configuration. When the configuration is gated by the environment state, it might introduce another problem, because configuration for each environment might have different parameters and value.
+
+For example in code:
+
+```go
+if env.IsDevelopment() {
+    // do something here
+}
+```
+
+For example in configuration with spec `project.{environment_name}.config.toml`:
+
+- project.dev.config.toml
+- project.staging.config.toml
+- project.production.config.toml
 
 ## Project Structure
 
