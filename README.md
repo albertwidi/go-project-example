@@ -72,8 +72,6 @@ The project have no environment state. Different flags and configuration value i
 
 Some projects is using environment state, for example `dev`, `staging`, and `production`. From the experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and make many conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and harder to maintain.
 
-Worse, some projects might use the state for configuration. When the configuration is gated by the environment state, it might introduce another problem, because configuration for each environment might have different parameters and value.
-
 For example in code:
 
 ```go
@@ -82,15 +80,19 @@ if env.IsDevelopment() {
 }
 ```
 
+Worse, some projects might use the state for configuration. When the configuration is gated by the environment state. It might introduce another problem, because configuration for each environment might have different parameters and value.
+
 For example in configuration with spec `project.{environment_name}.config.toml`:
 
 - project.dev.config.toml
 - project.staging.config.toml
 - project.production.config.toml
 
-But, sometimes we need to run something special in non-production or in production environment. This might be achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why?
+The approach above usually used to address different configuration needs in each environment. When database configuration is totally different from `dev` and other environment, doing some migration and some configuration is no longer needed, or special configuration that only exists within an environment. This all valid use-cases and the given solution works. Until the configuration is become too long and different for each environments, and turning to problems for the maintainers.
 
-This is not a silver bullet to the environment state checking. In the end, it depends on each project policies and governance.
+As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration between environments should stay the same, to maintain program consistency.
+
+But, in the end, it depends on each project policies and governance.
 
 ## Project Structure
 
