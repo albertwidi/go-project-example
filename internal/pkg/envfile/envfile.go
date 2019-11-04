@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/albertwidi/go_project_example/internal/pkg/conv"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -31,7 +32,7 @@ func Load(files ...string) error {
 		}
 
 		ext := filepath.Ext(envFile)
-		var kv map[string]string
+		var kv map[string]interface{}
 		var err error
 
 		switch ext {
@@ -49,7 +50,7 @@ func Load(files ...string) error {
 
 		// insert all value in the yaml file into env variable
 		for k, v := range kv {
-			if err := os.Setenv(strings.ToUpper(k), v); err != nil {
+			if err := os.Setenv(strings.ToUpper(k), conv.AnyToString(v)); err != nil {
 				return err
 			}
 		}
@@ -57,14 +58,14 @@ func Load(files ...string) error {
 	return nil
 }
 
-func loadToml(file string) (map[string]string, error) {
-	kv := make(map[string]string)
+func loadToml(file string) (map[string]interface{}, error) {
+	kv := make(map[string]interface{})
 	_, err := toml.DecodeFile(file, &kv)
 
 	return kv, err
 }
 
-func loadYaml(file string) (map[string]string, error) {
+func loadYaml(file string) (map[string]interface{}, error) {
 	envs := EnvConfigYAML{}
 	out, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -75,7 +76,7 @@ func loadYaml(file string) (map[string]string, error) {
 		return nil, err
 	}
 
-	kv := make(map[string]string)
+	kv := make(map[string]interface{})
 
 	for _, e := range envs.Envs {
 		kv[e.Name] = e.Value

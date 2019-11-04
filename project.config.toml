@@ -18,8 +18,8 @@
         [resources.object_storage.s3]
         client_id = "${STORAGE_IMAGE_CLIENT_ID}"
         client_secret = "${STORAGE_IMAGE_CLIENT_SECRET}"
-        disable_ssl = "${STORAGE_IMAGE_DISABLE_SSL}"
-        force_path_style = "${STORAGE_IMAGE_FOCE_PATH_STYLE}"
+        disable_ssl = ${STORAGE_IMAGE_DISABLE_SSL}
+        force_path_style = ${STORAGE_IMAGE_FOCE_PATH_STYLE}
     
     # database
     [resources.database]

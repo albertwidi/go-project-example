@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
@@ -52,8 +51,6 @@ func ParseFile(configFile string, dest interface{}, envFiles ...string) error {
 	if err != nil {
 		return err
 	}
-
-	log.Printf("%s", string(out))
 
 	ext := filepath.Ext(configFile)
 	switch ext {

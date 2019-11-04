@@ -14,7 +14,7 @@ func main() {
 	f := project.Flags{}
 	flag.StringVar(&f.ConfigurationFile, "config_file", "./aha.config.toml", "configuration file of the project")
 	flag.Var(&f.EnvironmentFiles, "env_file", "helper file for environment variable configuration")
-	flag.StringVar(&f.LogFile, "log_file", "", "log file output")
+	flag.Var(&f.Log, "log", "log configuration")
 	flag.StringVar(&f.TimeZone, "tz", "Asia/Jakarta", "time zone of the project")
 	flag.Var(&f.Debug, "debug", "turn on debug mode, this will set log level to debug")
 	flag.BoolVar(&f.Dev, "dev", false, "turn on dev mode, this will trigger dev server to run")
