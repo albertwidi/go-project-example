@@ -68,6 +68,8 @@ The mixed of `configuration-variable` and `environment-variable` is used to help
 
 ### Environment State
 
+The project have no environment state. Different flags and configuration value is used in different environment.
+
 Some projects is using environment state, for example `dev`, `staging`, and `production`. From the experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and make many conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and harder to maintain.
 
 Worse, some projects might use the state for configuration. When the configuration is gated by the environment state, it might introduce another problem, because configuration for each environment might have different parameters and value.
@@ -85,6 +87,10 @@ For example in configuration with spec `project.{environment_name}.config.toml`:
 - project.dev.config.toml
 - project.staging.config.toml
 - project.production.config.toml
+
+But, sometimes we need to run something special in non-production or in production environment. This might be achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why?
+
+This is not a silver bullet to the environment state checking. In the end, it depends on each project policies and governance.
 
 ## Project Structure
 
