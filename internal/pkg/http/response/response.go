@@ -79,8 +79,6 @@ func (jresp *JSONResponse) Error(err error, errResp *JSONError) *JSONResponse {
 }
 
 // WriteHeader set the header of JSONResponse writer
-// the value of statusCode will be ignored if xerr is not nil
-// xerr will determine the statusCode via kind
 func (jresp *JSONResponse) WriteHeader(statusCode int) *JSONResponse {
 	if jresp.headerWritten {
 		return jresp

@@ -55,7 +55,7 @@ The following flags is avaiable to help the project configuration and debug para
     - `--log=level=debug|info|warning|error|fatal` the level of log.
     - `--log=color=1` to set if color to console/terminal is enabled.
 - `--debug` define the debug configuration for the project. The flag contains comma separated value:
-    - `--debug=devserver=1` to turn on the dev server.
+    - `--debug=server=1` to turn on the debug server.
     - `--debug=testconfig=1` to test the configuration of the project.
 
 ### Configuration
@@ -70,7 +70,7 @@ The mixed of `configuration-variable` and `environment-variable` is used to help
 
 The project have no environment state. Different flags and configuration value is used in different environment.
 
-Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and create conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and is harder to maintain.
+Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and create conditional expression for many use-cases. This leads to bugs and edge-cases to the whole product and is harder to maintain.
 
 For example, in code:
 
@@ -80,7 +80,7 @@ if env.IsDevelopment() {
 }
 ```
 
-This environment state, sometimes also used for configuration gating. When the configuration is gated by the environment state, tt might introduce another problem, because configuration for each environment might have different parameters and value.
+This environment state, sometimes also used for configuration directive. When the configuration directive is gated by the environment state, another problem occur, because configuration for each environment might have different variables and value.
 
 For example, in configuration with spec `project.{environment_name}.config.toml`:
 
@@ -88,7 +88,7 @@ For example, in configuration with spec `project.{environment_name}.config.toml`
 - project.staging.config.toml
 - project.production.config.toml
 
-The approach above usually used to address different configuration needs in each environments. When database configuration is totally different from `dev` and other environment, doing some migration and some configuration is no longer needed, or special configuration that only exists within them. This all valid use-cases and the given solution works. Until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
+The approach above usually used to address different configuration needs in each environments. For example, when database configuration is totally different from `dev` and other environment. Or, on doing some migration and some configuration is no longer needed for particular environments, and special configuration that only exists within them. This all valid use-cases and the given solution, by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
 
 As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
@@ -134,11 +134,11 @@ Use-case for admin server:
 - `/metrics` endpoint
 - check current configuration value
 
-**Dev Server**
+**Debug Server**
 
-Dev server is a server for experimental purpose, and should be enabled with a spesific flag. This server should not be triggered in production environment.
+Debug server is a server for experimental purpose, and should be enabled with a spesific flag. This server should not be triggered in production environment.
 
-Use-case for dev server:
+Use-case for debug server:
 
 - Login bypass
 - Serve fileserver for local object storage

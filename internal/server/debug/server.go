@@ -1,9 +1,8 @@
-// dev server is for development purpose only
-// only active when PROJECTENV=development
-// this is to provide some testing functionality
+// debug server is for debug/development purpose only
+// to provide some debug functionality
 // for example login, file server, etc
 
-package dev
+package debug
 
 // Server struct
 type Server struct {

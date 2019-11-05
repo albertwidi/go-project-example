@@ -1,3 +1,6 @@
+# project configuration
+# ${} variable will be replaced with environment variables in runtime
+
 [servers]
     # only open main port to public
     [servers.main]

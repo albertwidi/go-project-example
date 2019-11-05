@@ -26,7 +26,7 @@ func parseFlags(value string) (map[string]string, error) {
 // spec:
 // debug flag is comma seprated value with 'equal/=' as operator
 // the value can be identified as '1' as 'true' and '0' as 'false'
-// for example: debug=devserver=1,testconfig=1
+// for example: debug=server=1,testconfig=1
 type debugFlag struct {
 	flag       string
 	DevServer  bool
@@ -52,7 +52,7 @@ func (df *debugFlag) Set(value string) error {
 
 	for k, v := range kv {
 		switch k {
-		case "devserver":
+		case "server":
 			bint, err := strconv.Atoi(v)
 			if err != nil {
 				return err

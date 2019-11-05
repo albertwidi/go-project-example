@@ -2,18 +2,19 @@ package project
 
 import (
 	"context"
+	"os"
 
 	"github.com/albertwidi/go_project_example/internal/config"
-	"github.com/albertwidi/go_project_example/internal/pkg/kothak"
+	"github.com/albertwidi/go_project_example/internal/kothak"
 	lg "github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/zap"
 )
 
 // Flags of project
 type Flags struct {
-	Debug             debugFlag
+	Debug             *debugFlag
 	Log               logFlag
-	EnvironmentFiles  envFileFlag
+	EnvironmentFile   envFileFlag
 	TimeZone          string
 	ConfigurationFile string
 	LogFile           string
@@ -26,6 +27,9 @@ type Config struct {
 
 // Run the project
 func Run(f Flags) error {
+	// set default timezone
+	os.Setenv("TZ", f.TimeZone)
+
 	// initiate project logger
 	logger, err := zap.New(&lg.Config{
 		Level:    lg.StringToLevel(f.Log.Level),
@@ -38,7 +42,7 @@ func Run(f Flags) error {
 
 	// load project configuration
 	projectConfig := Config{}
-	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFiles.envFiles...); err != nil {
+	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFile.envFiles...); err != nil {
 		return err
 	}
 
