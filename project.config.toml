@@ -5,7 +5,7 @@
     # only open main port to public
     [servers.main]
     address = "${MAIN_SERVER_ADDRESS}"
-    [servers.dev]
+    [servers.debug]
     address = "${DEV_SERVER_ADDRESS}"
     [servers.admin]
     address = "${ADMIN_SERVER_ADDRESS}"
@@ -27,31 +27,27 @@
     # database
     [resources.database]
     # default options
-    max_open_conns = 100
+    max_open_conns = 20 
     max_retry = 5
         [[resources.database.connect]]
-        name = "user"
+        name = "users"
         driver = "postgres"
             [resources.database.connect.leader]
             dsn = "${DB_USER_LEADER_DSN}"
-            max_open_conn = 100
             [resources.database.connect.replica]
             dsn = "${DB_USER_REPLICA_DSN}"
-            max_open_conn = 100
 
         [[resources.database.connect]]
-        name = "notification"
+        name = "notifications"
         driver = "postgres"
             [resources.database.connect.leader]
             dsn = "${DB_NOTIFICATION_LEADER_DSN}"
-            max_open_conn = 100
             [resources.database.connect.replica]
             dsn = "${DB_NOTIFICATION_REPLICA_DSN}"
-            max_open_conn = 100
 
     # redis
     [resources.redis]
-    max_active_conn = 100
+    max_active_conn = 100 
         [[resources.redis.connect]]
         name = "session"
         address = "${REDIS_SESSION_ADDRESS}"

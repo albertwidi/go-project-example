@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // list of error
@@ -77,7 +79,10 @@ func connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx
 
 	if retry == 0 {
 		sqlxdb, err = sqlx.ConnectContext(ctx, driver, dsn)
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+		return sqlxdb, err
 	}
 
 	for x := 0; x < retry; x++ {

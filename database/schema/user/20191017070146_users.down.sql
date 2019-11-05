@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS users;
 CREATE TABLE users(
-    id bigserial PRIMARY KEY,
+    id uuid PRIMARY KEY,
     hash_id varchar(6) NOT NULL,
     user_type smallint NOT NULL,
     user_status smallint NOT NULL,

@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
-	"github.com/albertwidi/go_project_example/internal/pkg/envfile"
 	"github.com/albertwidi/go_project_example/internal/kothak"
+	"github.com/albertwidi/go_project_example/internal/pkg/envfile"
 	"github.com/albertwidi/go_project_example/internal/pkg/tempe"
 	"gopkg.in/yaml.v2"
 )
@@ -21,7 +21,7 @@ type DefaultConfig struct {
 // DefaultServers struct
 type DefaultServers struct {
 	Main  ServerConfig `yaml:"main" toml:"main"`
-	Dev   ServerConfig `yaml:"dev" toml:"dev"`
+	Debug ServerConfig `yaml:"debug" toml:"debug"`
 	Admin ServerConfig `yaml:"admin" toml:"admin"`
 }
 

@@ -1,7 +1,15 @@
-user:
+users:
   dialect: postgres
-  database: user
+  database: users 
   host: localhost
   port: 5444
-  user: go_project_example
-  password: go_project_example
+  user: projectdb 
+  password: projectdb 
+
+notifications:
+  dialect: postgres
+  database: notifications 
+  host: localhost
+  port: 5444
+  user: projectdb 
+  password: projectdb 

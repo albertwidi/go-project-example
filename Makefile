@@ -20,3 +20,9 @@ testconfig:
 		--env_file=./project.env.toml \
 		--debug=testconfig=1 \
 		--tz=Asia/Jakarta
+
+dbup:
+	@cd database && ./setup.sh create database.yml 
+
+dbdown:
+	@cd database && ./setup.sh drop database.yml

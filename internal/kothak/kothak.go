@@ -32,6 +32,25 @@ type Kothak struct {
 	dbs         map[string]*sqldb.DB
 	rds         map[string]redis.Redis
 	logger      logger.Logger
+	mutex       sync.Mutex
+}
+
+func (k *Kothak) setSQLDB(name string, db *sqldb.DB) {
+	k.mutex.Lock()
+	k.dbs[name] = db
+	k.mutex.Unlock()
+}
+
+func (k *Kothak) setRedis(name string, rds redis.Redis) {
+	k.mutex.Lock()
+	k.rds[name] = rds
+	k.mutex.Unlock()
+}
+
+func (k *Kothak) setObjectStorage(name string, obj objectstorage.StorageProvider) {
+	k.mutex.Lock()
+	k.objStorages[name] = objectstorage.New(obj)
+	k.mutex.Unlock()
 }
 
 // New kothak instance
@@ -142,7 +161,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 
 			logger.Debugf("kothak: Connected to object_storage %s", config.Name)
 
-			kothak.objStorages[config.Name] = objectstorage.New(provider)
+			kothak.setObjectStorage(config.Name, provider)
 		}(objStorageConfig)
 	}
 
@@ -170,7 +189,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 
 			logger.Debugf("Kothak: Connected to Redis %s", redisconfig.Name)
 
-			kothak.rds[redisconfig.Name] = r
+			kothak.setRedis(redisconfig.Name, r)
 		}(redisconfig)
 	}
 
@@ -233,7 +252,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 
 			logger.Debugf("kothak: connected to DB %s", dbconfig.Name)
 
-			kothak.dbs[dbconfig.Name] = db
+			kothak.setSQLDB(dbconfig.Name, db)
 		}(dbconfig)
 	}
 

@@ -1,6 +1,9 @@
 # ide 
 .vscode
 
+# sql
+schema.sql
+
 # experiment 
 experiment
 tmp

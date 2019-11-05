@@ -6,10 +6,12 @@ require (
 	firebase.google.com/go v3.9.0+incompatible
 	github.com/BurntSushi/toml v0.3.1
 	github.com/aws/aws-sdk-go v1.25.21
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.7.3
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/lib/pq v1.1.1
 	github.com/oklog/ulid v1.3.1
 	github.com/rs/zerolog v1.16.0
 	github.com/sirupsen/logrus v1.4.2

@@ -12,7 +12,7 @@ import (
 
 // Flags of project
 type Flags struct {
-	Debug             *debugFlag
+	Debug             debugFlag
 	Log               logFlag
 	EnvironmentFile   envFileFlag
 	TimeZone          string
