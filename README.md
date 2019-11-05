@@ -2,9 +2,9 @@
 
 This is an example for Go project.
 
-The motivaition of this project is for me to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, we will try to implement business logic/flow into Go program for various use-cases.
+The motivation behind this project is for me to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, we will try to implement business logic/flow into Go program for various use-cases.
 
-Some of them might not follow existing specs/standards, feel free to open an issue, and please let me know.
+Some of them might not follow existing specs/standards, feel free to open issues, and please let me know.
 
 ## The Project
 
@@ -80,7 +80,7 @@ if env.IsDevelopment() {
 }
 ```
 
-This environment state, sometimes also used for configuration directive. When the configuration directive is gated by the environment state, another problem occur, because configuration for each environment might have different variables and value.
+This environment state, sometimes also used for configuration directive. When the configuration directive is gated by the environment state, another problem occur. Because, configuration for each environment might have different variables and value, and different configuration file can mean different things.
 
 For example, in configuration with spec `project.{environment_name}.config.toml`:
 
@@ -88,7 +88,18 @@ For example, in configuration with spec `project.{environment_name}.config.toml`
 - project.staging.config.toml
 - project.production.config.toml
 
-The approach above usually used to address different configuration needs in each environments. For example, when database configuration is totally different from `dev` and other environment. Or, on doing some migration and some configuration is no longer needed for particular environments, and special configuration that only exists within them. This all valid use-cases and the given solution, by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
+Or, imagine you have many different configuration(with various reason/decision) using this kind of directive:
+
+- project.dev.config1.toml
+- project.staging.config1.toml
+- project.production.config1.toml
+- project.dev.config2.toml
+- project.staging.config2.toml
+- project.production.config2.toml
+
+Things got very messy indeed.
+
+The approach above usually used to address different configuration needs in each environments. For example, when database configuration is totally different from `dev` and other environment. Or, on doing migration, some configuration is no longer needed for particular environments, and special configuration that only exists within them. This all valid use-cases and the given solution, by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
 
 As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
