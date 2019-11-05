@@ -64,15 +64,15 @@ For applicatoin configuration, config-file is used and located on the root proje
 
 The configuration value in the `configuration-file` is embed as environment-variable value. The value will be replaced by the environment-variable value in runtime or when program started. To help the process, the project use the help of [environment-variable](./project.env.toml) file.
 
-The mixed of `configuration-variable` and `environment-variable` is used to help people in project to see what configuration structure is exists within the project, and also able to dynamically changed based on the environment variables.
+The mixed of `configuration-variable` and `environment-variable` is used to help people in project to see what configuration structure is exists within the project, and able to dynamically changed depends on the environment variables value.
 
 ### Environment State
 
 The project have no environment state. Different flags and configuration value is used in different environment.
 
-Some projects is using environment state, for example `dev`, `staging`, and `production`. From the experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and make many conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and harder to maintain.
+Some projects is using environment state, for example `dev`, `staging`, and `production`. From experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and create conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and is harder to maintain.
 
-For example in code:
+For example, in code:
 
 ```go
 if env.IsDevelopment() {
@@ -82,15 +82,15 @@ if env.IsDevelopment() {
 
 Worse, some projects might use the state for configuration. When the configuration is gated by the environment state. It might introduce another problem, because configuration for each environment might have different parameters and value.
 
-For example in configuration with spec `project.{environment_name}.config.toml`:
+For example, in configuration with spec `project.{environment_name}.config.toml`:
 
 - project.dev.config.toml
 - project.staging.config.toml
 - project.production.config.toml
 
-The approach above usually used to address different configuration needs in each environment. When database configuration is totally different from `dev` and other environment, doing some migration and some configuration is no longer needed, or special configuration that only exists within an environment. This all valid use-cases and the given solution works. Until the configuration is become too long and different for each environments, and turning to problems for the maintainers.
+The approach above usually used to address different configuration needs in each environments. When database configuration is totally different from `dev` and other environment, doing some migration and some configuration is no longer needed, or special configuration that only exists within them. This all valid use-cases and the given solution works. Until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
 
-As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration between environments should stay the same, to maintain program consistency.
+As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
 But, in the end, it depends on each project policies and governance.
 
