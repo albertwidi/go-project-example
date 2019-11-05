@@ -62,7 +62,7 @@ The following flags is avaiable to help the project configuration and debug para
 
 For applicatoin configuration, config-file is used and located on the root project directory. The [configuration-file](./project.config.toml) is written in `toml` grammar.
 
-The configuration value in the `configuration-file` is embed as environment-variable value. The value will be replaced by the environment-variable value in runtime or when program started. To help the process, the project use the help of [environment-variable](./project.env.toml) file.
+The configuration value in the `configuration-file` is embed as environment-variable value. The value will be replaced by the environment-variable value in runtime or when program started. To help the process, the project use the help of [environment-variable](./project.env.toml) file. The `environment-variable` files is choosen because it is simpler as we can have multiple files and we can hide/ignore the file for specific use-case, for example, secret value of `client_id` and `client_secret` of some cloud vendor.
 
 The mixed of `configuration-variable` and `environment-variable` is used to help people in project to see what configuration structure is exists within the project, and able to dynamically changed depends on the environment variables value.
 
@@ -70,7 +70,7 @@ The mixed of `configuration-variable` and `environment-variable` is used to help
 
 The project have no environment state. Different flags and configuration value is used in different environment.
 
-Some projects is using environment state, for example `dev`, `staging`, and `production`. From experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and create conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and is harder to maintain.
+Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and create conditional expression for many use-cases. In the end, it leads to bugs and edge-cases to the whole product and is harder to maintain.
 
 For example, in code:
 
@@ -80,7 +80,7 @@ if env.IsDevelopment() {
 }
 ```
 
-Worse, some projects might use the state for configuration. When the configuration is gated by the environment state. It might introduce another problem, because configuration for each environment might have different parameters and value.
+This environment state, sometimes also used for configuration gating. When the configuration is gated by the environment state, tt might introduce another problem, because configuration for each environment might have different parameters and value.
 
 For example, in configuration with spec `project.{environment_name}.config.toml`:
 
