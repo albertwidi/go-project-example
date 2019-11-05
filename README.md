@@ -2,13 +2,13 @@
 
 This is an example for Go project.
 
-The motivation behind this project is for me to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, we will try to implement business logic/flow into Go program for various use-cases.
+The motivation behind this project is to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, we will try to implement business logic/flow into Go program for various use-cases.
 
 Some of them might not follow existing specs/standards, feel free to open issues, and please let me know.
 
 ## The Project
 
-The project theme is `Property`. We will try to build a Property application, where people able to search and book the property.
+The project theme is `Property`. I will try to build a Property application, where people able to search and book the property.
 
 ### Use-cases
 
@@ -88,7 +88,7 @@ For example, in configuration with spec `project.{environment_name}.config.toml`
 - project.staging.config.toml
 - project.production.config.toml
 
-Or, imagine you have many different configuration(with various reason/decision) using this kind of directive:
+Or, imagine if you have many different configurations(with various reasons/decision) using this kind of directive:
 
 - project.dev.config1.toml
 - project.staging.config1.toml
@@ -101,7 +101,7 @@ Things got very messy indeed.
 
 The approach above usually used to address different configuration needs in each environments. For example, when database configuration is totally different from `dev` and other environment. Or, on doing migration, some configuration is no longer needed for particular environments, and special configuration that only exists within them. This all valid use-cases and the given solution, by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
 
-As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to check whether we have the right design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
+As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to checked the design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
 But, in the end, it depends on each project policies and governance.
 

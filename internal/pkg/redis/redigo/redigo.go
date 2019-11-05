@@ -60,7 +60,7 @@ func (rdg *Redigo) Ping(ctx context.Context) (string, error) {
 }
 
 // Close all redis connection
-func (rdg *Redigo) Close(ctx context.Context) error {
+func (rdg *Redigo) Close() error {
 	return rdg.pool.Close()
 }
 

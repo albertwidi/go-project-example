@@ -135,6 +135,11 @@ func (gcs *GCS) BucketURL() string {
 	return fmt.Sprintf("%s.%s", gcs.baseURL, gcs.config.BucketURL)
 }
 
+// Close the gcs bucket
+func (gcs *GCS) Close() error {
+	return gcs.Bucket().Close()
+}
+
 // CredentialsFromFile return content of credentials from file
 func CredentialsFromFile(ctx context.Context, path string) (*google.Credentials, error) {
 	jsonData, err := ioutil.ReadFile(path)

@@ -249,7 +249,19 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 }
 
 // CloseAll to close all connected resources
+// TODO: check error when closing connections and close connection concurrently
 func (k *Kothak) CloseAll() error {
+	for _, objStorage := range k.objStorages {
+		objStorage.Close()
+	}
+
+	for _, sqldb := range k.dbs {
+		sqldb.Close()
+	}
+
+	for _, redis := range k.rds {
+		redis.Close()
+	}
 	return nil
 }
 

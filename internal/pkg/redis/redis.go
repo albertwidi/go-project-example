@@ -12,6 +12,7 @@ var (
 
 // Redis interface
 type Redis interface {
+	Close() error
 	Set(ctx context.Context, key string, value interface{}) (string, error)
 	SetNX(ctx context.Context, key string, value interface{}, expire int) (int, error)
 	SetEX(ctx context.Context, key string, value interface{}, expire int) (string, error)

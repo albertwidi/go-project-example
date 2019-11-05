@@ -39,6 +39,7 @@ type StorageProvider interface {
 	Name() string
 	BucketName() string
 	BucketURL() string
+	Close() error
 }
 
 // Storage struct
@@ -230,4 +231,9 @@ func (s *Storage) Name() string {
 // BucketName of storage provider
 func (s *Storage) BucketName() string {
 	return s.storage.BucketName()
+}
+
+// Close will close the object storage bucket and return error
+func (s *Storage) Close() error {
+	return s.storage.Close()
 }

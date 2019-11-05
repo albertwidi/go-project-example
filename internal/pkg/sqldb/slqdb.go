@@ -98,6 +98,17 @@ func connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx
 	return sqlxdb, err
 }
 
+// Close all database connection to leader and replica
+func (db *DB) Close() error {
+	if err := db.leader.Close(); err != nil {
+		return err
+	}
+	if err := db.follower.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Leader return leader database connection
 func (db *DB) Leader() *sqlx.DB {
 	return db.leader

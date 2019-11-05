@@ -74,7 +74,7 @@ func (l *Local) BucketURL() string {
 	return ""
 }
 
-// CloseBucket will close the local bucket
-func (l *Local) CloseBucket() error {
+// Close will close the local bucket
+func (l *Local) Close() error {
 	return l.localBlobBucket.Close()
 }

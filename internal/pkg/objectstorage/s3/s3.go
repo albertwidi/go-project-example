@@ -5,10 +5,10 @@ import (
 	"errors"
 	"os"
 
+	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/s3blob"
 )
@@ -147,6 +147,11 @@ func (s3 *S3) BucketName() string {
 func (s3 *S3) BucketURL() string {
 	return ""
 	// return fmt.Sprintf("%s%s.%s", s3.config.bucketProto, s3.BucketName(), s3.config.bucketURL)
+}
+
+// Close will close the s3 bucket and return error
+func (s3 *S3) Close() error {
+	return s3.Bucket().Close()
 }
 
 // CredentialsFromClient is a helper function with clientID and clientSecret provided from client
