@@ -2,20 +2,9 @@
 
 This is an example for Go project.
 
-The motivation behind this project is to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, we will try to implement business logic/flow into Go program for various use-cases.
+The motivation behind this project is to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, I will try to implement business logic/flow into Go program for various use-cases.
 
 Some of them might not follow existing specs/standards, feel free to open issues, and please let me know.
-
-## The Project
-
-The project theme is `Property`. I will try to build a Property application, where people able to search and book the property.
-
-### Use-cases
-
-1. Users were able to register and log in.
-2. Users were able to register their Properties.
-3. Users were able to book a Property.
-4. Users were able to receive notifications and have a notification inbox.
 
 ## Designing Project For Industrial Programming
 
@@ -25,6 +14,26 @@ What is industrial programming? [Peter Bourgon](https://peter.bourgon.org/go-for
 - Within a team where engineers come and go.
 - On code that outlives any single engineer.
 - Serving highly mutable business requirements.
+
+## The Project
+
+The project theme is `Property`. I will try to build a Property application, where people able to search and book the property.
+
+### Use-cases
+
+1. Users were able to register and log in.
+2. Users were able to register their Properties.
+    - Register the property detail
+    - Upload the property image
+3. Users were able to book a Property.
+4. Users were able to receive notifications and have a notification inbox.
+
+### Project Stack
+
+This project is using:
+
+1. PostgreSQL for the main database
+2. Redis for k/v, user session management, caching. 
 
 ## Getting Started
 
@@ -70,7 +79,7 @@ The mixed of `configuration-variable` and `environment-variable` is used to help
 
 The project have no environment state. Different flags and configuration value is used in different environment.
 
-Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself, as developer tempted to abuse the state for many things. Developer tempted to abuse the state because the function is available, and sometimes it is the easiest way to accomplish some goals. By using the state, people in the project are cutting edges and create conditional expression for various use-cases. This leads to broken mental model, bugs, edge-cases to the product which make life harder for the maintainers.
+Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself, as developer tempted to abuse the state for many things. Developer tempted to abuse the state because the function is available, and sometimes it is the easiest way to accomplish some goals. By using the state, people in the project are cutting edges and create conditional expression for various use-cases. This leads to broken mental model, bugs, and edge-cases to the product which make life harder for the maintainers.
 
 For example, in code:
 

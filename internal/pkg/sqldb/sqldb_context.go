@@ -24,3 +24,13 @@ func (db *DB) QueryContext(ctx context.Context, query string, args ...interface{
 func (db *DB) QueryRowContext(ctx context.Context, query string, args ...interface{}) *sql.Row {
 	return db.follower.QueryRowContext(ctx, query, args...)
 }
+
+// ExecContext function
+func (db *DB) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	return db.leader.ExecContext(ctx, query, args...)
+}
+
+// NamedExecContext function
+func (db *DB) NamedExecContext(ctx context.Context, query string, arg interface{}) (sql.Result, error) {
+	return db.leader.NamedExecContext(ctx, query, arg)
+}

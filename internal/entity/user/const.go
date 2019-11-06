@@ -11,11 +11,16 @@ const (
 
 // list of gender
 const (
-	GenderInvalid Gender = 0
-	GenderMale    Gender = 1
-	GenderFemale  Gender = 2
+	// GenderInvalid Gender = 0
+	// GenderMale    Gender = 1
+	// GenderFemale  Gender = 2
 
 	GenderInvalidString = "invalid"
 	GenderMaleString    = "male"
 	GenderFemaleString  = "female"
+)
+
+// list of country in this project
+const (
+	CountryID Country = "ID"
 )

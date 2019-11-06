@@ -135,7 +135,7 @@ func (r Repository) deflateOTP(flattenedOTP string) (otpentity.OTP, error) {
 
 	val := strings.Split(flattenedOTP, ":")
 	if len(val) != 6 {
-		return otp, errors.E("not a valid kosan otp format")
+		return otp, errors.E("not a valid otp format")
 	}
 
 	otp.UniqueID = val[0]

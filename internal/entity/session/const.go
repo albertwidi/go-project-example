@@ -4,5 +4,5 @@ import "time"
 
 // expiry time list
 const (
-	DefaultSessionExpiryTime = time.Hour * 24 * 30
+	DefaultSessionExpiryTime = time.Hour * 24 * 15 
 )

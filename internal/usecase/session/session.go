@@ -52,7 +52,7 @@ func (u UseCase) Create(ctx context.Context, userhash userentity.Hash, sessionDa
 	sessionData.ID = id
 	err := u.repo.Save(ctx, userhash, id, sessionData)
 	if err != nil {
-		return "", err
+		return "", sessionentity.ErrSessionNotFound
 	}
 
 	return id, nil
@@ -87,7 +87,7 @@ func (u UseCase) Get(ctx context.Context, userhash userentity.Hash, sessionid st
 	s := sessionentity.Session{}
 
 	if userhash == "" {
-		return s, kosanerr.ErrSessionNotFound
+		return s, sessionentity.Err
 	}
 
 	if err := userhash.Validate(); err != nil {

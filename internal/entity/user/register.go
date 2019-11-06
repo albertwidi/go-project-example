@@ -4,16 +4,14 @@ import "time"
 
 // Registrations struct
 type Registrations struct {
-	ID          int64
-	UserID      int64
+	ID          string
+	UserID      string
 	UserType    int
 	UserStatus  int
 	HashID      string
-	KTPID       int64
 	FullName    string
 	Email       string
 	PhoneNumber string
-	Gender      int
 	BirthDate   time.Time
 	Channel     int
 	Device      int

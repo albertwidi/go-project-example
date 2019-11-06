@@ -4,6 +4,7 @@ export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && p
 export DATABASE_SCHEMA_DIR=./schema
 
 # we need to specify the database configuration for pop by sending additional parameter
+# example: ./setup.sh create database.yml
 create() {
     if [ -z $1 ]; then
         echo "database configuration cannot be empty"
@@ -17,6 +18,7 @@ create() {
     fi
 }
 
+# example: ./setup.sh drop database.yml
 drop() {
     if [ -z $1 ]; then
         echo "database configuration cannot be empty"
@@ -29,7 +31,7 @@ drop() {
     fi
 }
 
-# setup.sh generate user users
+# example: ./setup.sh generate user users
 generate() {
     if [ -z $1 ]; then
         echo "database configuration cannot be empty"
@@ -95,8 +97,5 @@ case $1 in
     ;;
     migrate)
         migrate $2 $3 $4
-    ;;
-    test)
-        echo ${DIR};
     ;;
 esac 
