@@ -75,6 +75,37 @@ The configuration value in the `configuration-file` is embed as environment-vari
 
 The mixed of `configuration-variable` and `environment-variable` is used to help people in project to see what configuration structure is exists within the project, and able to dynamically changed depends on the environment variables value.
 
+Configuration Structure:
+
+- Servers `[object]`:
+    - MainServer `[object]`:
+        - Address: address of the main server, for example `localhost:8000`
+    - AdminServer `[object]`:
+        - Address: adress of the admin server, for example `localhost:5726`
+    - DebugServer `[object]`:
+        - Address `[string]`: address of debug server, for example `localhost:9000`
+
+- Resources
+    - Object Storage `[array]`
+        - [Object Storage Object]
+            - name `[string]`: name of the object storage, for example `image`
+    - Database `[object]`
+        - Connect `[array]`
+            - [Connect Object]
+                - name: name of the database, for example `user`
+                - driver: the driver of database, `mysql|postgres`
+                - leader `object`
+                    - dsn: the dsn of database leader, for example 
+                - replica `object`
+                    - dsn: the dsn of database replica, for example
+    - Redis `[object]`:
+        - Connect `[array]`:
+            - [Connect Object]
+                - Name `[string]`: name of redis, for example `session`
+                - Address `[string]`: address of redis server, for example `localhost:6379`
+
+Resources configuration allows the project to easily add and remove resources. Because, as the project grow, we might need to add more connection to more postgres, redis or other type of database. Instead of handling the connection manually inside the code, a [wrappeer](./internal/kothak/kothak.go) is added to hold all the connection to resources
+
 ### Environment State
 
 The project have no environment state. Different flags and configuration value is used in different environment.
@@ -116,7 +147,7 @@ Or, imagine if you have many different configurations(with various reasons/decis
 
 Things got very messy indeed.
 
-Multiple configuration with environment state directive, usually used to address different configurations in each environments. For example, when a database is pointing to one instance in `dev` but not in `staging`, which completely different. Or, when doing doing some migration we want to get rid of some configuration variables in some environment. This all are valid use-cases, and the given solution by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, then turning into problems for the maintainers.
+Multiple configurations with environment state directive, usually used to address different configurations in each environments. For example, when a database is pointing to one instance in `dev` but not in `staging`, which completely different. Or, when doing doing some migration we want to get rid of some configuration variables in some environment. This all are valid use-cases, and the given solution by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, then turning into problems for the maintainers.
 
 As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Variables from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to checked the design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
