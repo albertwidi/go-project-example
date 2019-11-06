@@ -16,7 +16,7 @@ import (
 	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
 	"github.com/albertwidi/go_project_example/internal/pkg/imagepath"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
-	"github.com/albertwidi/go_project_example/internal/pkg/xerrors"
+	"github.com/albertwidi/go_project_example/internal/xerrors"
 	guuid "github.com/google/uuid"
 )
 

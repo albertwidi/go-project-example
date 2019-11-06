@@ -5,7 +5,7 @@ import (
 
 	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
 	stateentity "github.com/albertwidi/go_project_example/internal/entity/state"
-	"github.com/albertwidi/go_project_example/internal/pkg/xerrors"
+	"github.com/albertwidi/go_project_example/internal/xerrors"
 )
 
 // Usecase of authentication

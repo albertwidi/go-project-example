@@ -7,7 +7,7 @@ import (
 
 	otpentity "github.com/albertwidi/go_project_example/internal/entity/otp"
 	"github.com/albertwidi/go_project_example/internal/pkg/randgen"
-	"github.com/albertwidi/go_project_example/internal/pkg/xerrors"
+	"github.com/albertwidi/go_project_example/internal/xerrors"
 )
 
 // Usecase of otp

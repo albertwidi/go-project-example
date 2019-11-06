@@ -70,13 +70,21 @@ The mixed of `configuration-variable` and `environment-variable` is used to help
 
 The project have no environment state. Different flags and configuration value is used in different environment.
 
-Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself as people tend to abuse the state for many things. By using the state, people in the project are cutting edges and create conditional expression for many use-cases. This leads to bugs and edge-cases to the whole product and is harder to maintain.
+Environment state like `dev`, `staging`, and `production` is usually used to check in what environment the program/application is running. From experience, this considered harmful for the program itself, as developer tempted to abuse the state for many things. Developer tempted to abuse the state because the function is available, and sometimes it is the easiest way to accomplish some goals. By using the state, people in the project are cutting edges and create conditional expression for various use-cases. This leads to broken mental model, bugs, edge-cases to the product which make life harder for the maintainers.
 
 For example, in code:
 
 ```go
 if env.IsDevelopment() {
-    // do something here
+    // do something only in dev
+}
+
+if env.IsStaging() {
+    // do something only in staging
+}
+
+if env.IsProduction() {
+    // do something only in production
 }
 ```
 
@@ -99,9 +107,9 @@ Or, imagine if you have many different configurations(with various reasons/decis
 
 Things got very messy indeed.
 
-The approach above usually used to address different configuration needs in each environments. For example, when database configuration is totally different from `dev` and other environment. Or, on doing migration, some configuration is no longer needed for particular environments, and special configuration that only exists within them. This all valid use-cases and the given solution, by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, and turning into problems for the maintainers.
+Multiple configuration with environment state directive, usually used to address different configurations in each environments. For example, when a database is pointing to one instance in `dev` but not in `staging`, which completely different. Or, when doing doing some migration we want to get rid of some configuration variables in some environment. This all are valid use-cases, and the given solution by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, then turning into problems for the maintainers.
 
-As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Value from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to checked the design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
+As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Variables from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to checked the design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
 But, in the end, it depends on each project policies and governance.
 
@@ -167,5 +175,9 @@ To be added
 To be added
 
 #### Layers
+
+To be added
+
+## Acknowledgement & References
 
 To be added
