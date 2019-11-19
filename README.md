@@ -59,10 +59,6 @@ The following flags is avaiable to help the project configuration and debug para
 
 - `--config_file` define where the configuration file is located
 - `--env_file` define where environment variable file is located, this is a helper file to set environment variable.
-- `--log` define the log configuration for the project. The flag contains comma separated value:
-    - `--log=file=./to_your_file.log` the location of log file.
-    - `--log=level=debug|info|warning|error|fatal` the level of log.
-    - `--log=color=1` to set if color to console/terminal is enabled.
 - `--debug` define the debug configuration for the project. The flag contains comma separated value:
     - `--debug=server=1` to turn on the debug server.
     - `--debug=testconfig=1` to test the configuration of the project.
@@ -78,12 +74,17 @@ The mixed of `configuration-variable` and `environment-variable` is used to help
 Configuration Structure:
 
 - Servers `[object]`:
-    - MainServer `[object]`:
+    - Main `[object]`:
         - Address: address of the main server, for example `localhost:8000`
-    - AdminServer `[object]`:
+    - Admin `[object]`:
         - Address: adress of the admin server, for example `localhost:5726`
-    - DebugServer `[object]`:
+    - Debug `[object]`:
         - Address `[string]`: address of debug server, for example `localhost:9000`
+
+- Log
+    - level: level of the log, `debug|info|warn|error|fatal`
+    - file: file location to store the log
+    - color: print with color on the terminal
 
 - Resources
     - Object Storage `[array]`
@@ -217,6 +218,14 @@ To be added
 #### Layers
 
 To be added
+
+## Error Handling
+
+In Go, `errors` are value. This is one of the of the Go's [proverbs](https://go-proverbs.github.io/). So, instead of throwing error, Go program will treat the `error` as value and the `error` should be returned to the caller. Check the error or return, but not both.
+
+While handling `error` in Go is very easy and straightforward, the `error` itself is sometimes lacking of context. 
+
+To be continued.
 
 ## Acknowledgement & References
 

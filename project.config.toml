@@ -10,6 +10,9 @@
     [servers.admin]
     address = "${ADMIN_SERVER_ADDRESS}"
 
+[log]
+    level = "${LOG_LEVEL}"
+
 [resources]
     # object storage
     [[resources.object_storage]]

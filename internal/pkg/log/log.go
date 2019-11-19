@@ -32,8 +32,8 @@ var (
 	_errorLogger logger.Logger
 	_fatalLogger logger.Logger
 
-	errInvalidLevel  = errors.New("invalid log level")
-	errInvalidLogger = errors.New("invalid logger")
+	errInvalidLevel  = errors.New("log: invalid log level")
+	errInvalidLogger = errors.New("log: invalid logger")
 )
 
 func init() {
@@ -41,7 +41,6 @@ func init() {
 	if err != nil {
 		return
 	}
-
 	SetLogger(backend)
 }
 

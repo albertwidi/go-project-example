@@ -9,20 +9,21 @@ gobuild:
 gorun:
 	make gobuild
 	@./$(mainprogram) \
-		--config_file=./project.config.toml \
-		--env_file=./project.env.toml \ 
-		--tz=Asia/Jakarta
+		-config_file="./project.config.toml" \
+		-env_file="./project.env.toml" \
+		-tz="Asia/Jakarta"
 
 testconfig:
 	make gobuild
 	@./$(mainprogram) \
-		--config_file=./project.config.toml \
-		--env_file=./project.env.toml \
-		--debug=testconfig=1 \
-		--tz=Asia/Jakarta
+		-config_file=./project.config.toml \
+		-env_file=./project.env.toml \
+		-debug=-testconfig=1-devserver=1 \
+		-log=-file=./projectlog/project.log-level=info-color=1 \
+		-tz=Asia/Jakarta
 
 dbup:
-	@cd database && ./setup.sh create database.yml 
+	@cd database && ./setup.sh create database.yml
 
 dbdown:
 	@cd database && ./setup.sh drop database.yml

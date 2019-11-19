@@ -13,7 +13,6 @@ import (
 // Flags of project
 type Flags struct {
 	Debug             debugFlag
-	Log               logFlag
 	EnvironmentFile   envFileFlag
 	TimeZone          string
 	ConfigurationFile string
@@ -30,19 +29,19 @@ func Run(f Flags) error {
 	// set default timezone
 	os.Setenv("TZ", f.TimeZone)
 
-	// initiate project logger
-	logger, err := zap.New(&lg.Config{
-		Level:    lg.StringToLevel(f.Log.Level),
-		LogFile:  f.Log.File,
-		UseColor: f.Log.Color,
-	})
-	if err != nil {
-		return err
-	}
-
 	// load project configuration
 	projectConfig := Config{}
 	if err := config.ParseFile(f.ConfigurationFile, &projectConfig, f.EnvironmentFile.envFiles...); err != nil {
+		return err
+	}
+
+	// initiate project logger
+	logger, err := zap.New(&lg.Config{
+		Level:    lg.StringToLevel(projectConfig.Log.Level),
+		LogFile:  projectConfig.Log.File,
+		UseColor: projectConfig.Log.Color,
+	})
+	if err != nil {
 		return err
 	}
 

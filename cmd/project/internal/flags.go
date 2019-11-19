@@ -1,8 +1,9 @@
 package project
 
 import (
+	"flag"
 	"fmt"
-	"strconv"
+	"regexp"
 	"strings"
 )
 
@@ -44,71 +45,17 @@ func (df *debugFlag) Set(value string) error {
 		return nil
 	}
 
+	// find pattern -{flag_name}={flag_value}
+	regex, err := regexp.Compile("-[a-zA-Z0-9]+=[a-zA-Z0-9]+")
+	if err != nil {
+		return err
+	}
+
 	df.flag = value
-	kv, err := parseFlags(value)
-	if err != nil {
-		return err
-	}
-
-	for k, v := range kv {
-		switch k {
-		case "server":
-			bint, err := strconv.Atoi(v)
-			if err != nil {
-				return err
-			}
-			df.DevServer = bint == 1
-		case "testconfig":
-			bint, err := strconv.Atoi(v)
-			if err != nil {
-				return err
-			}
-			df.TestConfig = bint == 1
-		}
-	}
-	return nil
-}
-
-// logFlag holds the log flag structure
-// logFlag comma seperated value spec
-// for example: --log=level=debug,file=./somefile.log
-type logFlag struct {
-	flag  string
-	File  string
-	Level string
-	Color bool
-}
-
-// String return the value of the flag
-func (lf *logFlag) String() string {
-	return lf.flag
-}
-
-func (lf *logFlag) Set(value string) error {
-	if value == "" {
-		return nil
-	}
-
-	lf.flag = value
-	kv, err := parseFlags(value)
-	if err != nil {
-		return err
-	}
-
-	for k, v := range kv {
-		switch k {
-		case "level":
-			lf.Level = v
-		case "file":
-			lf.File = v
-		case "color":
-			bint, err := strconv.Atoi(v)
-			if err != nil {
-				return err
-			}
-			lf.Color = bint == 1
-		}
-	}
+	fs := flag.CommandLine
+	fs.BoolVar(&df.DevServer, "devserver", false, "for activating dev server")
+	fs.BoolVar(&df.TestConfig, "testconfig", false, "for testing the project configuration")
+	fs.Parse(regex.FindAllString(value, -1))
 	return nil
 }
 

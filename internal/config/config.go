@@ -15,7 +15,15 @@ import (
 // DefaultConfig for the project
 type DefaultConfig struct {
 	Servers   DefaultServers `yaml:"servers" toml:"servers"`
+	Log       DefaultLog     `yaml:"log" toml:"log"`
 	Resources kothak.Config  `yaml:"resources" toml:"resources"`
+}
+
+// DefaultLog config for the project
+type DefaultLog struct {
+	Level string `yaml:"level" toml:"level"`
+	File  string `yaml:"file" toml:"file"`
+	Color bool   `yaml:"color" toml:"color"`
 }
 
 // DefaultServers struct
