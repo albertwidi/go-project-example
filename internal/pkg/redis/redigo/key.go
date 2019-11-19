@@ -10,7 +10,7 @@ import (
 // Set key and value
 func (rdg *Redigo) Set(ctx context.Context, key string, value interface{}) (string, error) {
 	ok, err := redigo.String(rdg.do(ctx, "SET", key, value))
-	if !IsResponseOK(ok) {
+	if !rdg.IsResponseOK(ok) {
 		return ok, redis.ErrResponseNotOK
 	}
 	return ok, err
@@ -20,7 +20,7 @@ func (rdg *Redigo) Set(ctx context.Context, key string, value interface{}) (stri
 // It sets the key which will expired in `expire` seconds
 func (rdg *Redigo) SetNX(ctx context.Context, key string, value interface{}, expire int) (int, error) {
 	resp, err := redigo.Int(rdg.do(ctx, "SETNX", key, value, "NX", "EX", expire))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return 0, err
 	}
 	return resp, err
@@ -30,7 +30,7 @@ func (rdg *Redigo) SetNX(ctx context.Context, key string, value interface{}, exp
 // It sets the key wich will expired in `expire` seconds
 func (rdg *Redigo) SetEX(ctx context.Context, key string, value interface{}, expire int) (string, error) {
 	resp, err := redigo.String(rdg.do(ctx, "SETEX", key, expire, value))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return "", err
 	}
 	return resp, err
@@ -39,7 +39,7 @@ func (rdg *Redigo) SetEX(ctx context.Context, key string, value interface{}, exp
 // Get string value
 func (rdg *Redigo) Get(ctx context.Context, key string) (string, error) {
 	resp, err := redigo.String(rdg.do(ctx, "GET", key))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return "", err
 	}
 	return resp, err
@@ -49,7 +49,7 @@ func (rdg *Redigo) Get(ctx context.Context, key string) (string, error) {
 // please use basic types only (no struct, array, or map) for arguments
 func (rdg *Redigo) MSet(ctx context.Context, pairs ...interface{}) (string, error) {
 	ok, err := redigo.String(rdg.do(ctx, "MSET", pairs...))
-	if !IsResponseOK(ok) {
+	if !rdg.IsResponseOK(ok) {
 		return ok, redis.ErrResponseNotOK
 	}
 	return ok, err
@@ -63,7 +63,7 @@ func (rdg *Redigo) MGet(ctx context.Context, keys ...string) ([]string, error) {
 	}
 
 	resp, err := redigo.Strings(rdg.do(ctx, "MGET", args...))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return nil, err
 	}
 	return resp, err
@@ -72,7 +72,7 @@ func (rdg *Redigo) MGet(ctx context.Context, keys ...string) ([]string, error) {
 // HSet field and value based on key
 func (rdg *Redigo) HSet(ctx context.Context, key, field string, value interface{}) (int, error) {
 	resp, err := redigo.Int(rdg.do(ctx, "HSET", key, field, value))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 	return resp, err
@@ -87,12 +87,12 @@ func (rdg *Redigo) HSetEX(ctx context.Context, key, field string, value interfac
 	defer conn.Close()
 
 	resp, err := redigo.Int(conn.Do("HSET", key, field, value))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 
 	resp, err = redigo.Int(rdg.do(ctx, "EXPIRE", key, expire))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 
@@ -102,7 +102,7 @@ func (rdg *Redigo) HSetEX(ctx context.Context, key, field string, value interfac
 // HGet key and value
 func (rdg *Redigo) HGet(ctx context.Context, key, field string) (string, error) {
 	resp, err := redigo.String(rdg.do(ctx, "HGET", key, field))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 	return resp, err
@@ -111,7 +111,7 @@ func (rdg *Redigo) HGet(ctx context.Context, key, field string) (string, error) 
 // HGetAll key and value
 func (rdg *Redigo) HGetAll(ctx context.Context, key string) (map[string]string, error) {
 	resp, err := redigo.Strings(rdg.do(ctx, "HGETALL", key))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return nil, err
 	}
 
@@ -139,7 +139,7 @@ func (rdg *Redigo) HMSet(ctx context.Context, key string, kv map[string]interfac
 	}
 
 	resp, err := redigo.String(rdg.do(ctx, "HMSET", args...))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 	return resp, err
@@ -154,7 +154,7 @@ func (rdg *Redigo) HMGet(ctx context.Context, key string, fields ...string) ([]s
 	}
 
 	resp, err := redigo.Strings(rdg.do(ctx, "HMGET", args...))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 	return resp, err
@@ -169,7 +169,7 @@ func (rdg *Redigo) HDel(ctx context.Context, key string, fields ...string) (int,
 	}
 
 	resp, err := redigo.Int(rdg.do(ctx, "HDEL", args...))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return resp, err
 	}
 	return resp, err

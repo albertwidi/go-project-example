@@ -1,7 +1,7 @@
 version: '3'
 services:
   postgres:
-    image: library/postgres:12.0-alpine
+    image: library/postgres:12.1-alpine
     restart: unless-stopped
     ports:
     - "5444:5432"
@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: projectdb 
   
   redis:  
-    image: library/redis:4.0.10
+    image: library/redis:5.0.6-alpine
     restart: unless-stopped
     ports:
       - "6379:6379"

@@ -4,8 +4,6 @@ This is an example for Go project.
 
 The motivation behind this project is to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, I will try to implement business logic/flow into Go program for various use-cases.
 
-Some of them might not follow existing specs/standards, feel free to open issues, and please let me know.
-
 ## Designing Project For Industrial Programming
 
 What is industrial programming? [Peter Bourgon](https://peter.bourgon.org/go-for-industrial-programming/) explain the terms, as:

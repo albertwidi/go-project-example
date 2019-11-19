@@ -11,11 +11,11 @@ import (
 
 // Repository of image
 type Repository struct {
-	redis *redis.Redis
+	redis redis.Redis
 }
 
 // New repository for image
-func New(redis *redis.Redis) *Repository {
+func New(redis redis.Redis) *Repository {
 	r := Repository{
 		redis: redis,
 	}
@@ -29,14 +29,14 @@ func createImageKey(id string) string {
 // SaveTempPath image path
 func (r Repository) SaveTempPath(ctx context.Context, id, originalPath string, expiryTime time.Duration) error {
 	key := createImageKey(id)
-	_, err := r.redis.SetEX(key, originalPath, int(expiryTime.Seconds()))
+	_, err := r.redis.SetEX(ctx, key, originalPath, int(expiryTime.Seconds()))
 	return err
 }
 
 // GetTempPath will return the original path from a temporary id
 func (r Repository) GetTempPath(ctx context.Context, id string) (string, error) {
 	key := createImageKey(id)
-	out, err := r.redis.Get(key)
+	out, err := r.redis.Get(ctx, key)
 	if err != nil {
 		if redis.IsErrNil(err) {
 			return "", imageentity.ErrTempPathNotFound

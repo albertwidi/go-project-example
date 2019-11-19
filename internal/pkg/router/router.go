@@ -97,7 +97,7 @@ type Router struct {
 	route  []*mux.Route
 	mw     []MiddlewareFunc
 	// options
-	options Options
+	options *Options
 }
 
 // Options of router
@@ -106,7 +106,13 @@ type Options struct {
 }
 
 // New router
-func New(options Options) *Router {
+func New(options *Options) *Router {
+	if options == nil {
+		options = &Options{
+			Debug: false,
+		}
+	}
+
 	r := Router{
 		router:  mux.NewRouter(),
 		options: options,
@@ -141,49 +147,55 @@ func (r *Router) HandleFunc(method, path string, handler HandlerFunc) {
 // Get function
 func (r *Router) Get(path string, handler HandlerFunc) {
 	route := r.router.NewRoute()
-	route.Methods("GET")
+	method := http.MethodGet
+	route.Methods(method)
 	route.Path(path)
-	r.handleRoute(route, "get", handler)
+	r.handleRoute(route, method, handler)
 }
 
 // Head function
 func (r *Router) Head(path string, handler HandlerFunc) {
 	route := r.router.NewRoute()
-	route.Methods("HEAD")
+	method := http.MethodHead
+	route.Methods(method)
 	route.Path(path)
-	r.handleRoute(route, "head", handler)
+	r.handleRoute(route, method, handler)
 }
 
 // Post function
 func (r *Router) Post(path string, handler HandlerFunc) {
 	route := r.router.NewRoute()
-	route.Methods("POST")
+	method := http.MethodPost
+	route.Methods(method)
 	route.Path(path)
-	r.handleRoute(route, "post", handler)
+	r.handleRoute(route, method, handler)
 }
 
 // Patch function
 func (r *Router) Patch(path string, handler HandlerFunc) {
 	route := r.router.NewRoute()
-	route.Methods("PATCH")
+	method := http.MethodPatch
+	route.Methods(method)
 	route.Path(path)
-	r.handleRoute(route, "patch", handler)
+	r.handleRoute(route, method, handler)
 }
 
 // Delete function
 func (r *Router) Delete(path string, handler HandlerFunc) {
 	route := r.router.NewRoute()
-	route.Methods("DELETE")
+	method := http.MethodDelete
+	route.Methods(method)
 	route.Path(path)
-	r.handleRoute(route, "delete", handler)
+	r.handleRoute(route, method, handler)
 }
 
 // Options function
 func (r *Router) Options(path string, handler HandlerFunc) {
 	route := r.router.NewRoute()
-	route.Methods("OPTIONS")
+	method := http.MethodOptions
+	route.Methods(method)
 	route.Path(path)
-	r.handleRoute(route, "options", handler)
+	r.handleRoute(route, method, handler)
 }
 
 // Handle request with pure http handler
@@ -192,6 +204,8 @@ func (r *Router) Handle(path string, handler http.Handler) {
 }
 
 // PathPrefix implementation of mux router
+// this function is not using custom handleRoute functions
+// metrics/diagnostics will not exported from this method
 func (r *Router) PathPrefix(tpl string) *mux.Route {
 	return r.router.PathPrefix(tpl)
 }

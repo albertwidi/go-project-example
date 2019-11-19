@@ -63,5 +63,24 @@ func Run(f Flags) error {
 		return nil
 	}
 
+	// repositories
+	repo, err := newRepositories(resources)
+	if err != nil {
+		return err
+	}
+
+	// servers
+	newMainServer()
+	newDebugServer(repo)
+	newAdminServer()
+
 	return nil
+}
+
+func newAdminServer() {
+
+}
+
+func newMainServer() {
+
 }

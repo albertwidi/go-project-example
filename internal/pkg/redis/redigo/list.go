@@ -9,7 +9,7 @@ import (
 // LLen get the length of the list
 func (rdg *Redigo) LLen(ctx context.Context, key string) (int, error) {
 	result, err := redigo.Int(rdg.do(ctx, "LLEN", key))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return 0, err
 	}
 	return result, err
@@ -18,7 +18,7 @@ func (rdg *Redigo) LLen(ctx context.Context, key string) (int, error) {
 // LIndex to get value from a certain list index
 func (rdg *Redigo) LIndex(ctx context.Context, key string, index int) (string, error) {
 	result, err := redigo.String(rdg.do(ctx, "LINDEX", key, index))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return "", err
 	}
 	return result, err
@@ -27,7 +27,7 @@ func (rdg *Redigo) LIndex(ctx context.Context, key string, index int) (string, e
 // LSet to set value to some index
 func (rdg *Redigo) LSet(ctx context.Context, key, value string, index int) (int, error) {
 	result, err := redigo.Int(rdg.do(ctx, "LSET", index, value))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return 0, err
 	}
 	return result, err
@@ -42,7 +42,7 @@ func (rdg *Redigo) LPush(ctx context.Context, key string, values ...interface{})
 	}
 
 	result, err := redigo.Int(rdg.do(ctx, "LPUSH", args...))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return 0, err
 	}
 	return result, err
@@ -57,7 +57,7 @@ func (rdg *Redigo) LPushX(ctx context.Context, key string, values ...interface{}
 	}
 
 	result, err := redigo.Int(rdg.do(ctx, "LPUSHX", args...))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return 0, err
 	}
 	return result, err
@@ -66,7 +66,7 @@ func (rdg *Redigo) LPushX(ctx context.Context, key string, values ...interface{}
 // LPop removes and get the first element in the list
 func (rdg *Redigo) LPop(ctx context.Context, key string) (string, error) {
 	result, err := redigo.String(rdg.do(ctx, "LPOP", key))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return "", err
 	}
 	return result, err
@@ -75,7 +75,7 @@ func (rdg *Redigo) LPop(ctx context.Context, key string) (string, error) {
 // LRem command
 func (rdg *Redigo) LRem(ctx context.Context, key, value string, count int) (int, error) {
 	result, err := redigo.Int(rdg.do(ctx, "LREM", key, count, value))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return 0, err
 	}
 	return result, err
@@ -84,7 +84,7 @@ func (rdg *Redigo) LRem(ctx context.Context, key, value string, count int) (int,
 // LTrim command
 func (rdg *Redigo) LTrim(ctx context.Context, key string, start, stop int) (string, error) {
 	result, err := redigo.String(rdg.do(ctx, "LTRIM", key, start, stop))
-	if err != nil && !IsErrNil(err) {
+	if err != nil && !rdg.IsErrNil(err) {
 		return "", err
 	}
 	return result, err

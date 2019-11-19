@@ -12,6 +12,8 @@
 
 [log]
     level = "${LOG_LEVEL}"
+    file = "${LOG_FILE}"
+    color = ${LOG_COLOR}
 
 [resources]
     # object storage

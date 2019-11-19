@@ -65,7 +65,7 @@ func (rdg *Redigo) Close() error {
 }
 
 // IsErrNil return true if error is nil
-func IsErrNil(err error) bool {
+func (rdg *Redigo) IsErrNil(err error) bool {
 	if !errors.Is(err, redigo.ErrNil) {
 		return false
 	}
@@ -73,7 +73,7 @@ func IsErrNil(err error) bool {
 }
 
 // IsResponseOK return true if result value of command is ok
-func IsResponseOK(result string) bool {
+func (rdg *Redigo) IsResponseOK(result string) bool {
 	if result != "OK" {
 		return false
 	}
