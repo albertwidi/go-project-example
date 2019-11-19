@@ -59,9 +59,10 @@ The following flags is avaiable to help the project configuration and debug para
 
 - `--config_file` define where the configuration file is located
 - `--env_file` define where environment variable file is located, this is a helper file to set environment variable.
-- `--debug` define the debug configuration for the project. The flag contains comma separated value:
-    - `--debug=server=1` to turn on the debug server.
-    - `--debug=testconfig=1` to test the configuration of the project.
+- `--debug` define the debug configuration for the project. With flag key:
+    - `-debug=server=1` to turn on the debug server.
+    - `-debug=testconfig=1` to test the configuration of the project.
+    - example: `--debug=-debugserver=1-testconfig=1` 
 
 ### Configuration
 
@@ -221,12 +222,28 @@ To be added
 
 ## Error Handling
 
-In Go, `errors` are value. This is one of the of the Go's [proverbs](https://go-proverbs.github.io/). So, instead of throwing error, Go program will treat the `error` as value and the `error` should be returned to the caller. Check the error or return, but not both.
+In Go, `errors` are value. This is one of the of the Go's [proverbs](https://go-proverbs.github.io/). So, instead of throwing error, Go program will treat the `error` as value and the `error` should be checked or returned to the caller. 
+
+> Don't just check errors, handle them gracefully - Go's proverbs
+
+> Check the error or return, but not both. - Dave Channey
 
 While handling `error` in Go is very easy and straightforward, the `error` itself is sometimes lacking of context. 
 
 To be continued.
 
-## Acknowledgement & References
+## References
 
-To be added
+### Go Errors
+
+**Articles**
+
+- https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully
+- https://blog.golang.org/go1.13-errors
+
+**Videos**
+
+- [GopherCon 2019: Marwan Sulaiman - Handling Go Errors](https://www.youtube.com/watch?v=4WIhhzTTd0Y)
+
+**Code**
+- Upspin errors [package](https://github.com/upspin/upspin/blob/master/errors/errors.go)

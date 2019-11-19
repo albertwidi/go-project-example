@@ -2,32 +2,13 @@ package project
 
 import (
 	"flag"
-	"fmt"
 	"regexp"
-	"strings"
 )
-
-// parseFlags with comma seperated value spec
-// for example: --log=level=info,file=./somefile.log
-func parseFlags(value string) (map[string]string, error) {
-	fkv := make(map[string]string)
-	flags := strings.Split(value, ",")
-	for _, flag := range flags {
-		kv := strings.Split(flag, "=")
-		if len(kv) < 2 {
-			return nil, fmt.Errorf("debugflag: flag is not in kv format: %s", flag)
-		}
-		fkv[kv[0]] = kv[1]
-	}
-
-	return fkv, nil
-}
 
 // debugFlag holds the debug flag structure
 // spec:
-// debug flag is comma seprated value with 'equal/=' as operator
-// the value can be identified as '1' as 'true' and '0' as 'false'
-// for example: debug=server=1,testconfig=1
+// debug flag is a flag.Parse value
+// for example: -debug=-server=1-testconfig=1
 type debugFlag struct {
 	flag       string
 	DevServer  bool
