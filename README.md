@@ -2,7 +2,7 @@
 
 This is an example for Go project.
 
-The motivation behind this project is to learn and widen my limited knowledge about programming, project design, and concepts implementation. In this project, I will try to implement business logic/flow into Go program for various use-cases.
+The motivation behind this project is to learn and broaden my limited knowledge about programming, project design, concepts and algorithm. In this project, I will try to implement business logic/flow into Go program for various use-cases.
 
 ## Designing Project For Industrial Programming
 

@@ -86,8 +86,10 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				group.Done()
 			}()
 
-			var provider objectstorage.StorageProvider
-			var err error
+			var (
+				provider objectstorage.StorageProvider
+				err      error
+			)
 
 			switch strings.ToLower(config.Provider) {
 			// local storage
@@ -218,7 +220,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				errs = append(errs, err)
 				return
 			}
-
+			// connect to leader
 			leaderDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.LeaderConnConfig.DSN, &sqldb.ConnectOptions{
 				Retry:              dbconfig.LeaderConnConfig.MaxRetry,
 				MaxOpenConnections: dbconfig.LeaderConnConfig.MaxOpenConnections,
@@ -228,11 +230,15 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 				errs = append(errs, err)
 				return
 			}
-
 			// by default, set replica to leader
 			followerDB = leaderDB
 
+			// connect to replica
 			if dbconfig.ReplicaConnConfig.DSN != "" {
+				if err := dbconfig.ReplicaConnConfig.SetDefault(kothakConfig.DBConfig); err != nil {
+					errs = append(errs, err)
+					return
+				}
 				followerDB, err = sqldb.Connect(ctx, dbconfig.Driver, dbconfig.ReplicaConnConfig.DSN, &sqldb.ConnectOptions{
 					Retry:              dbconfig.ReplicaConnConfig.MaxRetry,
 					MaxOpenConnections: dbconfig.ReplicaConnConfig.MaxOpenConnections,

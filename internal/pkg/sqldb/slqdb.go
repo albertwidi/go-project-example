@@ -61,10 +61,6 @@ func Connect(ctx context.Context, driver, dsn string, connOpts *ConnectOptions) 
 		return nil, err
 	}
 
-	if err := db.PingContext(ctx); err != nil {
-		return nil, err
-	}
-
 	db.SetMaxOpenConns(opts.MaxOpenConnections)
 	db.SetMaxIdleConns(opts.MaxIdleConnections)
 	db.SetConnMaxLifetime(opts.ConnectionMaxLifetime)

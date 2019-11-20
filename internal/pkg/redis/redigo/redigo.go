@@ -3,6 +3,7 @@ package redigo
 import (
 	"context"
 	"errors"
+	"github.com/albertwidi/go_project_example/internal/pkg/redis"
 
 	redigo "github.com/gomodule/redigo/redis"
 )
@@ -30,10 +31,6 @@ func New(ctx context.Context, address string, config *Config) (*Redigo, error) {
 	r := Redigo{
 		pool: pool,
 	}
-
-	if _, err := r.Ping(ctx); err != nil {
-		return nil, err
-	}
 	return &r, nil
 }
 
@@ -55,7 +52,7 @@ func (rdg *Redigo) do(ctx context.Context, cmd string, args ...interface{}) (int
 
 // Ping the redis
 func (rdg *Redigo) Ping(ctx context.Context) (string, error) {
-	val, err := rdg.do(ctx, "PING")
+	val, err := rdg.do(ctx, redis.CommandPing)
 	return redigo.String(val, err)
 }
 

@@ -77,8 +77,8 @@ func ParseFile(configFile string, dest interface{}, envFiles ...string) error {
 	return nil
 }
 
-// Print configuration
+// Print configuration in json schema
 // all config with tag=protected:1 will be hidden from the print
 func Print(v interface{}) {
-	
+
 }

@@ -32,9 +32,10 @@ func New(address string, usecases Usecases) (*Server, error) {
 		return nil, err
 	}
 
-	userHandlers := userhandler.New(usecases.user)
+	// init all handlers
+	userHandler := userhandler.New(usecases.user)
 	handlers := Handlers{
-		user: userHandlers,
+		user: userHandler,
 	}
 
 	s := Server{

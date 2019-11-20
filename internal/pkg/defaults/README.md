@@ -3,7 +3,7 @@
 Defaults is a library to set default value to a struct using a struct `tag`. Struct tag `default:"value"` is used to replace struct field value.
 The field only set with default value if the field value is empty or zero,  which means:
 -  `0` for number 
--  `` for string
+-  `""` for string
 
 ## Boolean is not supported
 

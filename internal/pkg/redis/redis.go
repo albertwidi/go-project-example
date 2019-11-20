@@ -37,3 +37,29 @@ type Redis interface {
 	LRem(ctx context.Context, key, value string, count int) (int, error)
 	LTrim(ctd context.Context, key string, start, stop int) (string, error)
 }
+
+// list of redis command
+const (
+	CommandPing    = "PING"
+	CommandExpire  = "EXPIRE"
+	CommandSet     = "SET"
+	CommandGet     = "GET"
+	CommandSetNX   = "SETNX"
+	CommandSetEX   = "SETEX"
+	CommandMSet    = "MSET"
+	CommandMGet    = "MGET"
+	CommandHSet    = "HSET"
+	CommandHGet    = "HGET"
+	CommandHGetAll = "HGETALL"
+	CommandHMSet   = "HMSET"
+	CommandHMGet   = "HMGET"
+	CommandHDel    = "HDEL"
+	CommandLLen    = "LLEN"
+	CommandLIndex  = "LINDEX"
+	CommandLSET    = "LSET"
+	CommandLPush   = "LPUSH"
+	CommandLPushX  = "LPUSHX"
+	CommandLPop    = "LPOP"
+	CommandLRem    = "LREM"
+	CommandLTrim   = "LTRIM"
+)
