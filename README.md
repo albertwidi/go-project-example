@@ -2,7 +2,7 @@
 
 This is an example for Go project.
 
-The motivation behind this project is to learn and broaden my limited knowledge about programming, project design, concepts and algorithm. In this project, I will try to implement business logic/flow into Go program for various use-cases.
+The motivation behind this project is to learn and broaden my limited knowledge about programming, project design, concepts, algorithm, and especially, Go itself. In this project, I will try to implement business logic/flow into Go program for various use-cases.
 
 ## Designing Project For Industrial Programming
 
@@ -145,13 +145,11 @@ Or, imagine if you have many different configurations(with various reasons/decis
 - project.staging.config2.toml
 - project.production.config2.toml
 
-Things got very messy indeed.
-
-Multiple configurations with environment state directive, usually used to address different configurations in each environments. For example, when a database is pointing to one instance in `dev` but not in `staging`, which completely different. Or, when doing doing some migration we want to get rid of some configuration variables in some environment. This all are valid use-cases, and the given solution by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, then turning into problems for the maintainers.
+Multiple configurations with environment state directive, usually used to address different configurations in each environments. For example, when a database is pointing to one instance in `dev` but not in `staging`, which completely different. Or, when doing some migration we want to get rid of some configuration variables in some environment. This all are valid use-cases, and the given solution by using the environment state for configuration directive works. Usually, until the configuration is become too long and different for each environments, then turning into problems for the maintainers.
 
 As sometimes we need to run with some special configuration in non-production or in production environment, this might be able to achieved by using the combination of flags and configuration-file. Variables from flags and configuration is more clear and straightforward than `IsEnvrionment`, and can be used to checked the design choices, do we have too many hacks? Why? For whatever reason, the flags/configuration variables between environments should stay the same, to maintain consistency.
 
-But, in the end, it depends on each project policies and governance.
+But, in the end, it depends/back to each project policies and governance.
 
 ## Project Structure
 
@@ -191,6 +189,8 @@ Admin server is a server for administrational purpose. On by default and should 
 Use-case for admin server:
 
 - `/metrics` endpoint
+- `/resource/status` endpoint
+- pprof endpoint
 - check current configuration value
 
 **Debug Server**
@@ -229,6 +229,40 @@ In Go, `errors` are value. This is one of the of the Go's [proverbs](https://go-
 While handling `error` in Go is very easy and straightforward, the `error` itself is sometimes lacking of context. 
 
 To be continued.
+
+## Misc
+
+### Set Default Timezone
+
+To set default timezone in go programs, we can set an environment variable named `TZ` when running or in our programs before `time` package get called. The value of `TZ` is the location of Timezone. In my case, it is `Asia/Jakarta`.
+
+For example, in code:
+
+```go
+os.SetEnv("TZ", "Asia/Jakarta")
+```
+
+or, during execution:
+
+```shell
+TZ=Asia/Jakarta ./yourbin
+```
+
+**What about more than one timezone in a single application?**
+
+You can always use `time` package function called `time.LoadLocation` to create spesific timezone/location time object.
+
+For example:
+
+```go
+loc, err := time.LoadLocation("Asia/Jakarta")
+if err != nil {
+    // handle the error
+}
+
+// this function produce time.Now specified to loc or Asia/Jakarta
+nowInLoc := time.Now().In(loc)
+```
 
 ## References
 

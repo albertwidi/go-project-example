@@ -36,8 +36,7 @@ func (df *debugFlag) Set(value string) error {
 	fs := flag.CommandLine
 	fs.BoolVar(&df.DevServer, "devserver", false, "for activating dev server")
 	fs.BoolVar(&df.TestConfig, "testconfig", false, "for testing the project configuration")
-	fs.Parse(regex.FindAllString(value, -1))
-	return nil
+	return fs.Parse(regex.FindAllString(value, -1))
 }
 
 type envFileFlag struct {

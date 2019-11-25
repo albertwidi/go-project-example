@@ -1,6 +1,10 @@
 package server
 
-import "context"
+import (
+	"context"
+	requestctx "github.com/albertwidi/go_project_example/internal/pkg/context"
+	"github.com/albertwidi/go_project_example/internal/pkg/router"
+)
 
 // Addresses of server
 type Addresses struct {
@@ -31,4 +35,11 @@ type Usecases struct {
 // New server
 func New() {
 
+}
+
+// Metrics is a middleware for metrics monitoring
+func Metrics(next router.HandlerFunc) router.HandlerFunc {
+	return func(rctx *requestctx.RequestContext) error {
+		return nil
+	}
 }

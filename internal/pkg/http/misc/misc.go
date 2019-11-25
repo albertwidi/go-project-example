@@ -1,3 +1,5 @@
+// misc contains function from prometheus promhttp package
+
 package misc
 
 import (
@@ -35,7 +37,6 @@ func SanitizeMethod(m string) string {
 // If the wrapped http.Handler has not set a status code, i.e. the value is
 // currently 0, santizeCode will return 200, for consistency with behavior in
 // the stdlib.
-// function from prometheus promhttp pakcage
 func SanitizeCode(s int) string {
 	switch s {
 	case 100:
@@ -138,7 +139,6 @@ func SanitizeCode(s int) string {
 }
 
 // ComputeApproximateRequestSize for computing the http request size
-// function from prometheus promhttp pakcage
 func ComputeApproximateRequestSize(r *http.Request) int {
 	s := 0
 	if r.URL != nil {
