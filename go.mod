@@ -13,6 +13,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.1.1
 	github.com/oklog/ulid v1.3.1
+	github.com/prometheus/client_golang v1.0.0
 	github.com/prometheus/common v0.7.0
 	github.com/rs/zerolog v1.16.0
 	github.com/sirupsen/logrus v1.4.2

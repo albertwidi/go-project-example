@@ -13,6 +13,7 @@ import (
 type RequestContext struct {
 	httpResponseWriter http.ResponseWriter
 	httpRequest        *http.Request
+	address            string
 	path               string
 	method             string
 }
@@ -21,6 +22,7 @@ type RequestContext struct {
 type Constructor struct {
 	HTTPResponseWriter http.ResponseWriter
 	HTTPRequest        *http.Request
+	Address            string
 	Path               string
 	Method             string
 }
@@ -30,10 +32,22 @@ func New(constructor Constructor) *RequestContext {
 	rc := RequestContext{
 		httpResponseWriter: constructor.HTTPResponseWriter,
 		httpRequest:        constructor.HTTPRequest,
+		address:            constructor.Address,
 		path:               constructor.Path,
 		method:             constructor.Method,
 	}
 	return &rc
+}
+
+// Address return the address where request arrived to
+func (rc *RequestContext) Address() string {
+	return rc.address
+}
+
+// SetResponseWriter to set a default http.ResponseWriter for the context
+// note that context is unique for every request
+func (rc *RequestContext) SetResponseWriter(w http.ResponseWriter) {
+	rc.httpResponseWriter = w
 }
 
 // Request return http request from request context
@@ -46,6 +60,11 @@ func (rc *RequestContext) RequestHeader() http.Header {
 	return rc.httpRequest.Header
 }
 
+// RequestHandler return handler name of the request
+func (rc *RequestContext) RequestHandler() string {
+	return rc.path
+}
+
 // Context return the http.Request.Context
 func (rc *RequestContext) Context() context.Context {
 	return rc.httpRequest.Context()
@@ -56,7 +75,7 @@ func (rc *RequestContext) ResponseWriter() http.ResponseWriter {
 	return rc.httpResponseWriter
 }
 
-// JSON to create a json response
+// JSON to create a json response via http response lib
 func (rc *RequestContext) JSON() *response.JSONResponse {
 	j := response.JSON(rc.httpResponseWriter)
 	return j

@@ -1,5 +1,4 @@
 // this package provide delagation of http.ResponseWriter for monitoring purpose
-// different from prometheus delegation package, this package only support pure http.ResponseWriter delegation
 
 package monitoring
 

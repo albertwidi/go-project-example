@@ -93,9 +93,10 @@ func (cmw *ChainedMiddlewares) Options(path string, handler HandlerFunc) {
 
 // Router struct
 type Router struct {
-	router *mux.Router
-	route  []*mux.Route
-	mw     []MiddlewareFunc
+	router  *mux.Router
+	route   []*mux.Route
+	mw      []MiddlewareFunc
+	address string
 	// options
 	options *Options
 }
@@ -106,7 +107,7 @@ type Options struct {
 }
 
 // New router
-func New(options *Options) *Router {
+func New(address string, options *Options) *Router {
 	if options == nil {
 		options = &Options{
 			Debug: false,
@@ -115,6 +116,7 @@ func New(options *Options) *Router {
 
 	r := Router{
 		router:  mux.NewRouter(),
+		address: address,
 		options: options,
 	}
 	return &r
@@ -222,6 +224,7 @@ func (r *Router) handleRoute(route *mux.Route, method string, handler HandlerFun
 		requestContext := requestcontext.New(requestcontext.Constructor{
 			HTTPResponseWriter: writer,
 			HTTPRequest:        request,
+			Address:            r.address,
 			Path:               pathTemplate,
 			Method:             misc.SanitizeMethod(method),
 		})
