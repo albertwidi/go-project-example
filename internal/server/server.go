@@ -13,7 +13,9 @@ import (
 
 // Runner server interface
 type Runner interface {
-	Run() error
+	// Run and pass mandatory middlewares when running each server
+	Run(middlewares ...router.MiddlewareFunc) error
+	Shutdown(ctx context.Context) error
 }
 
 // Addresses of server
@@ -25,7 +27,8 @@ type Addresses struct {
 
 // Server configuration
 type Server struct {
-	Address string
+	runners []Runner
+	errChan chan error
 
 	// prometheus vector object for metrics
 	countervec      *prometheus.CounterVec
@@ -34,17 +37,30 @@ type Server struct {
 }
 
 // Run the server
-func (s *Server) run() error {
-	return nil
+func (s *Server) Run() error {
+	for _, r := range s.runners {
+		go func(r Runner) {
+			if err := r.Run(s.Metrics); err != nil {
+				s.errChan <- err
+			}
+		}(r)
+	}
+
+	for {
+		err := <-s.errChan
+		if err != nil {
+			return err
+		}
+	}
 }
 
 // Shutdown the server
-func (s *Server) shutdown(ctx context.Context) error {
+// TODO: check whether one of the runners return error when shutting down
+func (s *Server) Shutdown(ctx context.Context) error {
+	for _, r := range s.runners {
+		r.Shutdown(ctx)
+	}
 	return nil
-}
-
-// Usecases for the server
-type Usecases struct {
 }
 
 // New server
@@ -85,6 +101,7 @@ func New(runner ...Runner) (*Server, error) {
 	}
 
 	s := Server{
+		errChan:         make(chan error, 1),
 		countervec:      countervec,
 		durationhist:    durationhist,
 		requestsizehist: requestsizehist,

@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/albertwidi/go_project_example/debug/user"
+	"github.com/albertwidi/go_project_example/internal/pkg/router"
 	userhandler "github.com/albertwidi/go_project_example/internal/server/debug/user"
 )
 
@@ -18,6 +19,8 @@ type Server struct {
 	address    string
 	httpServer *http.Server
 	listener   net.Listener
+	// handlers
+	handlers Handlers
 }
 
 // Usecases of debug server
@@ -42,14 +45,15 @@ func New(address string, usecases Usecases) (*Server, error) {
 		address:    address,
 		listener:   listener,
 		httpServer: &http.Server{},
+		handlers:   handlers,
 	}
-	// attatch all handlers to http server
-	s.httpServer.Handler = s.handler(handlers)
 	return &s, nil
 }
 
-// Run dev server
-func (s *Server) Run() error {
+// Run debug server
+func (s *Server) Run(middlewares ...router.MiddlewareFunc) error {
+	// initiate httpserver handler
+	s.httpServer.Handler = s.handler(s.handlers, middlewares...)
 	return s.httpServer.Serve(s.listener)
 }
 

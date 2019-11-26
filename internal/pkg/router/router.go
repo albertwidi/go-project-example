@@ -133,8 +133,10 @@ func (r *Router) Routes() []*mux.Route {
 }
 
 // Use middleware
-func (r *Router) Use(handler MiddlewareFunc) {
-	r.mw = append(r.mw, handler)
+func (r *Router) Use(middlewares ...MiddlewareFunc) {
+	for _, m := range middlewares {
+		r.mw = append(r.mw, m)
+	}
 }
 
 // HandleFunc function
