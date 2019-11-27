@@ -51,12 +51,16 @@ func (s *Server) Run() error {
 		if err != nil {
 			return err
 		}
+		return nil
 	}
 }
 
 // Shutdown the server
 // TODO: check whether one of the runners return error when shutting down
 func (s *Server) Shutdown(ctx context.Context) error {
+	// send nil error to get the server out of the loop
+	s.errChan <- nil
+
 	for _, r := range s.runners {
 		r.Shutdown(ctx)
 	}

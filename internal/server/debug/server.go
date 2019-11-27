@@ -53,7 +53,10 @@ func New(address string, usecases Usecases) (*Server, error) {
 // Run debug server
 func (s *Server) Run(middlewares ...router.MiddlewareFunc) error {
 	// initiate httpserver handler
-	s.httpServer.Handler = s.handler(s.handlers, middlewares...)
+	r := router.New(s.address, nil)
+	r.Use(middlewares...)
+	s.registerHandlers(r)
+	s.httpServer.Handler = r
 	return s.httpServer.Serve(s.listener)
 }
 

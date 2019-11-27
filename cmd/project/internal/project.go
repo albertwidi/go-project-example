@@ -2,12 +2,16 @@ package project
 
 import (
 	"context"
+	"errors"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/albertwidi/go_project_example/internal/config"
 	"github.com/albertwidi/go_project_example/internal/kothak"
 	lg "github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/zap"
+	"github.com/albertwidi/go_project_example/internal/server"
 )
 
 // Flags of project
@@ -69,11 +73,34 @@ func Run(f Flags) error {
 		return err
 	}
 
-	// servers
+	// initiate new servers
 	newMainServer()
-	newDebugServer(repo)
+	debugServerAddr := projectConfig.Servers.Debug.Address
+	debugServer, err := newDebugServer(debugServerAddr, repo)
+	if err != nil {
+		return err
+	}
 	newAdminServer()
 
+	s, err := server.New(debugServer)
+	if err != nil {
+		return err
+	}
+
+	errChan := make(chan error, 1)
+	errChan <- s.Run()
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGQUIT)
+
+	select {
+	case err := <-errChan:
+		return err
+	case sig := <-sigChan:
+		switch sig {
+		case syscall.SIGTERM, syscall.SIGQUIT:
+			return errors.New("project: receiving signal to terminate program")
+		}
+	}
 	return nil
 }
 
