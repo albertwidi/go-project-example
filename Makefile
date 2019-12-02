@@ -19,7 +19,6 @@ testconfig:
 		-config_file=./project.config.toml \
 		-env_file=./project.env.toml \
 		-debug=-testconfig=1-devserver=1 \
-		-log=-file=./projectlog/project.log-level=info-color=1 \
 		-tz=Asia/Jakarta
 
 dbup:

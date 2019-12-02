@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	exitCode := 0
 	f := project.Flags{}
 	flag.StringVar(&f.ConfigurationFile, "config_file", "./aha.config.toml", "configuration file of the project")
 	flag.Var(&f.EnvironmentFile, "env_file", "helper file for environment variable configuration")
@@ -17,7 +18,8 @@ func main() {
 	flag.Parse()
 
 	if err := project.Run(f); err != nil {
+		exitCode = 1
 		fmt.Printf("%v", err)
-		os.Exit(1)
 	}
+	os.Exit(exitCode)
 }

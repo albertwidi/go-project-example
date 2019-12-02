@@ -3,7 +3,6 @@ package logrus
 import (
 	"io"
 	"os"
-	"path/filepath"
 
 	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
 	"github.com/sirupsen/logrus"
@@ -66,11 +65,7 @@ func newLogger(config *logger.Config) (*logrus.Logger, error) {
 
 	// set writer to file if config.LogFile is not empty
 	if config.LogFile != "" {
-		err := os.MkdirAll(filepath.Dir(config.LogFile), 0744)
-		if err != nil && err != os.ErrExist {
-			return nil, err
-		}
-		file, err := os.OpenFile(config.LogFile, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+		file, err := logger.CreateLogFile(config.LogFile)
 		if err != nil {
 			return nil, err
 		}

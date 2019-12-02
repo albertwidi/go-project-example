@@ -52,7 +52,6 @@ func newLogger(config *logger.Config) (*log.Logger, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		writers := io.MultiWriter(os.Stderr, file)
 		stdLogger.SetOutput(writers)
 	}

@@ -19,6 +19,8 @@ type Redis interface {
 	SetNX(ctx context.Context, key string, value interface{}, expire int) (int, error)
 	SetEX(ctx context.Context, key string, value interface{}, expire int) (string, error)
 	Get(ctx context.Context, key string) (string, error)
+	Delete(ctx context.Context, key string) (int, error)
+	Expire(ctx context.Context, key string, duration int) (int, error)
 	MSet(ctx context.Context, pairs ...interface{}) (string, error)
 	MGet(ctx context.Context, keys ...string) ([]string, error)
 	HSet(ctx context.Context, key, field string, value interface{}) (int, error)
@@ -44,6 +46,7 @@ const (
 	CommandExpire  = "EXPIRE"
 	CommandSet     = "SET"
 	CommandGet     = "GET"
+	CommandDelete  = "DEL"
 	CommandSetNX   = "SETNX"
 	CommandSetEX   = "SETEX"
 	CommandMSet    = "MSET"

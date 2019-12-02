@@ -2,20 +2,20 @@ package otp
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
 
-	authentity "github.com/albertwidi/go_project_example/internal/entity/auth"
+	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
 	otpentity "github.com/albertwidi/go_project_example/internal/entity/otp"
 	"github.com/albertwidi/go_project_example/internal/pkg/conv"
-	"github.com/albertwidi/go_project_example/internal/pkg/errors"
 	"github.com/albertwidi/go_project_example/internal/pkg/redis"
 )
 
 // Repository for otp
 type Repository struct {
-	redis *redis.Redis
+	redis redis.Redis
 }
 
 // New otp repo
@@ -38,7 +38,7 @@ func (r Repository) Save(ctx context.Context, otp otpentity.OTP) error {
 
 	// expire the key
 	// TODO: re-think about the expiration, as of now one expire for all otp
-	_, err = r.redis.Expire(otpKey, int(otpentity.OTPKeyExpiry))
+	_, err = r.redis.Expire(ctx, otpKey, int(otpentity.OTPKeyExpiry))
 	return err
 }
 
@@ -48,7 +48,7 @@ func (r Repository) SetLast(ctx context.Context, otp otpentity.OTP) error {
 	index := 0
 
 	flattenedotp := r.flattenOTP(otp)
-	_, err := r.redis.LSet(ctx, otpKey, index, flattenedotp)
+	_, err := r.redis.LSet(ctx, otpKey, flattenedotp, index)
 	return err
 }
 
@@ -91,7 +91,7 @@ func (r Repository) IncreaseValidateAttempt(ctx context.Context, uniqueID string
 	}
 
 	// set the expiry of validate attempt
-	if _, err := r.redis.Expire(valKey, int(durationExpireVAlidateAttempt)); err != nil {
+	if _, err := r.redis.Expire(ctx, valKey, int(durationExpireVAlidateAttempt)); err != nil {
 		return 0, err
 	}
 
@@ -103,7 +103,7 @@ func (r Repository) IncreaseValidateAttempt(ctx context.Context, uniqueID string
 func (r Repository) DeleteValidateAttempt(ctx context.Context, uniqueID string) error {
 	valKey := generateOtpValidateAttemptKey(uniqueID)
 
-	_, err := r.redis.Delete(valKey)
+	_, err := r.redis.Delete(ctx, valKey)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func (r Repository) DeleteValidateAttempt(ctx context.Context, uniqueID string) 
 // DeleteAll otp from a given user with uniqueID and authentication action
 func (r Repository) DeleteAll(ctx context.Context, uniqueID string, action authentity.Action) error {
 	otpKey := generateOtpKey(uniqueID, action)
-	_, err := r.redis.Delete(otpKey)
+	_, err := r.redis.Delete(ctx, otpKey)
 	if err != nil {
 		return err
 	}
@@ -135,7 +135,7 @@ func (r Repository) deflateOTP(flattenedOTP string) (otpentity.OTP, error) {
 
 	val := strings.Split(flattenedOTP, ":")
 	if len(val) != 6 {
-		return otp, errors.E("not a valid otp format")
+		return otp, errors.New("not a valid otp format")
 	}
 
 	otp.UniqueID = val[0]

@@ -32,7 +32,11 @@ type Kothak struct {
 	dbs         map[string]*sqldb.DB
 	rds         map[string]redis.Redis
 	logger      logger.Logger
-	mutex       sync.Mutex
+	// this mutex is used in two place
+	// the usage shared because the usage is not collide
+	// 1. when we initialize all the connections
+	// 2. when we want to get the connection
+	mutex sync.Mutex
 }
 
 func (k *Kothak) setSQLDB(name string, db *sqldb.DB) {
@@ -292,6 +296,8 @@ func (k *Kothak) CloseAll() error {
 
 // GetSQLDB from kothak object
 func (k *Kothak) GetSQLDB(dbname string) (*sqldb.DB, error) {
+	k.mutex.Lock()
+	defer k.mutex.Unlock()
 	i, ok := k.dbs[dbname]
 	if !ok {
 		err := fmt.Errorf("kothak: sql database with name %s does not exists", dbname)
@@ -302,15 +308,17 @@ func (k *Kothak) GetSQLDB(dbname string) (*sqldb.DB, error) {
 
 // MustGetSQLDB from kothak object
 func (k *Kothak) MustGetSQLDB(dbname string) *sqldb.DB {
-	i, ok := k.dbs[dbname]
-	if !ok {
-		k.logger.Fatalf("kothak: sql database with name %s does not exists", dbname)
+	db, err := k.GetSQLDB(dbname)
+	if err != nil {
+		k.logger.Fatal(err)
 	}
-	return i
+	return db
 }
 
 // GetRedis from kothak object
 func (k *Kothak) GetRedis(redisname string) (redis.Redis, error) {
+	k.mutex.Lock()
+	defer k.mutex.Unlock()
 	i, ok := k.rds[redisname]
 	if !ok {
 		err := fmt.Errorf("kothak: redis with name %s does not exists", redisname)
@@ -321,15 +329,17 @@ func (k *Kothak) GetRedis(redisname string) (redis.Redis, error) {
 
 // MustGetRedis from kothak object
 func (k *Kothak) MustGetRedis(redisname string) redis.Redis {
-	i, ok := k.rds[redisname]
-	if !ok {
-		k.logger.Fatalf("Kothak: redis with name %s does not exists", redisname)
+	r, err := k.GetRedis(redisname)
+	if err != nil {
+		k.logger.Fatal(err)
 	}
-	return i
+	return r
 }
 
 // GetObjectStorage from kothak object
 func (k *Kothak) GetObjectStorage(objStorageName string) (*objectstorage.Storage, error) {
+	k.mutex.Lock()
+	defer k.mutex.Unlock()
 	i, ok := k.objStorages[objStorageName]
 	if !ok {
 		err := fmt.Errorf("kothak: object storage with name %s does not exists", objStorageName)
@@ -340,9 +350,9 @@ func (k *Kothak) GetObjectStorage(objStorageName string) (*objectstorage.Storage
 
 // MustGetObjectStorage from kothak object
 func (k *Kothak) MustGetObjectStorage(objStorageName string) *objectstorage.Storage {
-	i, ok := k.objStorages[objStorageName]
-	if !ok {
-		k.logger.Fatalf("kothak: object storage with name %s does not exists", objStorageName)
+	o, err := k.GetObjectStorage(objStorageName)
+	if err != nil {
+		k.logger.Fatal(err)
 	}
-	return i
+	return o
 }

@@ -45,6 +45,24 @@ func (rdg *Redigo) Get(ctx context.Context, key string) (string, error) {
 	return resp, err
 }
 
+// Delete key
+func (rdg *Redigo) Delete(ctx context.Context, key string) (int, error) {
+	resp, err := redigo.Int(rdg.do(ctx, redis.CommandDelete, key))
+	if err != nil && !rdg.IsErrNil(err) {
+		return 0, err
+	}
+	return resp, err
+}
+
+// Expire to set TTL to key
+func (rdg *Redigo) Expire(ctx context.Context, key string, duration int) (int, error) {
+	resp, err := redigo.Int(rdg.do(ctx, redis.CommandExpire, key, duration))
+	if err != nil && !rdg.IsErrNil(err) {
+		return 0, err
+	}
+	return resp, err
+}
+
 // MSet keys and values
 // please use basic types only (no struct, array, or map) for arguments
 func (rdg *Redigo) MSet(ctx context.Context, pairs ...interface{}) (string, error) {

@@ -14,7 +14,7 @@ func newRepositories(resources *kothak.Kothak) (*Repositories, error) {
 	r := Repositories{}
 
 	// iamge repository
-	imageRepo := image.New(resources.MustGetRedis("image-private"))
+	imageRepo := image.New(resources.MustGetRedis("image"))
 	r.Image = imageRepo
 	return &r, nil
 }

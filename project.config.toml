@@ -56,3 +56,6 @@
         [[resources.redis.connect]]
         name = "session"
         address = "${REDIS_SESSION_ADDRESS}"
+        [[resources.redis.connect]]
+        name = "image"
+        address = "${REDIS_IMAGE_ADDRESS}"

@@ -2,6 +2,7 @@ package amenities
 
 import (
 	"context"
+	"github.com/lib/pq"
 	"time"
 
 	entity "github.com/albertwidi/go_project_example/internal/entity/amenities"
@@ -14,6 +15,7 @@ type Repository struct {
 }
 
 // Amenities struct
+// @database: project, table: amenities
 type Amenities struct {
 	ID        string      `db:"id"`
 	Name      string      `db:"name"`

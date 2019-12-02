@@ -18,13 +18,6 @@ type Runner interface {
 	Shutdown(ctx context.Context) error
 }
 
-// Addresses of server
-type Addresses struct {
-	Main  string
-	Admin string
-	Debug string
-}
-
 // Server configuration
 type Server struct {
 	runners []Runner
@@ -37,7 +30,7 @@ type Server struct {
 }
 
 // Run the server
-func (s *Server) Run() error {
+func (s *Server) Run() chan error {
 	for _, r := range s.runners {
 		go func(r Runner) {
 			if err := r.Run(s.Metrics); err != nil {
@@ -45,14 +38,15 @@ func (s *Server) Run() error {
 			}
 		}(r)
 	}
+	return s.errChan
 
-	for {
-		err := <-s.errChan
-		if err != nil {
-			return err
-		}
-		return nil
-	}
+	// for {
+	// 	err := <-s.errChan
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	return nil
+	// }
 }
 
 // Shutdown the server

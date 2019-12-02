@@ -38,7 +38,7 @@ func (r Repository) GetTempPath(ctx context.Context, id string) (string, error) 
 	key := createImageKey(id)
 	out, err := r.redis.Get(ctx, key)
 	if err != nil {
-		if redis.IsErrNil(err) {
+		if r.redis.IsErrNil(err) {
 			return "", imageentity.ErrTempPathNotFound
 		}
 		return "", err

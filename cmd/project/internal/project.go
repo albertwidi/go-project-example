@@ -3,9 +3,11 @@ package project
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/albertwidi/go_project_example/internal/config"
 	"github.com/albertwidi/go_project_example/internal/kothak"
@@ -46,7 +48,7 @@ func Run(f Flags) error {
 		UseColor: projectConfig.Log.Color,
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("run: error when initiating logger: %w", err)
 	}
 
 	if f.Debug.TestConfig {
@@ -61,11 +63,6 @@ func Run(f Flags) error {
 	}
 	// close all connections when program exiting
 	defer resources.CloseAll()
-
-	// exit early if we only test config, do not run the server
-	if f.Debug.TestConfig {
-		return nil
-	}
 
 	// repositories
 	repo, err := newRepositories(resources)
@@ -86,20 +83,32 @@ func Run(f Flags) error {
 	if err != nil {
 		return err
 	}
-
-	errChan := make(chan error, 1)
-	errChan <- s.Run()
+	// run the server
+	errChan := s.Run()
 	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
+
+	// exit early if we only test config, do not run the server
+	testChan := make(chan struct{}, 1)
+	if f.Debug.TestConfig {
+		logger.Infoln("testing: giving time for server to run")
+		go func() {
+			time.Sleep(time.Second * 5)
+			testChan <- struct{}{}
+		}()
+	}
 
 	select {
 	case err := <-errChan:
 		return err
 	case sig := <-sigChan:
 		switch sig {
-		case syscall.SIGTERM, syscall.SIGQUIT:
-			return errors.New("project: receiving signal to terminate program")
+		case syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT:
+			return errors.New("project: receive signal to terminate program")
 		}
+	case <-testChan:
+		logger.Infoln("testing: test completed successfully")
+		return nil
 	}
 	return nil
 }

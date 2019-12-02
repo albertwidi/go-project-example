@@ -28,7 +28,6 @@ func New(config *logger.Config) (*Logger, error) {
 	if err := l.initLogger(config); err != nil {
 		return nil, err
 	}
-
 	return &l, nil
 }
 
@@ -44,6 +43,9 @@ func (l *Logger) initLogger(config *logger.Config) error {
 
 	errAndOutputPaths := []string{"stderr"}
 	if config.LogFile != "" {
+		if _, err := logger.CreateLogFile(config.LogFile); err != nil {
+			return err
+		}
 		errAndOutputPaths = append(errAndOutputPaths, config.LogFile)
 	}
 
@@ -61,7 +63,6 @@ func (l *Logger) initLogger(config *logger.Config) error {
 	if err != nil {
 		return err
 	}
-
 	l.logger = z
 	l.sugared = z.Sugar()
 	l.zapconfig = zapConfig
