@@ -7,6 +7,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    # services:
+    #   postgres:
+    #     image: postgres:10.8
+    #     env:
+    #       POSTGRES_USER: projectdb 
+    #       POSTGRES_PASSWORD: projectdb 
+    #     ports:
+    #     # will assign a random free host port
+    #     - 5444/tcp
+    #     # needed because the postgres container does not provide a healthcheck
+    #     options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    #   redis:
+    #     image: redis
+    #     ports:
+    #     - 6379/tcp
+    #     options: --entrypoint redis-server
+
     - name: Set up Go 1.13
       uses: actions/setup-go@v1
       with:
@@ -29,3 +47,6 @@ jobs:
 
     - name: Build
       run: go build -v .
+
+    - name: Testconfig
+      run: make testconfig

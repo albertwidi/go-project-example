@@ -79,7 +79,7 @@ func Run(f Flags) error {
 	}
 	newAdminServer()
 
-	s, err := server.New(debugServer)
+	s, err := server.New(projectConfig.Servers.Admin.Address, debugServer)
 	if err != nil {
 		return err
 	}
@@ -87,8 +87,7 @@ func Run(f Flags) error {
 	errChan := s.Run()
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
-
-	// exit early if we only test config, do not run the server
+	// exit early if we only test config
 	testChan := make(chan struct{}, 1)
 	if f.Debug.TestConfig {
 		logger.Infoln("testing: giving time for server to run")

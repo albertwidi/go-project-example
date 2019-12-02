@@ -21,7 +21,7 @@ type responseWriterDelegator struct {
 
 // Status return the status of WriteHeader
 func (rwdg *responseWriterDelegator) Status() int {
-	return rwdg.Status()
+	return rwdg.status
 }
 
 func (rwdg *responseWriterDelegator) Written() int64 {

@@ -6,7 +6,7 @@
     [servers.main]
     address = "${MAIN_SERVER_ADDRESS}"
     [servers.debug]
-    address = "${DEV_SERVER_ADDRESS}"
+    address = "${DEBUG_SERVER_ADDRESS}"
     [servers.admin]
     address = "${ADMIN_SERVER_ADDRESS}"
 

@@ -11,5 +11,5 @@ type Handlers struct {
 }
 
 func (s *Server) registerHandlers(r *router.Router) {
-	r.Get("/someting", s.handlers.user.BypassLogin)
+	r.Get("/something", s.handlers.user.BypassLogin)
 }

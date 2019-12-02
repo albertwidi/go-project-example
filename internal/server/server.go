@@ -39,14 +39,6 @@ func (s *Server) Run() chan error {
 		}(r)
 	}
 	return s.errChan
-
-	// for {
-	// 	err := <-s.errChan
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	return nil
-	// }
 }
 
 // Shutdown the server
@@ -62,7 +54,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 }
 
 // New server
-func New(runner ...Runner) (*Server, error) {
+func New(adminServerAddress string, runners ...Runner) (*Server, error) {
 	// initialize monitoring metrics
 	countervec := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
@@ -97,13 +89,22 @@ func New(runner ...Runner) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	s := Server{
 		errChan:         make(chan error, 1),
 		countervec:      countervec,
 		durationhist:    durationhist,
 		requestsizehist: requestsizehist,
+		runners:         runners,
 	}
+
+	if s.runners == nil {
+		s.runners = []Runner{}
+	}
+	adm, err := s.newAdminServer(adminServerAddress)
+	if err != nil {
+		return nil, err
+	}
+	s.runners = append(s.runners, adm)
 	return &s, nil
 }
 
@@ -111,20 +112,23 @@ func New(runner ...Runner) (*Server, error) {
 func (s *Server) Metrics(next router.HandlerFunc) router.HandlerFunc {
 	return func(rctx *requestctx.RequestContext) error {
 		now := time.Now()
-
-		d := httpmonitoring.NewResponseWriterDelegator(rctx.ResponseWriter())
-		rctx.SetResponseWriter(d)
 		err := next(rctx)
 
+		httpStatus := 0
 		duration := time.Since(now).Seconds()
 		requestSize := httpmisc.ComputeApproximateRequestSize(rctx.Request())
 		requestMethod := rctx.Request().Method
 		handlerName := rctx.RequestHandler()
 		address := rctx.Address()
 
-		s.countervec.WithLabelValues(address, httpmisc.SanitizeCode(d.Status()), requestMethod, handlerName).Inc()
-		s.durationhist.WithLabelValues(address, httpmisc.SanitizeCode(d.Status()), requestMethod, handlerName).Observe(duration)
-		s.requestsizehist.WithLabelValues(address, httpmisc.SanitizeCode(d.Status()), requestMethod, handlerName).Observe(float64(requestSize))
+		w := rctx.ResponseWriter()
+		d, ok := w.(httpmonitoring.Delegator)
+		if ok {
+			httpStatus = d.Status()
+		}
+		s.countervec.WithLabelValues(address, httpmisc.SanitizeCode(httpStatus), requestMethod, handlerName).Inc()
+		s.durationhist.WithLabelValues(address, httpmisc.SanitizeCode(httpStatus), requestMethod, handlerName).Observe(duration)
+		s.requestsizehist.WithLabelValues(address, httpmisc.SanitizeCode(httpStatus), requestMethod, handlerName).Observe(float64(requestSize))
 		return err
 	}
 }

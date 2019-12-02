@@ -7,6 +7,7 @@ import (
 
 	requestcontext "github.com/albertwidi/go_project_example/internal/pkg/context"
 	"github.com/albertwidi/go_project_example/internal/pkg/http/misc"
+	"github.com/albertwidi/go_project_example/internal/pkg/http/monitoring"
 	"github.com/gorilla/mux"
 )
 
@@ -223,8 +224,10 @@ func (r *Router) handleRoute(route *mux.Route, method string, handler HandlerFun
 	}
 
 	handlerFunc := func(writer http.ResponseWriter, request *http.Request) {
+		// always use http.ResponseWriter delegator for monitoring purpose
+		delegator := monitoring.NewResponseWriterDelegator(writer)
 		requestContext := requestcontext.New(requestcontext.Constructor{
-			HTTPResponseWriter: writer,
+			HTTPResponseWriter: delegator,
 			HTTPRequest:        request,
 			Address:            r.address,
 			Path:               pathTemplate,

@@ -44,12 +44,6 @@ func (rc *RequestContext) Address() string {
 	return rc.address
 }
 
-// SetResponseWriter to set a default http.ResponseWriter for the context
-// note that context is unique for every request
-func (rc *RequestContext) SetResponseWriter(w http.ResponseWriter) {
-	rc.httpResponseWriter = w
-}
-
 // Request return http request from request context
 func (rc *RequestContext) Request() *http.Request {
 	return rc.httpRequest

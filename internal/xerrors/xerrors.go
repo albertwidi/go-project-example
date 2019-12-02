@@ -92,7 +92,6 @@ func New(v ...interface{}) error {
 			continue
 		}
 	}
-
 	return xerr
 }
 
