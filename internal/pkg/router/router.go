@@ -205,7 +205,9 @@ func (r *Router) Options(path string, handler HandlerFunc) {
 
 // Handle request with pure http handler
 func (r *Router) Handle(path string, handler http.Handler) {
-	r.router.Handle(path, handler)
+	route := r.router.NewRoute()
+	route.Path(path)
+	r.handleRoute(route, path, handler)
 }
 
 // PathPrefix implementation of mux router
@@ -216,32 +218,45 @@ func (r *Router) PathPrefix(tpl string) *mux.Route {
 }
 
 // handleRoute function
-func (r *Router) handleRoute(route *mux.Route, method string, handler HandlerFunc) {
+// handleRoute always use http.ResponseWriter delegator
+func (r *Router) handleRoute(route *mux.Route, method string, hn interface{}) {
 	r.route = append(r.route, route)
 	pathTemplate, err := route.GetPathTemplate()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	handlerFunc := func(writer http.ResponseWriter, request *http.Request) {
-		// always use http.ResponseWriter delegator for monitoring purpose
-		delegator := monitoring.NewResponseWriterDelegator(writer)
-		requestContext := requestcontext.New(requestcontext.Constructor{
-			HTTPResponseWriter: delegator,
-			HTTPRequest:        request,
-			Address:            r.address,
-			Path:               pathTemplate,
-			Method:             misc.SanitizeMethod(method),
-		})
+	switch v := hn.(type) {
+	case HandlerFunc:
+		handlerFunc := func(writer http.ResponseWriter, request *http.Request) {
+			// always use http.ResponseWriter delegator for monitoring purpose
+			delegator := monitoring.NewResponseWriterDelegator(writer)
+			requestContext := requestcontext.New(requestcontext.Constructor{
+				HTTPResponseWriter: delegator,
+				HTTPRequest:        request,
+				Address:            r.address,
+				Path:               pathTemplate,
+				Method:             misc.SanitizeMethod(method),
+			})
 
-		h := handler
-		for i := range r.mw {
-			h = r.mw[len(r.mw)-1-i](h)
+			h := v
+			for i := range r.mw {
+				h = r.mw[len(r.mw)-1-i](h)
+			}
+			h(requestContext)
 		}
-		h(requestContext)
-	}
+		route.HandlerFunc(handlerFunc)
 
-	route.HandlerFunc(handlerFunc)
+	case http.HandlerFunc:
+		f := func(w http.ResponseWriter, req *http.Request) {
+			delegator := monitoring.NewResponseWriterDelegator(w)
+			v(delegator, req)
+		}
+		route.HandlerFunc(f)
+
+	case http.Handler:
+		route.Handler(v)
+	}
 }
 
 // ServeHTTP function

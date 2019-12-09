@@ -14,23 +14,23 @@ import (
 
 // DefaultConfig for the project
 type DefaultConfig struct {
-	Servers   DefaultServers `yaml:"servers" toml:"servers"`
-	Log       DefaultLog     `yaml:"log" toml:"log"`
-	Resources kothak.Config  `yaml:"resources" toml:"resources"`
+	Servers   DefaultServers `json:"servers" yaml:"servers" toml:"servers"`
+	Log       DefaultLog     `json:"log" yaml:"log" toml:"log"`
+	Resources kothak.Config  `json:"resources" yaml:"resources" toml:"resources"`
 }
 
 // DefaultLog config for the project
 type DefaultLog struct {
-	Level string `yaml:"level" toml:"level"`
-	File  string `yaml:"file" toml:"file"`
-	Color bool   `yaml:"color" toml:"color"`
+	Level string `json:"level" yaml:"level" toml:"level"`
+	File  string `json:"file" yaml:"file" toml:"file"`
+	Color bool   `json:"color" yaml:"color" toml:"color"`
 }
 
 // DefaultServers struct
 type DefaultServers struct {
-	Main  ServerConfig `yaml:"main" toml:"main"`
-	Debug ServerConfig `yaml:"debug" toml:"debug"`
-	Admin ServerConfig `yaml:"admin" toml:"admin"`
+	Main  ServerConfig `json:"main" yaml:"main" toml:"main"`
+	Debug ServerConfig `json:"debug" yaml:"debug" toml:"debug"`
+	Admin ServerConfig `json:"admin" yaml:"admin" toml:"admin"`
 }
 
 // ServerConfig struct

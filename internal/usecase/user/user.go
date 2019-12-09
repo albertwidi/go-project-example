@@ -14,6 +14,13 @@ type Usecase struct {
 type authUsecase interface {
 }
 
+type userRepository interface {
+	Create() error
+	Update() error
+	UpdateStatus() error
+	Remove() error
+}
+
 // New user usecase
 func New(authUsecase authUsecase) *Usecase {
 	u := Usecase{
@@ -29,8 +36,19 @@ type RegisterData struct {
 	FullName    string
 }
 
+// Validate register data
+func (rgd *RegisterData) Validate() error {
+	if err := rgd.Country.Validate(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Register usecase
 func (u *Usecase) Register(ctx context.Context, data RegisterData) error {
+	if err := data.Validate(); err != nil {
+		return err
+	}
 	return nil
 }
 

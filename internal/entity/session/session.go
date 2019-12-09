@@ -4,6 +4,7 @@ import (
 	"time"
 
 	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
+	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
 )
 
 // Session struct
@@ -18,10 +19,10 @@ type Session struct {
 }
 
 // UserData session is a user data cache that assosiated to session of user
-// type UserData struct {
-// 	User userentity.User `json:"user"`
-// 	Bio  userentity.Bio  `json:"bio"`
-// }
+type UserData struct {
+	User userentity.User `json:"user"`
+	Bio  userentity.Bio  `json:"bio"`
+}
 
 // AuthData struct
 type AuthData struct {
