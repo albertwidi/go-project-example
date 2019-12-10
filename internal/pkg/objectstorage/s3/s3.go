@@ -35,9 +35,6 @@ type Config struct {
 	//
 	// See http://docs.aws.amazon.com/AmazonS3/latest/dev/VirtualHosting.html
 	// for Amazon S3: Virtual Hosting of Buckets
-	//
-	// Some object storage like digital ocean spaces not using this by default
-	// so we need to this flag to true
 	forcePathStyle bool
 	bucketProto    string
 	bucketURL      string
@@ -98,7 +95,6 @@ func New(ctx context.Context, config *Config) (*S3, error) {
 	if config == nil {
 		return nil, errors.New("s3 config cannot be nil")
 	}
-
 	c := aws.Config{
 		Region:           aws.String(config.region),
 		Credentials:      config.credentials,
@@ -110,12 +106,10 @@ func New(ctx context.Context, config *Config) (*S3, error) {
 	if config.endpoint != "" {
 		c.Endpoint = aws.String(config.endpoint)
 	}
-
 	sess, err := session.NewSession(&c)
 	if err != nil {
 		return nil, err
 	}
-
 	bb, err := s3blob.OpenBucket(ctx, sess, config.bucket, nil)
 	if err != nil {
 		return nil, err
@@ -168,7 +162,6 @@ func CredentialsFromSharedProfile(ctx context.Context, filename, profile string)
 	if err != nil {
 		return nil, err
 	}
-
 	creds := credentials.NewSharedCredentials(filename, profile)
 	return creds, nil
 }

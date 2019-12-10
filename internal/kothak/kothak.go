@@ -266,7 +266,7 @@ func New(ctx context.Context, kothakConfig Config, logger logger.Logger) (*Kotha
 		}(dbconfig)
 	}
 
-	// wait for all connectinos connected
+	// wait for all connections
 	group.Wait()
 	// check for error, if error length is greater than 1
 	// set err to errs[0]

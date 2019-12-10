@@ -15,6 +15,7 @@ const (
 	StatusOK            Status = "OK"
 	StatusRetry         Status = "RETRY"
 	StatusBadRequest    Status = "BAD_REQUEST"
+	StatusNotFound      Status = "NOT_FOUND"
 	StatusUnauthorized  Status = "UNAUTHORIZED"
 	StatusInternalError Status = "INTERNAL_ERROR"
 )
@@ -72,7 +73,6 @@ func (jresp *JSONResponse) Error(err error, errResp *JSONError) *JSONResponse {
 	if !ok {
 		return jresp
 	}
-
 	jresp.xerr = xerr
 	jresp.ResponseError = errResp
 	return jresp
@@ -83,7 +83,6 @@ func (jresp *JSONResponse) WriteHeader(statusCode int) *JSONResponse {
 	if jresp.headerWritten {
 		return jresp
 	}
-
 	jresp.writer.WriteHeader(statusCode)
 	jresp.headerWritten = true
 	return jresp
@@ -92,10 +91,8 @@ func (jresp *JSONResponse) WriteHeader(statusCode int) *JSONResponse {
 // Write json response
 func (jresp *JSONResponse) Write() (int, error) {
 	jresp.writer.Header().Set("Content-Type", "application/json")
-
 	// process the error internals
 	if jresp.xerr != nil {
-
 		kind := jresp.xerr.Kind()
 		switch kind {
 		case xerrors.KindOK:
@@ -103,8 +100,8 @@ func (jresp *JSONResponse) Write() (int, error) {
 			jresp.WriteHeader(http.StatusOK)
 
 		case xerrors.KindNotFound:
-			jresp.ResponseStatus = StatusOK
-			jresp.WriteHeader(http.StatusOK)
+			jresp.ResponseStatus = StatusNotFound
+			jresp.WriteHeader(http.StatusNotFound)
 
 		case xerrors.KindBadRequest:
 			jresp.ResponseStatus = StatusBadRequest
@@ -125,9 +122,4 @@ func (jresp *JSONResponse) Write() (int, error) {
 		return 0, err
 	}
 	return jresp.writer.Write(out)
-}
-
-// WriteRaw for writing and use b variable instead of the whole json response
-func (jresp *JSONResponse) WriteRaw(statusCode int, b []byte) (int, error) {
-	return 0, nil
 }

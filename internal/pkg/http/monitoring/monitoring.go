@@ -33,7 +33,6 @@ func (rwdg *responseWriterDelegator) WriteHeader(code int) {
 	if rwdg.wroteHeader {
 		return
 	}
-
 	rwdg.status = code
 	rwdg.wroteHeader = true
 	rwdg.ResponseWriter.WriteHeader(code)
