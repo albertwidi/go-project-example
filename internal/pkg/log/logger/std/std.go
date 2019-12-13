@@ -19,12 +19,12 @@ type Logger struct {
 	config *logger.Config
 }
 
-var levelFormat = map[logger.Level]string{
-	logger.DebugLevel: "[DEBUG]",
-	logger.InfoLevel:  "[INFO]",
-	logger.WarnLevel:  "[WARN]",
-	logger.ErrorLevel: "[ERROR]",
-	logger.FatalLevel: "[FATAL]",
+var levelFormat = []string{
+	"[DEBUG]",
+	"[INFO]",
+	"[WARN]",
+	"[ERROR]",
+	"[FATAL]",
 }
 
 // New standard logger

@@ -218,6 +218,14 @@ To be added
 
 To be added
 
+### Microservice Structure Inside Monolith
+
+When a company become larger and the number of people and teams increase rapidly, it is make sense to adopt microservice architecture for the company. 
+
+**NOTE** 
+
+Microservice itself is not a silver bullet to begin with, it solves organizational scale problem, teams become more independent and responsible of their own products, etc. But, it also introduces a lot of problem, for example network, state, and other distributed system problems. Before taking this path, its best to understand what problems that we want to solve with microservice gain more knowledge around microservice, and how we want to tackle the problems inside the organization.
+
 ## Error Handling
 
 In Go, `errors` are value. This is one of the of the Go's [proverbs](https://go-proverbs.github.io/). So, instead of throwing error, Go program will treat the `error` as value and the `error` should be checked or returned to the caller. 

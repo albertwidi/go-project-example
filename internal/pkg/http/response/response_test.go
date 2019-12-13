@@ -33,12 +33,22 @@ func TestWrite(t *testing.T) {
 		XErrors    error
 	}{
 		{
-			Name:       "1",
+			Name:       "Test Status",
 			HTTPStatus: http.StatusOK,
 		},
 		{
-			Name:    "2",
+			Name:    "Test XErrors Kind",
 			XErrors: xerrors.New("bad request", xerrors.KindBadRequest),
+		},
+		{
+			Name:       "Test XErrors Kind with Override HTTP Status",
+			HTTPStatus: http.StatusOK,
+			XErrors:    xerrors.New("bad request", xerrors.KindBadRequest),
+		},
+		{
+			Name:       "Test Headers",
+			Headers:    map[string]string{"asd": "jkl", "sdf": "hjk"},
+			HTTPStatus: http.StatusOK,
 		},
 	}
 
@@ -46,6 +56,9 @@ func TestWrite(t *testing.T) {
 		t.Logf("test number: %s", c.Name)
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			jsonresp := response.JSON(w)
+			for k, v := range c.Headers {
+				jsonresp.SetHeader(k, v)
+			}
 			if c.XErrors == nil {
 				jsonresp.WriteHeader(c.HTTPStatus)
 			} else {

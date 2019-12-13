@@ -1,19 +1,18 @@
-# project configuration
-# ${} variable will be replaced with environment variables in runtime
+# project configuration for unit test
 
 [servers]
     # only open main port to public
     [servers.main]
-    address = "${MAIN_SERVER_ADDRESS}"
+    address = ":8000"
     [servers.debug]
-    address = "${DEBUG_SERVER_ADDRESS}"
+    address = ":9000"
     [servers.admin]
-    address = "${ADMIN_SERVER_ADDRESS}"
+    address = ":5276"
 
 [log]
-    level = "${LOG_LEVEL}"
-    file = "${LOG_FILE}"
-    use_color = ${LOG_COLOR}
+    level = "info"
+    file = "test"
+    use_color = true 
 
 [resources]
     # object storage

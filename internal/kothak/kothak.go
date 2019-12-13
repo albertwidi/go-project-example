@@ -21,9 +21,9 @@ import (
 
 // Config of kothak
 type Config struct {
-	DBConfig            DBConfig              `yaml:"database" toml:"database"`
-	RedisConfig         RedisConfig           `yaml:"redis" toml:"redis"`
-	ObjectStorageConfig []ObjectStorageConfig `yaml:"object_storage" toml:"object_storage"`
+	DBConfig            DBConfig              `json:"database" yaml:"database" toml:"database"`
+	RedisConfig         RedisConfig           `json:"redis" yaml:"redis" toml:"redis"`
+	ObjectStorageConfig []ObjectStorageConfig `json:"object_storage" yaml:"object_storage" toml:"object_storage"`
 }
 
 // Kothak struct

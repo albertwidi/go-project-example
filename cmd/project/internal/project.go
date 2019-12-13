@@ -77,7 +77,6 @@ func Run(f Flags) error {
 	if err != nil {
 		return err
 	}
-	newAdminServer()
 
 	s, err := server.New(projectConfig.Servers.Admin.Address, debugServer)
 	if err != nil {
@@ -110,10 +109,6 @@ func Run(f Flags) error {
 		return nil
 	}
 	return nil
-}
-
-func newAdminServer() {
-
 }
 
 func newMainServer() {

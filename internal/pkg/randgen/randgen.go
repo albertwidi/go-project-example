@@ -5,7 +5,7 @@ import (
 )
 
 // Generator for number generation in go is not concurrently safe (for new source).
-// In order to gain high throughput, a number of workers to generate the random numbers are needed.
+// In order to generate random number concurrently, a number of workers to generate the random numbers are needed.
 // each worker will generate a random number and push it into a buffered channel
 // Reference: https://golang.org/pkg/math/rand/
 type Generator struct {
@@ -20,6 +20,7 @@ type RandWorker struct {
 	seed     int64
 	min      int
 	max      int
+	stopped  bool
 }
 
 // Work via goroutines
@@ -28,6 +29,12 @@ type RandWorker struct {
 func (rw *RandWorker) Work() {
 	go func() {
 		for {
+			// the worker will not stopped immediately
+			// because it will wait the buffered channel to have space
+			// closing channel might help this case
+			if rw.stopped {
+				return
+			}
 			randnum := rw.randgen.Intn(rw.max - rw.min)
 			randnum = rw.min + randnum
 			rw.randchan <- randnum
@@ -60,4 +67,13 @@ func New(workernumber, min, max int, seed int64) *Generator {
 // Generate a new random number
 func (gen *Generator) Generate() int {
 	return <-gen.randnum
+}
+
+// Stop generator's worker
+func (gen *Generator) Stop() {
+	for i := range gen.woker {
+		gen.woker[i].stopped = true
+	}
+	// close the generator channel
+	close(gen.randnum)
 }

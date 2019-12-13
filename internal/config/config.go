@@ -23,7 +23,7 @@ type DefaultConfig struct {
 type DefaultLog struct {
 	Level string `json:"level" yaml:"level" toml:"level"`
 	File  string `json:"file" yaml:"file" toml:"file"`
-	Color bool   `json:"color" yaml:"color" toml:"color"`
+	Color bool   `json:"use_color" yaml:"use_color" toml:"use_color"`
 }
 
 // DefaultServers struct
