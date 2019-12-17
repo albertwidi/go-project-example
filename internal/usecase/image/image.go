@@ -14,7 +14,7 @@ import (
 
 	imageentity "github.com/albertwidi/go_project_example/internal/entity/image"
 	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
-	"github.com/albertwidi/go_project_example/internal/pkg/imagepath"
+	"github.com/albertwidi/go_project_example/internal/imagepath"
 	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
 	"github.com/albertwidi/go_project_example/internal/xerrors"
 	guuid "github.com/google/uuid"
@@ -66,11 +66,11 @@ type Image struct {
 }
 
 // Upload image
-func (u Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.FileInfo) (Image, error) {
+func (u *Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.FileInfo) (Image, error) {
 	image := Image{}
 
 	if len(strings.Split(info.Tags, ",")) > 5 {
-		return image, imageentity.ErrTooMuchTag
+		return image, imageentity.ErrTooManyTags
 	}
 
 	if err := info.Mode.Validate(); err != nil {
@@ -95,6 +95,8 @@ func (u Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.
 		return image, err
 	}
 
+	// sometimes image needs rename to avoid naming collission in the bucket
+	// TODO: it might be better to append the image name with timestamp on the server or special_id
 	if rename {
 		fileName = path.Join(info.FileName, time.Now().String())
 		fileName = base64.RawStdEncoding.EncodeToString([]byte(fileName))
@@ -105,8 +107,8 @@ func (u Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.
 
 		writeOptions := &objectstorage.WriteOptions{
 			Metadata: map[string]string{
-				"access_owner": fmt.Sprintf("allowed:%s;priviledge:read", info.UserHash),
-				"access_admin": "allowed:all;priviledge:read,write",
+				"access_owner": string(imageentity.CreateAccess([]string{string(info.UserHash)}, []string{"read"})),
+				"access_admin": string(imageentity.CreateAccess([]string{"all"}, []string{"read", "write"})),
 				"tags":         info.Tags,
 			},
 		}
@@ -143,9 +145,9 @@ func (u Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.
 
 // Download image
 // download usecase never use a public storage
-// as public storage being served via CDN and local filesystem in DEVELOPMENT
+// as public storage being served via CDN and local filesystem in LOCAL
 // to download temporary filepath, use format: temporary:{id}
-func (u Usecase) Download(ctx context.Context, imagePath string, userHash userentity.Hash, admin bool) ([]byte, error) {
+func (u *Usecase) Download(ctx context.Context, imagePath string, userHash userentity.Hash, admin bool) ([]byte, error) {
 	var (
 		err error
 	)
@@ -204,7 +206,6 @@ func (u Usecase) Download(ctx context.Context, imagePath string, userHash useren
 				break
 			}
 		}
-
 		if !granted {
 			return nil, errors.New("image: user is not permitted to view this image/file")
 		}
@@ -216,7 +217,7 @@ func (u Usecase) Download(ctx context.Context, imagePath string, userHash useren
 
 // GenerateSignedURL for generating temporary path to download image directly from object storage provider
 // this method is different from temporary as we are not serving the download from our server
-func (u Usecase) GenerateSignedURL(ctx context.Context, filePath string, expiry time.Duration) (string, error) {
+func (u *Usecase) GenerateSignedURL(ctx context.Context, filePath string, expiry time.Duration) (string, error) {
 	var (
 		url string
 		err error
@@ -238,7 +239,7 @@ func (u Usecase) GenerateSignedURL(ctx context.Context, filePath string, expiry 
 
 // GenerateTemporaryURL directly from backend
 // instad of using object-storage url, this will use image-proxy url
-func (u Usecase) GenerateTemporaryURL(ctx context.Context, filePath string, expiry time.Duration) (string, error) {
+func (u *Usecase) GenerateTemporaryURL(ctx context.Context, filePath string, expiry time.Duration) (string, error) {
 	path, err := u.GenerateTemporaryPath(ctx, filePath, expiry)
 	if err != nil {
 		return "", err
@@ -255,7 +256,7 @@ func (u Usecase) GenerateTemporaryURL(ctx context.Context, filePath string, expi
 // GenerateTemporaryPath for generating path to download image
 // but with disposable image path
 // this is useful for secure image handling
-func (u Usecase) GenerateTemporaryPath(ctx context.Context, filepath string, expiryTime time.Duration) (string, error) {
+func (u *Usecase) GenerateTemporaryPath(ctx context.Context, filepath string, expiryTime time.Duration) (string, error) {
 	id, err := u.createID(ctx, filepath)
 	if err != nil {
 		return "", err
@@ -275,7 +276,7 @@ const (
 )
 
 // GetImageFilePath normalize and return the true image file path needed by backend
-func (u Usecase) GetImageFilePath(ctx context.Context, imagePath string) (prefix, filePath string, err error) {
+func (u *Usecase) GetImageFilePath(ctx context.Context, imagePath string) (prefix, filePath string, err error) {
 	s := strings.Split(imagePath, ":")
 	slen := len(s)
 	if slen < 1 {
@@ -304,7 +305,7 @@ func (u Usecase) GetImageFilePath(ctx context.Context, imagePath string) (prefix
 }
 
 // FilePathFromTemporaryPath path return the true filepath from temporary endpoint
-func (u Usecase) FilePathFromTemporaryPath(ctx context.Context, tempPath string) (string, error) {
+func (u *Usecase) FilePathFromTemporaryPath(ctx context.Context, tempPath string) (string, error) {
 	s := strings.SplitAfter(tempPath, u.config.Private.DownloadPath)
 	if len(s) < 2 {
 		return "", errors.New("temporary path is not valid")
@@ -317,7 +318,7 @@ func (u Usecase) FilePathFromTemporaryPath(ctx context.Context, tempPath string)
 }
 
 // filepathFromTemporaryPath return the original path of temporary path
-func (u Usecase) filepathFromTemporaryPath(ctx context.Context, id string) (string, error) {
+func (u *Usecase) filepathFromTemporaryPath(ctx context.Context, id string) (string, error) {
 	path, err := u.imageRepo.GetTempPath(ctx, id)
 	if err != nil {
 		return "", err

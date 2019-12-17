@@ -3,6 +3,7 @@ package image
 import (
 	"fmt"
 	"net/textproto"
+	"strings"
 
 	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
 )
@@ -73,4 +74,17 @@ type Manipulation struct {
 type Resize struct {
 	Height int
 	Width  int
+}
+
+// Access of image
+type Access string
+
+// CreateAccess return the access of image
+// format is: allowed:[]users;priviledge:[]Permission;
+func CreateAccess(allowed []string, permission []string) Access {
+	a := strings.Join(allowed, ",")
+	p := strings.Join(permission, ",")
+
+	acc := fmt.Sprintf("allowed:%s;priviledge:%s", a, p)
+	return Access(acc)
 }

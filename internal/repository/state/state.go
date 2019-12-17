@@ -19,7 +19,7 @@ type Repository struct {
 }
 
 // New repository
-func New(redis *redis.Redis) *Repository {
+func New(redis redis.Redis) *Repository {
 	r := Repository{
 		Redis:   redis,
 		ulidgen: ulid.New(3),

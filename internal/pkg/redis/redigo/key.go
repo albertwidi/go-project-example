@@ -54,6 +54,24 @@ func (rdg *Redigo) Delete(ctx context.Context, key string) (int, error) {
 	return resp, err
 }
 
+// Increment key
+func (rdg *Redigo) Increment(ctx context.Context, key string) (int, error) {
+	resp, err := redigo.Int(rdg.do(ctx, redis.CommandIncrement, key))
+	if err != nil && !rdg.IsErrNil(err) {
+		return 0, err
+	}
+	return resp, err
+}
+
+// IncrementBy key
+func (rdg *Redigo) IncrementBy(ctx context.Context, key string, amount int) (int, error) {
+	resp, err := redigo.Int(rdg.do(ctx, redis.CommandIncrementBy, key, amount))
+	if err != nil && !rdg.IsErrNil(err) {
+		return 0, err
+	}
+	return resp, err
+}
+
 // Expire to set TTL to key
 func (rdg *Redigo) Expire(ctx context.Context, key string, duration int) (int, error) {
 	resp, err := redigo.Int(rdg.do(ctx, redis.CommandExpire, key, duration))

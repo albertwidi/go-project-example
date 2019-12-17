@@ -19,7 +19,7 @@ type Repository struct {
 }
 
 // New otp repo
-func New(redis *redis.Redis) *Repository {
+func New(redis redis.Redis) *Repository {
 	r := Repository{
 		redis: redis,
 	}
@@ -85,7 +85,7 @@ func (r Repository) Len(ctx context.Context, uniqueID string, action authentity.
 func (r Repository) IncreaseValidateAttempt(ctx context.Context, uniqueID string, amount int) (int, error) {
 	valKey := generateOtpValidateAttemptKey(uniqueID)
 
-	result, err := r.redis.IncrementBy(valKey, amount)
+	result, err := r.redis.IncrementBy(ctx, valKey, amount)
 	if err != nil {
 		return 0, err
 	}

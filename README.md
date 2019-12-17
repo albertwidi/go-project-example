@@ -220,7 +220,7 @@ To be added
 
 ### Microservice Structure Inside Monolith
 
-When a company become larger and the number of people and teams increase rapidly, it is make sense to adopt microservice architecture for the company. 
+When a company become larger and the number of people and teams increase rapidly, it is make sense to adopt microservice architecture for the company... **to be added**
 
 **NOTE** 
 

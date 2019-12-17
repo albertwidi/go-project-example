@@ -20,6 +20,8 @@ type Redis interface {
 	SetEX(ctx context.Context, key string, value interface{}, expire int) (string, error)
 	Get(ctx context.Context, key string) (string, error)
 	Delete(ctx context.Context, key string) (int, error)
+	Increment(ctx context.Context, key string) (int, error)
+	IncrementBy(ctx context.Context, key string, amount int) (int, error)
 	Expire(ctx context.Context, key string, duration int) (int, error)
 	MSet(ctx context.Context, pairs ...interface{}) (string, error)
 	MGet(ctx context.Context, keys ...string) ([]string, error)
@@ -42,27 +44,29 @@ type Redis interface {
 
 // list of redis command
 const (
-	CommandPing    = "PING"
-	CommandExpire  = "EXPIRE"
-	CommandSet     = "SET"
-	CommandGet     = "GET"
-	CommandDelete  = "DEL"
-	CommandSetNX   = "SETNX"
-	CommandSetEX   = "SETEX"
-	CommandMSet    = "MSET"
-	CommandMGet    = "MGET"
-	CommandHSet    = "HSET"
-	CommandHGet    = "HGET"
-	CommandHGetAll = "HGETALL"
-	CommandHMSet   = "HMSET"
-	CommandHMGet   = "HMGET"
-	CommandHDel    = "HDEL"
-	CommandLLen    = "LLEN"
-	CommandLIndex  = "LINDEX"
-	CommandLSET    = "LSET"
-	CommandLPush   = "LPUSH"
-	CommandLPushX  = "LPUSHX"
-	CommandLPop    = "LPOP"
-	CommandLRem    = "LREM"
-	CommandLTrim   = "LTRIM"
+	CommandPing        = "PING"
+	CommandExpire      = "EXPIRE"
+	CommandSet         = "SET"
+	CommandGet         = "GET"
+	CommandDelete      = "DEL"
+	CommandIncrement   = "INCR"
+	CommandIncrementBy = "INCRBY"
+	CommandSetNX       = "SETNX"
+	CommandSetEX       = "SETEX"
+	CommandMSet        = "MSET"
+	CommandMGet        = "MGET"
+	CommandHSet        = "HSET"
+	CommandHGet        = "HGET"
+	CommandHGetAll     = "HGETALL"
+	CommandHMSet       = "HMSET"
+	CommandHMGet       = "HMGET"
+	CommandHDel        = "HDEL"
+	CommandLLen        = "LLEN"
+	CommandLIndex      = "LINDEX"
+	CommandLSET        = "LSET"
+	CommandLPush       = "LPUSH"
+	CommandLPushX      = "LPUSHX"
+	CommandLPop        = "LPOP"
+	CommandLRem        = "LREM"
+	CommandLTrim       = "LTRIM"
 )
