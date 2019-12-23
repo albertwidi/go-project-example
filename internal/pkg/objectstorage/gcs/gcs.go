@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
+	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/gcsblob"
 	"gocloud.dev/gcp"

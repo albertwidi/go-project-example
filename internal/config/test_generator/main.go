@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/albertwidi/go_project_example/internal/config"
+	"github.com/albertwidi/go-project-example/internal/config"
 )
 
 func main() {

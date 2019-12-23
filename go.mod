@@ -1,4 +1,4 @@
-module github.com/albertwidi/go_project_example
+module github.com/albertwidi/go-project-example
 
 go 1.13
 

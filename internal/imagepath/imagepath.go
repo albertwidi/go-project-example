@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	imageentity "github.com/albertwidi/go_project_example/internal/entity/image"
+	imageentity "github.com/albertwidi/go-project-example/internal/entity/image"
 )
 
 // Config of image path library

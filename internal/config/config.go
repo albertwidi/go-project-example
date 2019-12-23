@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
-	"github.com/albertwidi/go_project_example/internal/kothak"
-	"github.com/albertwidi/go_project_example/internal/pkg/envfile"
-	"github.com/albertwidi/go_project_example/internal/pkg/tempe"
+	"github.com/albertwidi/go-project-example/internal/kothak"
+	"github.com/albertwidi/go-project-example/internal/pkg/envfile"
+	"github.com/albertwidi/go-project-example/internal/pkg/tempe"
 	"gopkg.in/yaml.v2"
 )
 

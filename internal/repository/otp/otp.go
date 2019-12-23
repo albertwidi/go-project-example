@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
-	otpentity "github.com/albertwidi/go_project_example/internal/entity/otp"
-	"github.com/albertwidi/go_project_example/internal/pkg/conv"
-	"github.com/albertwidi/go_project_example/internal/pkg/redis"
+	authentity "github.com/albertwidi/go-project-example/internal/entity/authentication"
+	otpentity "github.com/albertwidi/go-project-example/internal/entity/otp"
+	"github.com/albertwidi/go-project-example/internal/pkg/conv"
+	"github.com/albertwidi/go-project-example/internal/pkg/redis"
 )
 
 // Repository for otp

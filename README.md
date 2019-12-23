@@ -155,7 +155,7 @@ But, in the end, it depends/back to each project policies and governance.
 
 ### Cmd
 
-All Go main programs is located in `go_project_example/cmd/*` folder.
+All Go main programs is located in `go-project-example/cmd/*` folder.
 
 ### Internal
 

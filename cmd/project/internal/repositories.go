@@ -1,8 +1,8 @@
 package project
 
 import (
-	"github.com/albertwidi/go_project_example/internal/kothak"
-	"github.com/albertwidi/go_project_example/internal/repository/image"
+	"github.com/albertwidi/go-project-example/internal/kothak"
+	"github.com/albertwidi/go-project-example/internal/repository/image"
 )
 
 // Repositories list

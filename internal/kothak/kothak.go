@@ -4,17 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/gcs"
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/local"
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage/s3"
-	"github.com/albertwidi/go_project_example/internal/pkg/redis"
-	redigo "github.com/albertwidi/go_project_example/internal/pkg/redis/redigo"
-	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
+	"github.com/albertwidi/go-project-example/internal/pkg/log/logger"
+	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage"
+	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage/gcs"
+	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage/local"
+	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage/s3"
+	"github.com/albertwidi/go-project-example/internal/pkg/redis"
+	redigo "github.com/albertwidi/go-project-example/internal/pkg/redis/redigo"
+	"github.com/albertwidi/go-project-example/internal/pkg/sqldb"
 	"github.com/jmoiron/sqlx"
 	"go.opencensus.io/trace"
 )
@@ -310,7 +311,8 @@ func (k *Kothak) GetSQLDB(dbname string) (*sqldb.DB, error) {
 func (k *Kothak) MustGetSQLDB(dbname string) *sqldb.DB {
 	db, err := k.GetSQLDB(dbname)
 	if err != nil {
-		k.logger.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	return db
 }
@@ -331,7 +333,8 @@ func (k *Kothak) GetRedis(redisname string) (redis.Redis, error) {
 func (k *Kothak) MustGetRedis(redisname string) redis.Redis {
 	r, err := k.GetRedis(redisname)
 	if err != nil {
-		k.logger.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	return r
 }
@@ -352,7 +355,8 @@ func (k *Kothak) GetObjectStorage(objStorageName string) (*objectstorage.Storage
 func (k *Kothak) MustGetObjectStorage(objStorageName string) *objectstorage.Storage {
 	o, err := k.GetObjectStorage(objStorageName)
 	if err != nil {
-		k.logger.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	return o
 }

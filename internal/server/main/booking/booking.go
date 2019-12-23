@@ -1,7 +1,7 @@
 package booking
 
 import (
-	"github.com/albertwidi/go_project_example/internal/pkg/context"
+	"github.com/albertwidi/go-project-example/internal/pkg/context"
 )
 
 func Something(context.RequestContext) {

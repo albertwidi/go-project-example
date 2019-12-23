@@ -3,7 +3,7 @@ package sms
 import (
 	"errors"
 
-	notifentity "github.com/albertwidi/go_project_example/internal/entity/notification"
+	notifentity "github.com/albertwidi/go-project-example/internal/entity/notification"
 )
 
 // Payload struct

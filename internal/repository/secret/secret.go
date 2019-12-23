@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	secretentity "github.com/albertwidi/go_project_example/internal/entity/secret"
-	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
+	secretentity "github.com/albertwidi/go-project-example/internal/entity/secret"
+	"github.com/albertwidi/go-project-example/internal/pkg/sqldb"
 	"github.com/lib/pq"
 )
 

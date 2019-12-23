@@ -5,8 +5,8 @@ import (
 	"github.com/lib/pq"
 	"time"
 
-	entity "github.com/albertwidi/go_project_example/internal/entity/amenities"
-	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
+	entity "github.com/albertwidi/go-project-example/internal/entity/amenities"
+	"github.com/albertwidi/go-project-example/internal/pkg/sqldb"
 )
 
 // Repository of amenities

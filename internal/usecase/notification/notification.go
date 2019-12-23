@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	smsentity "github.com/albertwidi/go_project_example/internal/entity/sms"
-	pushentity "github.com/albertwidi/go_project_example/internal/entity/pushmessage"
-	entity "github.com/albertwidi/go_project_example/internal/entity/notification"
+	smsentity "github.com/albertwidi/go-project-example/internal/entity/sms"
+	pushentity "github.com/albertwidi/go-project-example/internal/entity/pushmessage"
+	entity "github.com/albertwidi/go-project-example/internal/entity/notification"
 )
 
 // UseCase struct

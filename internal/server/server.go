@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	requestctx "github.com/albertwidi/go_project_example/internal/pkg/context"
-	httpmisc "github.com/albertwidi/go_project_example/internal/pkg/http/misc"
-	httpmonitoring "github.com/albertwidi/go_project_example/internal/pkg/http/monitoring"
-	"github.com/albertwidi/go_project_example/internal/pkg/router"
+	requestctx "github.com/albertwidi/go-project-example/internal/pkg/context"
+	httpmisc "github.com/albertwidi/go-project-example/internal/pkg/http/misc"
+	httpmonitoring "github.com/albertwidi/go-project-example/internal/pkg/http/monitoring"
+	"github.com/albertwidi/go-project-example/internal/pkg/router"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

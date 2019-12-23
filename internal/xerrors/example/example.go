@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/albertwidi/go_project_example/internal/xerrors"
+	"github.com/albertwidi/go-project-example/internal/xerrors"
 )
 
 var (

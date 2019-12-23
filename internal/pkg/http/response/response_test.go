@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/http/response"
-	"github.com/albertwidi/go_project_example/internal/xerrors"
+	"github.com/albertwidi/go-project-example/internal/pkg/http/response"
+	"github.com/albertwidi/go-project-example/internal/xerrors"
 )
 
 func kindToStatusCode(err *xerrors.Errors) int {

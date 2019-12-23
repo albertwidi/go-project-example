@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/objectstorage"
+	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"

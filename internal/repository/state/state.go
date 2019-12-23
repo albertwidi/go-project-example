@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	stateentity "github.com/albertwidi/go_project_example/internal/entity/state"
-	"github.com/albertwidi/go_project_example/internal/pkg/redis"
-	"github.com/albertwidi/go_project_example/internal/pkg/ulid"
+	stateentity "github.com/albertwidi/go-project-example/internal/entity/state"
+	"github.com/albertwidi/go-project-example/internal/pkg/redis"
+	"github.com/albertwidi/go-project-example/internal/pkg/ulid"
 )
 
 // Repository struct

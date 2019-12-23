@@ -5,7 +5,7 @@ import (
 	"net/textproto"
 	"strings"
 
-	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
+	userentity "github.com/albertwidi/go-project-example/internal/entity/user"
 )
 
 // Mode of image

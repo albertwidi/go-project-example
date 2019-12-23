@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
+	"github.com/albertwidi/go-project-example/internal/pkg/log/logger"
 	"github.com/rs/zerolog"
 )
 

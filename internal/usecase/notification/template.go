@@ -11,7 +11,7 @@ import (
 	"path"
 	"path/filepath"
 
-	entity "github.com/albertwidi/go_project_example/internal/entity/notification"
+	entity "github.com/albertwidi/go-project-example/internal/entity/notification"
 )
 // notificationTemplate struct
 type notificationTemplate struct {

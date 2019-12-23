@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/albertwidi/go_project_example/internal/pkg/conv"
+	"github.com/albertwidi/go-project-example/internal/pkg/conv"
 	yaml "gopkg.in/yaml.v2"
 )
 

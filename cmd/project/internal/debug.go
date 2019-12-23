@@ -1,7 +1,7 @@
 package project
 
 import (
-	debugserver "github.com/albertwidi/go_project_example/internal/server/debug"
+	debugserver "github.com/albertwidi/go-project-example/internal/server/debug"
 )
 
 func newDebugServer(address string, r *Repositories) (*debugserver.Server, error) {

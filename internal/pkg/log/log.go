@@ -3,8 +3,8 @@ package log
 import (
 	"errors"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger"
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/std"
+	"github.com/albertwidi/go-project-example/internal/pkg/log/logger"
+	"github.com/albertwidi/go-project-example/internal/pkg/log/logger/std"
 )
 
 // Config of log

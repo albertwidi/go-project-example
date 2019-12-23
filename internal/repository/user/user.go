@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 
-	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
-	"github.com/albertwidi/go_project_example/internal/pkg/redis"
-	"github.com/albertwidi/go_project_example/internal/pkg/sqldb"
+	userentity "github.com/albertwidi/go-project-example/internal/entity/user"
+	"github.com/albertwidi/go-project-example/internal/pkg/redis"
+	"github.com/albertwidi/go-project-example/internal/pkg/sqldb"
 )
 
 // Repository of user
@@ -24,6 +24,11 @@ func New(db *sqldb.DB, redis redis.Redis) *Repository {
 }
 
 // Create user
-func Create(ctx context.Context, user userentity.User) (string, error) {
+func (r *Repository) Create(ctx context.Context, user userentity.User) (string, error) {
 	return "", nil
+}
+
+// Update user
+func (r *Repository) Update(ctx context.Context) error {
+	return nil
 }

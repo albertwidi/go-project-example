@@ -9,9 +9,9 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/albertwidi/go_project_example/debug/user"
-	"github.com/albertwidi/go_project_example/internal/pkg/router"
-	userhandler "github.com/albertwidi/go_project_example/internal/server/debug/user"
+	"github.com/albertwidi/go-project-example/debug/user"
+	"github.com/albertwidi/go-project-example/internal/pkg/router"
+	userhandler "github.com/albertwidi/go-project-example/internal/server/debug/user"
 )
 
 // Server struct

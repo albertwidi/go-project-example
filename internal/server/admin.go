@@ -5,7 +5,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/router"
+	"github.com/albertwidi/go-project-example/internal/pkg/router"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 

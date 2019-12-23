@@ -1,8 +1,8 @@
 package debug
 
 import (
-	"github.com/albertwidi/go_project_example/internal/pkg/router"
-	"github.com/albertwidi/go_project_example/internal/server/debug/user"
+	"github.com/albertwidi/go-project-example/internal/pkg/router"
+	"github.com/albertwidi/go-project-example/internal/server/debug/user"
 )
 
 // Handlers of debug server

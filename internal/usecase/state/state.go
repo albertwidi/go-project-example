@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	entity "github.com/albertwidi/go_project_example/internal/entity/state"
-	"github.com/albertwidi/go_project_example/internal/pkg/ulid"
+	entity "github.com/albertwidi/go-project-example/internal/entity/state"
+	"github.com/albertwidi/go-project-example/internal/pkg/ulid"
 )
 
 // Usecase of state

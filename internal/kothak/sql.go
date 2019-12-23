@@ -3,7 +3,7 @@ package kothak
 import (
 	"time"
 
-	"github.com/albertwidi/go_project_example/internal/pkg/defaults"
+	"github.com/albertwidi/go-project-example/internal/pkg/defaults"
 )
 
 // DBConfig define sql databases configuration

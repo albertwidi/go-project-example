@@ -3,8 +3,8 @@ package session
 import (
 	"time"
 
-	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
-	userentity "github.com/albertwidi/go_project_example/internal/entity/user"
+	authentity "github.com/albertwidi/go-project-example/internal/entity/authentication"
+	userentity "github.com/albertwidi/go-project-example/internal/entity/user"
 )
 
 // Session struct

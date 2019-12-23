@@ -9,11 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/albertwidi/go_project_example/internal/config"
-	"github.com/albertwidi/go_project_example/internal/kothak"
-	lg "github.com/albertwidi/go_project_example/internal/pkg/log/logger"
-	"github.com/albertwidi/go_project_example/internal/pkg/log/logger/zap"
-	"github.com/albertwidi/go_project_example/internal/server"
+	"github.com/albertwidi/go-project-example/internal/config"
+	"github.com/albertwidi/go-project-example/internal/kothak"
+	lg "github.com/albertwidi/go-project-example/internal/pkg/log/logger"
+	"github.com/albertwidi/go-project-example/internal/pkg/log/logger/zap"
+	"github.com/albertwidi/go-project-example/internal/server"
 )
 
 // Flags of project

@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	authentity "github.com/albertwidi/go_project_example/internal/entity/authentication"
-	otpentity "github.com/albertwidi/go_project_example/internal/entity/otp"
-	stateentity "github.com/albertwidi/go_project_example/internal/entity/state"
-	"github.com/albertwidi/go_project_example/internal/xerrors"
+	authentity "github.com/albertwidi/go-project-example/internal/entity/authentication"
+	otpentity "github.com/albertwidi/go-project-example/internal/entity/otp"
+	stateentity "github.com/albertwidi/go-project-example/internal/entity/state"
+	"github.com/albertwidi/go-project-example/internal/xerrors"
 )
 
 // Usecase of authentication

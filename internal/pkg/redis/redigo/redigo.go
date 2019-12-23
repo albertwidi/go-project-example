@@ -3,7 +3,7 @@ package redigo
 import (
 	"context"
 	"errors"
-	"github.com/albertwidi/go_project_example/internal/pkg/redis"
+	"github.com/albertwidi/go-project-example/internal/pkg/redis"
 
 	redigo "github.com/gomodule/redigo/redis"
 )

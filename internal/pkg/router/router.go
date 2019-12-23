@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strings"
 
-	requestcontext "github.com/albertwidi/go_project_example/internal/pkg/context"
-	"github.com/albertwidi/go_project_example/internal/pkg/http/misc"
-	"github.com/albertwidi/go_project_example/internal/pkg/http/monitoring"
+	requestcontext "github.com/albertwidi/go-project-example/internal/pkg/context"
+	"github.com/albertwidi/go-project-example/internal/pkg/http/misc"
+	"github.com/albertwidi/go-project-example/internal/pkg/http/monitoring"
 	"github.com/gorilla/mux"
 )
 

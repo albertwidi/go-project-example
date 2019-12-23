@@ -1,8 +1,8 @@
 package user
 
 import (
-	"github.com/albertwidi/go_project_example/debug/user"
-	"github.com/albertwidi/go_project_example/internal/pkg/context"
+	"github.com/albertwidi/go-project-example/debug/user"
+	"github.com/albertwidi/go-project-example/internal/pkg/context"
 	"net/http"
 )
 
