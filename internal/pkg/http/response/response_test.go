@@ -78,7 +78,6 @@ func TestWrite(t *testing.T) {
 			statusCode = kindToStatusCode(c.XErrors.(*xerrors.Errors))
 		}
 		// check status code
-		t.Logf("status code: %d", statusCode)
 		if statusCode != resp.StatusCode {
 			t.Errorf("invalid http status, expect %d but got %d", c.HTTPStatus, resp.StatusCode)
 			return

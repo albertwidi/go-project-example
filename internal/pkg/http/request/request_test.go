@@ -23,11 +23,11 @@ func TestNewRequest(t *testing.T) {
 			url:    "service2.cluster.local",
 			method: http.MethodGet,
 			header: map[string]string{
-				"route-version-select": "service1.cluster.local:0.1.2+beta,service2.cluster.local: 0.2.0",
+				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
 			},
 			expectHeader: map[string]string{
-				"routes-version-select": "service1.cluster.local:0.1.2+beta,service2.cluster.local: 0.2.0",
-				"route-version-select":  "service1.cluster.local:0.1.2+beta",
+				"routes-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
+				"route-version-select":  "service1.cluster.local|0.1.2+beta",
 				"version-select":        "0.2.0",
 			},
 			expectError: false,
@@ -36,7 +36,7 @@ func TestNewRequest(t *testing.T) {
 			url:    "service2.cluster.local",
 			method: http.MethodGet,
 			header: map[string]string{
-				"route-version-select": "service1.cluster.local:0.1.2+beta,service2.cluster.local: 0.2.0",
+				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
 			},
 			noVersion: true,
 			expectHeader: map[string]string{
@@ -54,7 +54,7 @@ func TestNewRequest(t *testing.T) {
 				"key2": "val2",
 			},
 			header: map[string]string{
-				"route-version-select": "service1.cluster.local:0.1.2+beta,service2.cluster.local: 0.2.0",
+				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local| 0.2.0",
 			},
 			noVersion: true,
 			expectHeader: map[string]string{
@@ -73,11 +73,11 @@ func TestNewRequest(t *testing.T) {
 				"key2": "val2",
 			},
 			header: map[string]string{
-				"route-version-select": "service1.cluster.local:0.1.2+beta,service2.cluster.local: 0.2.0",
+				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local| 0.2.0",
 			},
 			expectHeader: map[string]string{
-				"routes-version-select": "service1.cluster.local:0.1.2+beta,service2.cluster.local: 0.2.0",
-				"route-version-select":  "service1.cluster.local:0.1.2+beta",
+				"routes-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local| 0.2.0",
+				"route-version-select":  "service1.cluster.local|0.1.2+beta",
 				"version-select":        "0.2.0",
 			},
 			expectBody:  "key1=val1&key2=val2",

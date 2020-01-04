@@ -112,11 +112,11 @@ func (r *Request) BodyJSON(body interface{}) *Request {
 // version selection header spesification:
 // 1. routes-version-select
 //		propagated header for selecting version in matching url
-//		example: svc1.cluster.local: 0.1.0, svc2.cluster.local: 0.2.0
+//		example: svc1.cluster.local|0.1.0, svc2.cluster.local|0.2.0
 // 2. route-version-select
 //		propagated header for selecting version in matching url
 //		different from routes-version-select, matching url will not propagated
-//		example: svc1.cluster.local: 0.1.0
+//		example: svc1.cluster.local|0.1.0
 // 3. version-select
 //		propageted header when an url is match, only contain version value
 //		example: 0.2.0
@@ -146,7 +146,7 @@ func (r *Request) Compile() (*http.Request, error) {
 				// add header for route-version-select
 				// all unmatched value needs to be appended
 				// avoid fmt.Sprintf because it will allocate
-				rvcHeader += k + ":" + v + ","
+				rvcHeader += k + "|" + v + ","
 			}
 		}
 		// trim most right "," token from the header
@@ -159,10 +159,10 @@ func (r *Request) Compile() (*http.Request, error) {
 
 // getRoutingHeader return the routings header and decoded version of routings header
 // routing header means to what version that the request is directed to
-// with this special header, we want to enable A/B testing and spesific version selection in request
+// with this special header, we want to enable A/B testing and specific version selection in request
 // for example reqeust to service1.cluster.local with header:
-// [route-version-select] service2.cluster.local: v0.1.2, service3.cluster.local: v0.2
-// will inform service1 to contact service 2 with version v0.1.2 and service with version v0.2
+// [route-version-select] service2.cluster.local|0.1.2,service3.cluster.local|0.2
+// will inform service1 to contact service 2 with version 0.1.2 and service with version 0.2
 func getRoutingHeader(ctx context.Context) (string, map[string]string) {
 	v := ctx.Value(&RoutingContext)
 	header, ok := v.(string)
@@ -179,7 +179,7 @@ func getRoutingHeader(ctx context.Context) (string, map[string]string) {
 	routings := strings.Split(header, ",")
 	vroutings := make(map[string]string)
 	for idx, r := range routings {
-		selections := strings.Split(r, ":")
+		selections := strings.Split(r, "|")
 		// continue, because the spefication is broken
 		if len(selections) < 2 {
 			continue
