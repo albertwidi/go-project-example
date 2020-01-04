@@ -98,7 +98,6 @@ func (u UseCase) Get(ctx context.Context, userhash userentity.Hash, sessionid st
 	if err != nil {
 		return s, err
 	}
-
 	return s, nil
 }
 
@@ -112,7 +111,6 @@ func (u UseCase) Remove(ctx context.Context, userhash userentity.Hash, sessionid
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -126,6 +124,5 @@ func (u UseCase) RemoveAll(ctx context.Context, userhash userentity.Hash) error 
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
