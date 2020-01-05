@@ -9,6 +9,7 @@ import (
 
 func TestNewRequest(t *testing.T) {
 	cases := []struct {
+		name         string
 		url          string
 		method       string
 		urlQuery     map[string]string
@@ -20,7 +21,8 @@ func TestNewRequest(t *testing.T) {
 		expectError  bool
 	}{
 		{
-			url:    "service2.cluster.local",
+			name:   "simple request test",
+			url:    "http://service2.cluster.local",
 			method: http.MethodGet,
 			header: map[string]string{
 				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
@@ -33,7 +35,8 @@ func TestNewRequest(t *testing.T) {
 			expectError: false,
 		},
 		{
-			url:    "service2.cluster.local",
+			name:   "simple request with no version",
+			url:    "http://service2.cluster.local",
 			method: http.MethodGet,
 			header: map[string]string{
 				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
@@ -47,7 +50,37 @@ func TestNewRequest(t *testing.T) {
 			expectError: false,
 		},
 		{
-			url:    "service2.cluster.local",
+			name:   "url with rest path",
+			url:    "http://service2.cluster.local/v1/testing/10",
+			method: http.MethodGet,
+			header: map[string]string{
+				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
+			},
+			expectHeader: map[string]string{
+				"routes-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
+				"route-version-select":  "service1.cluster.local|0.1.2+beta",
+				"version-select":        "0.2.0",
+			},
+			expectError: false,
+		},
+		{
+			name:   "url with port and rest path",
+			url:    "http://service2.cluster.local:9000/v1/testing/10",
+			method: http.MethodGet,
+			header: map[string]string{
+				"route-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
+			},
+			noVersion: false,
+			expectHeader: map[string]string{
+				"routes-version-select": "service1.cluster.local|0.1.2+beta,service2.cluster.local|0.2.0",
+				"route-version-select":  "service1.cluster.local|0.1.2+beta",
+				"version-select":        "0.2.0",
+			},
+			expectError: false,
+		},
+		{
+			name:   "post request with no version",
+			url:    "http://service2.cluster.local",
 			method: http.MethodPost,
 			postForm: map[string]string{
 				"key1": "val1",
@@ -66,7 +99,8 @@ func TestNewRequest(t *testing.T) {
 			expectError: false,
 		},
 		{
-			url:    "service2.cluster.local",
+			name:   "post request with body postform",
+			url:    "http://service2.cluster.local",
 			method: http.MethodPost,
 			postForm: map[string]string{
 				"key1": "val1",
@@ -86,6 +120,7 @@ func TestNewRequest(t *testing.T) {
 	}
 
 	for _, c := range cases {
+		t.Log(c.name)
 		ctx := context.WithValue(context.Background(), &RoutingContext, c.header["route-version-select"])
 		g := New(ctx).
 			Method(c.method).

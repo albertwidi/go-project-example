@@ -138,7 +138,7 @@ func (r *Request) Compile() (*http.Request, error) {
 		rvcHeader := ""
 		vheader, vroutes := getRoutingHeader(r.ctx)
 		for k, v := range vroutes {
-			if k == r.url {
+			if k == u.Hostname() {
 				// add header for version select because url is matching
 				// so the infrastructure able to route via header
 				req.Header.Set("version-select", v)
