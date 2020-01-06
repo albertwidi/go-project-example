@@ -3,6 +3,7 @@ package zap
 import (
 	"github.com/albertwidi/go-project-example/internal/pkg/log/logger"
 	"go.uber.org/zap"
+	"sync"
 )
 
 var _ logger.Logger = (*Logger)(nil)
@@ -13,6 +14,7 @@ type Logger struct {
 	sugared   *zap.SugaredLogger
 	zapconfig zap.Config
 	config    *logger.Config
+	mu        sync.Mutex
 }
 
 // New zap logger
@@ -67,7 +69,6 @@ func (l *Logger) initLogger(config *logger.Config) error {
 	l.sugared = z.Sugar()
 	l.zapconfig = zapConfig
 	l.config = config
-
 	return nil
 }
 
@@ -104,12 +105,13 @@ func (l *Logger) SetLevel(level logger.Level) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
 // SetConfig to paply a new config to logger
 func (l *Logger) SetConfig(config *logger.Config) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	if config == nil {
 		return nil
 	}
@@ -117,7 +119,6 @@ func (l *Logger) SetConfig(config *logger.Config) error {
 	if err := l.initLogger(config); err != nil {
 		return err
 	}
-
 	return nil
 }
 

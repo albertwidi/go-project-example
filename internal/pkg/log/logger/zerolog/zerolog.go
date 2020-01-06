@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/albertwidi/go-project-example/internal/pkg/log/logger"
 	"github.com/rs/zerolog"
@@ -15,6 +16,7 @@ var _ logger.Logger = (*Logger)(nil)
 type Logger struct {
 	logger zerolog.Logger
 	config logger.Config
+	mu     sync.Mutex
 }
 
 // DefaultLogger return default value of logger
@@ -94,12 +96,14 @@ func newLogger(config *logger.Config) (zerolog.Logger, error) {
 	if config.Caller {
 		lgr = lgr.With().Caller().Logger()
 	}
-
 	return lgr, nil
 }
 
 // SetConfig to set a new logger configuration
 func (l *Logger) SetConfig(config *logger.Config) error {
+	l.mu.Lock()
+	l.mu.Unlock()
+
 	if config == nil {
 		return nil
 	}

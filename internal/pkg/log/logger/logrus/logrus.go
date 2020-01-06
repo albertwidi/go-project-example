@@ -3,6 +3,7 @@ package logrus
 import (
 	"io"
 	"os"
+	"sync"
 
 	"github.com/albertwidi/go-project-example/internal/pkg/log/logger"
 	"github.com/sirupsen/logrus"
@@ -14,6 +15,7 @@ var _ logger.Logger = (*Logger)(nil)
 type Logger struct {
 	logger *logrus.Logger
 	config logger.Config
+	mu     *sync.Mutex
 }
 
 // DefaultLogger return default value of logger
@@ -87,12 +89,6 @@ func newLogger(config *logger.Config) (*logrus.Logger, error) {
 		})
 	}
 
-	if config.UseJSON {
-		lgr.SetFormatter(&logrus.JSONFormatter{
-			TimestampFormat: config.TimeFormat,
-		})
-	}
-
 	// set caller
 	lgr.SetReportCaller(config.Caller)
 	// set level
@@ -103,6 +99,8 @@ func newLogger(config *logger.Config) (*logrus.Logger, error) {
 
 // SetConfig to paply a new config to logger
 func (l *Logger) SetConfig(config *logger.Config) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	if config == nil {
 		return nil
 	}
