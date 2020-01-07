@@ -61,7 +61,6 @@ func (u *Usecase) Authenticate(ctx context.Context, username string, action auth
 	switch provider {
 	case authentity.ProviderOTP:
 		otpUniqueID := strings.Join([]string{username, string(action)}, ",")
-
 		_, err := u.otpUsecase.Create(ctx, otpUniqueID, otpentity.CodeLength6, time.Minute*5)
 		if err != nil {
 			return "", err

@@ -23,6 +23,7 @@ type Flags struct {
 	TimeZone          string
 	ConfigurationFile string
 	LogFile           string
+	Version           bool
 }
 
 // Config of project

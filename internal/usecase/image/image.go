@@ -38,7 +38,6 @@ func New(privateStorage *objectstorage.Storage, imageRepo imageRepository) (*Use
 		privateStorage: privateStorage,
 		imageRepo:      imageRepo,
 	}
-
 	return &u, nil
 }
 
@@ -68,11 +67,9 @@ type Image struct {
 // Upload image
 func (u *Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity.FileInfo) (Image, error) {
 	image := Image{}
-
 	if len(strings.Split(info.Tags, ",")) > 5 {
 		return image, imageentity.ErrTooManyTags
 	}
-
 	if err := info.Mode.Validate(); err != nil {
 		return image, err
 	}
@@ -104,7 +101,6 @@ func (u *Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity
 
 	if info.Mode == imageentity.ModePrivate {
 		key := path.Join(string(group), info.FileName)
-
 		writeOptions := &objectstorage.WriteOptions{
 			Metadata: map[string]string{
 				"access_owner": string(imageentity.CreateAccess([]string{string(info.UserHash)}, []string{"read"})),
@@ -131,7 +127,6 @@ func (u *Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity
 	if err != nil {
 		return image, err
 	}
-
 	image = Image{
 		Proto:        img.Proto,
 		Host:         img.Host,
@@ -139,7 +134,6 @@ func (u *Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity
 		DownloadPath: img.DownloadPath,
 		DownloadLink: img.DownloadLink,
 	}
-
 	return image, nil
 }
 
@@ -249,7 +243,6 @@ func (u *Usecase) GenerateTemporaryURL(ctx context.Context, filePath string, exp
 	if err != nil {
 		return "", err
 	}
-
 	return img.DownloadLink, nil
 }
 
