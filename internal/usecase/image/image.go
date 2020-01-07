@@ -1,5 +1,7 @@
 package image
 
+//go:generate mockgen -source=image.go -destination=mock/image_mock.go -package=image
+
 import (
 	"context"
 	"crypto/sha1"
@@ -14,7 +16,7 @@ import (
 
 	imageentity "github.com/albertwidi/go-project-example/internal/entity/image"
 	userentity "github.com/albertwidi/go-project-example/internal/entity/user"
-	"github.com/albertwidi/go-project-example/internal/imagepath"
+	"github.com/albertwidi/go-project-example/internal/objstoragepath"
 	"github.com/albertwidi/go-project-example/internal/pkg/objectstorage"
 	"github.com/albertwidi/go-project-example/internal/xerrors"
 	guuid "github.com/google/uuid"
@@ -25,6 +27,7 @@ type Usecase struct {
 	publicStorage  *objectstorage.Storage
 	privateStorage *objectstorage.Storage
 	imageRepo      imageRepository
+	objPath        *objstoragepath.ObjectStoragePath
 }
 
 type imageRepository interface {
@@ -33,7 +36,7 @@ type imageRepository interface {
 }
 
 // New image usecase
-func New(privateStorage *objectstorage.Storage, imageRepo imageRepository) (*Usecase, error) {
+func New(privateStorage *objectstorage.Storage, imageRepo imageRepository, objStoragePath *objstoragepath.ObjectStoragePath) (*Usecase, error) {
 	u := Usecase{
 		privateStorage: privateStorage,
 		imageRepo:      imageRepo,
@@ -123,7 +126,7 @@ func (u *Usecase) Upload(ctx context.Context, reader io.Reader, info imageentity
 		}
 	}
 
-	img, err := imagepath.GenerateImagePath(info.Mode, filePath)
+	img, err := u.objPath.Generate(info.Mode, filePath)
 	if err != nil {
 		return image, err
 	}
@@ -239,7 +242,7 @@ func (u *Usecase) GenerateTemporaryURL(ctx context.Context, filePath string, exp
 		return "", err
 	}
 
-	img, err := imagepath.GenerateImagePath(imageentity.ModePrivate, path)
+	img, err := u.objPath.Generate(imageentity.ModePrivate, path)
 	if err != nil {
 		return "", err
 	}
@@ -259,7 +262,11 @@ func (u *Usecase) GenerateTemporaryPath(ctx context.Context, filepath string, ex
 		return "", err
 	}
 
-	id = path.Join(u.config.Private.DownloadPath, id)
+	downloadPath, err := u.objPath.GetDownloadPath(imageentity.ModePrivate)
+	if err != nil {
+		return "", err
+	}
+	id = path.Join(downloadPath, id)
 	return strings.Join([]string{"temporary", id}, ":"), nil
 }
 
@@ -299,7 +306,11 @@ func (u *Usecase) GetImageFilePath(ctx context.Context, imagePath string) (prefi
 
 // FilePathFromTemporaryPath path return the true filepath from temporary endpoint
 func (u *Usecase) FilePathFromTemporaryPath(ctx context.Context, tempPath string) (string, error) {
-	s := strings.SplitAfter(tempPath, u.config.Private.DownloadPath)
+	downloadPath, err := u.objPath.GetDownloadPath(imageentity.ModePrivate)
+	if err != nil {
+		return "", err
+	}
+	s := strings.SplitAfter(tempPath, downloadPath)
 	if len(s) < 2 {
 		return "", errors.New("temporary path is not valid")
 	}
