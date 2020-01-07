@@ -20,6 +20,7 @@ var (
 type Request struct {
 	method    string
 	url       string
+	query     string
 	noVersion bool
 
 	body     io.Reader
@@ -63,6 +64,17 @@ func (r *Request) Get(url string) *Request {
 
 // Query for creating url query
 func (r *Request) Query(kv ...string) *Request {
+	data := url.Values{}
+	for idx := range kv {
+		if idx > 0 {
+			idx++
+			if idx == len(kv)-1 {
+				break
+			}
+		}
+		data.Add(kv[idx], kv[idx+1])
+	}
+	r.query = data.Encode()
 	return r
 }
 
@@ -126,7 +138,11 @@ func (r *Request) Compile() (*http.Request, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest(r.method, u.String(), r.body)
+	finalURL := u.String()
+	if r.query != "" {
+		finalURL = finalURL + "?" + r.query
+	}
+	req, err := http.NewRequest(r.method, finalURL, r.body)
 	if err != nil {
 		return nil, err
 	}

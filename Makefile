@@ -2,9 +2,7 @@ mainprogram=projectbackend
 build_commit=$(shell git rev-parse HEAD)
 build_version=$(shell git describe --tags 2> /dev/null || echo "dev-$(shell git rev-parse HEAD)")
 
-define get_build_version
-endef
-
+.PHONY: install-deps
 install-deps:
 	@./scripts/install_dependencies.sh
 
@@ -23,22 +21,25 @@ build:
 
 .PHONY: run
 run:
-	make gobuild
+	make build 
 	@./$(mainprogram) \
 		-config_file="./project.config.toml" \
 		-env_file="./project.env.toml" \
 		-tz="Asia/Jakarta"
 
+.PHONY: testconfig
 testconfig:
-	make gobuild
+	make build
 	@./$(mainprogram) \
 		-config_file=./project.config.toml \
 		-env_file=./project.env.toml \
 		-debug=-testconfig=1-devserver=1 \
 		-tz=Asia/Jakarta
 
+.PHONY: dbup
 dbup:
 	@cd database && ./setup.sh create database.yml
 
+.PHONY: dbdown
 dbdown:
 	@cd database && ./setup.sh drop database.yml
