@@ -27,6 +27,11 @@ run:
 		-env_file="./project.env.toml" \
 		-tz="Asia/Jakarta"
 
+.PHONY: test
+test:
+	@go generate -v ./...
+	@go test -race -v ./...
+
 .PHONY: testconfig
 testconfig:
 	make build
