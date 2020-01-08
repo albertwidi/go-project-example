@@ -6,6 +6,7 @@ import (
 
 	invoiceentity "github.com/albertwidi/go-project-example/internal/entity/invoice"
 	"github.com/albertwidi/go-project-example/internal/pkg/sqldb"
+	"github.com/lib/pq"
 )
 
 // Repository of invoice
@@ -20,8 +21,8 @@ type Invoice struct {
 	// Number/invoice_number might be indexed
 	Number        string `db:"invoice_number"`
 	OrderID       string `db:"order_id"`
-	InvoiceFrom   int64  `db:"invoice_from"`
-	InvoiceTO     int64  `db:"invoice_to"`
+	InvoiceFrom   string `db:"invoice_from"`
+	InvoiceTo     string `db:"invoice_to"`
 	Type          int    `db:"invoice_type"`
 	Total         int64  `db:"total"`
 	DiscountTotal int64  `db:"discount_total"`
@@ -48,11 +49,11 @@ type Detail struct {
 	Amount    int64  `db:"amount"`
 	Discount  int64  `db:"discount"`
 	// total = amount - discount
-	Total        int64     `db:"total"`
 	ItemName     string    `db:"item_name"`
 	ItemQuantity int64     `db:"item_quantity"`
 	Description  string    `db:"description"`
 	CreatedAt    time.Time `db:"created_at"`
+	CreatedBy    string    `db:"created_by"`
 	UpdatedAt    time.Time `db:"updated_at"`
 	IsTest       bool      `db:"is_test"`
 	IsDeleted    bool      `db:"is_deleted"`
@@ -86,7 +87,6 @@ func New(db *sqldb.DB) *Repository {
 const (
 	createNewInvoiceQuery = `
 INSERT INTO invoices (
-	id,
 	invoice_number,
 	order_id,
 	invoice_from,
@@ -104,23 +104,22 @@ INSERT INTO invoices (
 	is_test,
 	is_deleted
 ) VALUES(
-	?, # id
-	?, # invoice_number
-	?, # order_id
-	?, # invoice_from
-	?, # invoice_to
-	?, # invoice_type
-	?, # total
-	?, # discount_total
-	?, # grand_total
-	?, # invoice_details
-	?, # invoice_status
-	?, # description
-	?, # due_date
-	?, # created_at
-	?, # created_by
-	?, # is_test
-	?  # is deleted
+	:invoice_number # invoice_number
+	:order_id # order_id
+	:invoice_from, # invoice_from
+	:invoice_to, # invoice_to
+	:invoice_type, # invoice_type
+	:total, # total
+	:discount_total, # discount_total
+	:grand_total, # grand_total
+	:invoice_details, # invoice_details
+	:invoice_status, # invoice_status
+	:description, # description
+	:due_date, # due_date
+	:created_at, # created_at
+	:created_by, # created_by
+	:is_test, # is_test
+	:is_deleted  # is deleted
 )
 `
 
@@ -135,21 +134,99 @@ INSERT INTO invoices_details (
 	is_test,
 	is_deleted
 ) VALUES(
-	?, # invoice_id
-	?, # amount
-	?, # discount
-	?, # item_name
-	?, # description
-	?, # created_at
-	?, # is_test
-	?  # is_deleted
+	:invoice_id, # invoice_id
+	:amount, # amount
+	:discount, # discount
+	:item_name, # item_name
+	:description, # description
+	:created_at, # created_at
+	:is_test, # is_test
+	:is_deleted  # is_deleted
 )
 `
 )
 
 // Create a new invoice
-func (r Repository) Create(ctx context.Context, invoice invoiceentity.Invoice) error {
-	return nil
+func (r *Repository) Create(ctx context.Context, invoice *invoiceentity.Invoice) error {
+	var details []string
+
+	// create database transaction for creating invoice and invoice detail
+	tx, err := r.db.Leader().BeginTxx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// create the detail first
+	for idx, invD := range invoice.Details {
+		invoiceDetail := Detail{
+			InvoiceID:    invD.InvoiceID,
+			Amount:       invD.Amount,
+			Discount:     invD.Discount,
+			ItemName:     invD.ItemName,
+			ItemQuantity: invD.ItemQuantity,
+			Description:  invD.Description,
+			CreatedAt:    time.Now(),
+			CreatedBy:    invD.CreatedBy,
+			IsTest:       invD.IsTest,
+		}
+		qDetail, args, err := r.db.BindNamed(createNewInvoiceDetailQuery, invoiceDetail)
+		if err != nil {
+			return err
+		}
+
+		rows, err := tx.QueryContext(ctx, qDetail, args)
+		if err != nil {
+			return err
+		}
+		// only return 1 result: ID
+		if rows.Next() {
+			var id string
+			if err := rows.Scan(&id); err != nil {
+				return err
+			}
+			details = append(details, id)
+			// set invoice details id
+			invoice.Details[idx].ID = id
+		}
+	}
+
+	// insert the invoice
+	inv := Invoice{
+		Number:        invoice.Number,
+		OrderID:       invoice.OrderID,
+		InvoiceFrom:   invoice.InvoiceFrom,
+		InvoiceTo:     invoice.InvoiceTo,
+		Type:          invoice.Type,
+		Total:         invoice.Total,
+		DiscountTotal: invoice.DiscountTotal,
+		GrandTotal:    invoice.GrandTotal,
+		Details:       details,
+		Status:        invoice.Status,
+		Description:   invoice.Description,
+		DueDate:       invoice.DueDate,
+		CreatedAt:     time.Now(),
+		CreatedBy:     invoice.CreatedBy,
+		IsTest:        invoice.IsTest,
+	}
+	qInv, args, err := r.db.BindNamed(createNewInvoiceQuery, inv)
+	if err != nil {
+		return err
+	}
+	rows, err := tx.QueryContext(ctx, qInv, args)
+	if err != nil {
+		return err
+	}
+	if rows.Next() {
+		if err := rows.Scan(invoice.ID); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
 }
 
 const (

@@ -1,5 +1,7 @@
 package redis
 
+//go:generate mockgen -source=redis.go -destination=mock/redis_mock.go -package redismock
+
 import (
 	"context"
 	"errors"

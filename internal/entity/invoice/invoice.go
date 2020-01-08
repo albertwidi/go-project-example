@@ -10,8 +10,8 @@ type Invoice struct {
 	ID            string
 	Number        string
 	OrderID       string
-	InvoiceFrom   int64
-	InvoiceTo     int64
+	InvoiceFrom   string
+	InvoiceTo     string
 	Type          int
 	Total         int64
 	DiscountTotal int64
@@ -30,16 +30,18 @@ type Invoice struct {
 
 // Detail for invoice detail
 type Detail struct {
-	ID          string
-	InvoiceID   string
-	Amount      int64
-	Discount    int64
-	ItemName    string
-	Description string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	IsTest      bool
-	IsDeleted   bool
+	ID           string
+	InvoiceID    string
+	Amount       int64
+	Discount     int64
+	ItemName     string
+	ItemQuantity int64
+	Description  string
+	CreatedAt    time.Time
+	CreatedBy    string
+	UpdatedAt    time.Time
+	IsTest       bool
+	IsDeleted    bool
 }
 
 // PaidInvoice struct

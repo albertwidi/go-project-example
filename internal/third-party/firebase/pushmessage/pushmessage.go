@@ -78,6 +78,5 @@ func (f *Firebase) Send(ctx context.Context, message *messaging.Message, options
 		}
 		id, err = f.msgclient.SendDryRun(ctx, message)
 	}
-
 	return id, err
 }

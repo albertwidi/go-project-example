@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -143,8 +142,6 @@ func (c *Client) Send(ctx context.Context, payload Payload) (Response, error) {
 	if err != nil {
 		return Response{}, err
 	}
-
-	log.Println(string(out))
 
 	apiResp := Response{}
 	if err := json.Unmarshal(out, &apiResp); err != nil {
