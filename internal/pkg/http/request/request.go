@@ -21,6 +21,7 @@ type Request struct {
 	method    string
 	url       string
 	query     string
+	headers   []string
 	noVersion bool
 
 	body     io.Reader
@@ -35,6 +36,12 @@ type Request struct {
 func New(ctx context.Context) *Request {
 	r := Request{ctx: ctx}
 	return &r
+}
+
+// Headers function to set request header
+func (r *Request) Headers(kv ...string) *Request {
+	r.headers = kv
+	return r
 }
 
 // NoVersionHeader function to control the version selection header generation
@@ -147,6 +154,16 @@ func (r *Request) Compile() (*http.Request, error) {
 		return nil, err
 	}
 
+	// process passed header
+	for idx := range r.headers {
+		if idx > 0 {
+			idx++
+			if idx == len(r.headers)-1 {
+				break
+			}
+		}
+		req.Header.Add(r.headers[idx], r.headers[idx+1])
+	}
 	// flag the version matching
 	// this logic might moved to infrastructure instead here
 	// we can easily disable this without any side-effect

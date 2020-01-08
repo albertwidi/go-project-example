@@ -1,9 +1,10 @@
 package user
 
 import (
+	"net/http"
+
 	"github.com/albertwidi/go-project-example/debug/user"
 	"github.com/albertwidi/go-project-example/internal/pkg/context"
-	"net/http"
 )
 
 // Handler for user debug

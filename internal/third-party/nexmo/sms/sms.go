@@ -7,9 +7,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"strconv"
-	"strings"
+
+	"github.com/albertwidi/go-project-example/internal/pkg/http/request"
 )
 
 // Client sms module for nexmo
@@ -120,25 +120,18 @@ type NexmoSMSCallback struct {
 // Send sms using nexmo
 // currently, the API only expect to send 1 message
 func (c *Client) Send(ctx context.Context, payload Payload) (Response, error) {
-	req := Request{}
-	// set default callback to the configuration callback
-	if c.config.CallbackEndpoint != "" {
-		req.Callback = c.config.CallbackEndpoint
-	}
-
-	data := url.Values{}
-	data.Set("api_key", c.config.APIKey)
-	data.Set("api_secret", c.config.APISecret)
-	data.Set("from", payload.From)
-	data.Set("to", payload.To)
-	data.Set("text", payload.Message)
-
-	httpreq, err := http.NewRequest(http.MethodPost, c.config.Endpoint, strings.NewReader(data.Encode()))
+	httpreq, err := request.New(ctx).
+		Post(c.config.Endpoint).
+		PostForm("api_key", c.config.APIKey,
+			"api_secret", c.config.APISecret,
+			"from", payload.From,
+			"to", payload.To,
+			"text", payload.Message).
+		Headers("Content-Type", "application/x-www-form-urlencoded").
+		Compile()
 	if err != nil {
 		return Response{}, err
 	}
-	httpreq = httpreq.WithContext(ctx)
-	httpreq.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := c.httpClient.Do(httpreq)
 	if err != nil {
