@@ -237,3 +237,43 @@ func (s *Storage) BucketName() string {
 func (s *Storage) Close() error {
 	return s.storage.Close()
 }
+
+// Stream create a new stream object
+func (s *Storage) Stream(ctx context.Context, key string, writeOptions *WriteOptions) (*Stream, error) {
+	blobBucket := s.storage.Bucket()
+	st := Stream{
+		bucket: blobBucket,
+	}
+	return &st, nil
+}
+
+// Stream struct
+type Stream struct {
+	bucket *blob.Bucket
+}
+
+// Reader return blob reader
+func (s *Stream) Reader(ctx context.Context, key string, readOptions *ReadOptions) (*blob.Reader, error) {
+	var opts *blob.ReaderOptions
+	if readOptions != nil {
+		opts = &blob.ReaderOptions{}
+	}
+	return s.bucket.NewReader(ctx, key, opts)
+}
+
+// Writer return blob writer
+func (s *Stream) Writer(ctx context.Context, key string, writeOptions *WriteOptions) (*blob.Writer, error) {
+	var opts *blob.WriterOptions
+	if writeOptions != nil {
+		opts = &blob.WriterOptions{
+			BufferSize:         writeOptions.BufferSize,
+			ContentType:        writeOptions.ContentType,
+			ContentDisposition: writeOptions.ContentDisposition,
+			ContentEncoding:    writeOptions.ContentEncoding,
+			ContentLanguage:    writeOptions.ContentLanguage,
+			ContentMD5:         writeOptions.ContentMD5,
+			Metadata:           writeOptions.Metadata,
+		}
+	}
+	return s.bucket.NewWriter(ctx, key, opts)
+}

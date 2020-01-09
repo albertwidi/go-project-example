@@ -11,5 +11,14 @@ type Handlers struct {
 }
 
 func (s *Server) registerHandlers(r *router.Router) {
-	r.Get("/something", s.handlers.user.BypassLogin)
+	// swagger:route GET /user/login/bypass bypass user login
+	// Bypassing user login
+	// This will bypass user login
+	// Only ued in development
+	//	Consumes:
+	//	- application/json
+	//	Produces:
+	//	- application/json
+	//	Schemes: http
+	r.Get("/user/login/bypass", s.handlers.user.BypassLogin)
 }

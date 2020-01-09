@@ -113,7 +113,6 @@ func (s *Server) Metrics(next router.HandlerFunc) router.HandlerFunc {
 	return func(rctx *requestctx.RequestContext) error {
 		now := time.Now()
 		err := next(rctx)
-
 		httpStatus := 0
 		duration := time.Since(now).Seconds()
 		requestSize := httpmisc.ComputeApproximateRequestSize(rctx.Request())

@@ -38,6 +38,7 @@ func (adm *adminServer) Run(middlewares ...router.MiddlewareFunc) error {
 	return adm.httpServer.Serve(adm.listener)
 }
 
+// Shutdown admin server
 func (adm *adminServer) Shutdown(ctx context.Context) error {
 	return adm.httpServer.Shutdown(ctx)
 }

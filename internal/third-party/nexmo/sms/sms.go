@@ -126,7 +126,7 @@ func (c *Client) Send(ctx context.Context, payload Payload) (Response, error) {
 			"from", payload.From,
 			"to", payload.To,
 			"text", payload.Message).
-		Headers("Content-Type", "application/x-www-form-urlencoded").
+		Headers(request.Header().ContentType().ApplicationFormWWWURLEncoded().Headers()).
 		Compile()
 	if err != nil {
 		return Response{}, err

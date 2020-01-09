@@ -43,6 +43,5 @@ func (r Repository) GetTempPath(ctx context.Context, id string) (string, error) 
 		}
 		return "", err
 	}
-
 	return out, err
 }

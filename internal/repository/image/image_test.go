@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/albertwidi/go-project-example/internal/repository/image"
 	redismock "github.com/albertwidi/go-project-example/internal/pkg/redis/mock"
+	"github.com/albertwidi/go-project-example/internal/repository/image"
 	"github.com/golang/mock/gomock"
 )
 
@@ -15,7 +15,7 @@ func TestSaveTempPath(t *testing.T) {
 
 	redisMock := redismock.NewMockRedis(gomock.NewController(t))
 	redisMock.EXPECT().
-		SetEX(context.Background(), "image_temp:abcd", "jklf", int(time.Minute.Seconds())).
+		SetEX(context.Background(), gomock.Eq("image_temp:abcd"), gomock.Eq("jklf"), gomock.Eq(int(time.Minute.Seconds()))).
 		Return("OK", nil)
 
 	repo := image.New(redisMock)
