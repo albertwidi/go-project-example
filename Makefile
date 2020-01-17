@@ -38,7 +38,8 @@ testconfig:
 	@./$(mainprogram) \
 		-config_file=./project.config.toml \
 		-env_file=./project.env.toml \
-		-debug=-testconfig=1-devserver=1 \
+		-debug=-testconfig=1 \
+			-devserver=1 \
 		-tz=Asia/Jakarta
 
 .PHONY: dbup

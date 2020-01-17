@@ -29,7 +29,7 @@ type DB struct {
 // all exec is going to leader, all query is going to follower
 func Wrap(ctx context.Context, leader, follower *sqlx.DB) (*DB, error) {
 	if leader.DriverName() != follower.DriverName() {
-		return nil, fmt.Errorf("sqldb: leader and follower driver is not match. leader = %s follower = %s", leader.DriverName(), follower.DriverName())
+		return nil, fmt.Errorf("sqldb: leader and follower driver is not matched. leader = %s follower = %s", leader.DriverName(), follower.DriverName())
 	}
 
 	db := DB{
@@ -37,7 +37,6 @@ func Wrap(ctx context.Context, leader, follower *sqlx.DB) (*DB, error) {
 		leader:   leader,
 		follower: follower,
 	}
-
 	return &db, nil
 }
 
@@ -86,12 +85,7 @@ func connectWithRetry(ctx context.Context, driver, dsn string, retry int) (*sqlx
 		if err == nil {
 			break
 		}
-
-		// db.logger.Warnf("sqldb: failed to connect to %s with error %s", dsn, err.Error())
-		// db.logger.Warnf("sqldb: retrying to connect to %s. Retry: %d", dsn, x+1)
-
 		if x+1 == retry && err != nil {
-			// db.logger.Errorf("sqldb: retry time exhausted, cannot connect to database: %s", err.Error())
 			return nil, fmt.Errorf("sqldb: failed connect to database: %s", err.Error())
 		}
 		time.Sleep(time.Second * 3)

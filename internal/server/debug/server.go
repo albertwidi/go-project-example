@@ -40,7 +40,6 @@ func New(address string, usecases Usecases) (*Server, error) {
 	handlers := Handlers{
 		user: userHandler,
 	}
-
 	s := Server{
 		address:    address,
 		listener:   listener,

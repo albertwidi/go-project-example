@@ -57,7 +57,6 @@ func (u *Usecase) Authenticate(ctx context.Context, username string, action auth
 	if err != nil {
 		return "", err
 	}
-
 	switch provider {
 	case authentity.ProviderOTP:
 		otpUniqueID := strings.Join([]string{username, string(action)}, ",")
@@ -77,7 +76,6 @@ func (u *Usecase) Confirm(ctx context.Context, username, password, stateID strin
 	if err != nil {
 		return xerrors.New(op, err)
 	}
-
 	return nil
 }
 

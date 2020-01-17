@@ -73,7 +73,6 @@ func ParseFile(configFile string, dest interface{}, envFiles ...string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 

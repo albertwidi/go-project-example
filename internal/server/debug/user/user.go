@@ -1,5 +1,7 @@
 package user
 
+//go:generate swagger generate spec
+
 import (
 	"net/http"
 

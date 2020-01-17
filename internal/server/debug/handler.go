@@ -1,5 +1,7 @@
 package debug
 
+// go:generate swagger
+
 import (
 	"github.com/albertwidi/go-project-example/internal/pkg/router"
 	"github.com/albertwidi/go-project-example/internal/server/debug/user"

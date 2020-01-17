@@ -18,15 +18,16 @@ var (
 
 // Request wrap the http request
 type Request struct {
-	method    string
-	url       string
-	query     string
-	header    http.Header
-	noVersion bool
+	method           string
+	url              string
+	query            string
+	header           http.Header
+	additionalHeader []string
 
-	body     io.Reader
-	vBody    interface{}
-	bodyJSON bool
+	body      io.Reader
+	vBody     interface{}
+	bodyJSON  bool
+	noVersion bool
 
 	ctx context.Context
 	r   *http.Request
@@ -124,6 +125,7 @@ func (r *Request) Body(body io.Reader) *Request {
 func (r *Request) BodyJSON(body interface{}) *Request {
 	r.vBody = body
 	r.bodyJSON = true
+	r.additionalHeader = []string{"Content-Type", "application/json"}
 	return r
 }
 
@@ -149,7 +151,7 @@ func (r *Request) Compile() (*http.Request, error) {
 	if r.query != "" {
 		finalURL = finalURL + "?" + r.query
 	}
-	req, err := http.NewRequest(r.method, finalURL, r.body)
+	req, err := http.NewRequestWithContext(r.ctx, r.method, finalURL, r.body)
 	if err != nil {
 		return nil, err
 	}

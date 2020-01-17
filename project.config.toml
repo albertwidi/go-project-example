@@ -13,7 +13,7 @@
 [log]
     level = "${LOG_LEVEL}"
     file = "${LOG_FILE}"
-    use_color = ${LOG_COLOR}
+    use_color = ${LOG_USE_COLOR}
 
 [resources]
     # object storage

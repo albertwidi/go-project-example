@@ -64,3 +64,49 @@ CREATE TABLE registrations(
     updated_at timestamp,
     is_test boolean NOT NULL,
 );
+
+DROP TABLE IF EXISTS scopes;
+CREATE TABLE scopes(
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name varchar(60) NOT NULL,
+    description text NOT NULL,
+    created_at timestamp NOT NULL,
+    created_by string NOT NULL,
+    updated_by string,
+    updated_at timestamp
+);
+
+-- insert default scopes
+INSERT INTO scopes("kos:search", "search for kos", NOW(), 1)
+
+DROP TABLE IF EXISTS user_credentials;
+CREATE TABLE users_credentials(
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id uuid,
+    token_name varchar(60),
+    scopes []string,
+    created_at timestamp NOT NULL,
+    created_by uuid,
+    UNIQUE(user_id, token_name)
+)
+
+DROP TABLE IF EXISTS user_token;
+CREATE TABLE users_token(
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id uuid,
+    credential_id uuid,
+    client_id varchar(60),
+    client_secret varchar(60),
+    refresh_token varchar(60),
+    created_at timestamp NOT NULL
+    created_by uuid
+)
+
+DROP INDEX IF EXISTS idx_credential_id;
+CREATE INDEX idx_credential_id ON users_token(credential_id);
+
+DROP INDEX IF EXISTS idx_client_id;
+CREATE INDEX idx_client_id ON users_token(client_id);
+
+DROP INDEX IF EXISTS idx_refresh_token;
+CREATE INDEX idx_refresh_token ON users_token(refresh_token);
