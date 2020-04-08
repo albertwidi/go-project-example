@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kosanapp/backend/internal/pkg/nsq/fakensq"
+	"github.com/albertwidi/go-project-example/internal/pkg/nsq/fakensq"
 )
 
 func TestStartStop(t *testing.T) {

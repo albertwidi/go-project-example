@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	fakensq "github.com/kosanapp/backend/internal/pkg/nsq/fakensq"
+	fakensq "github.com/albertwidi/go-project-example/internal/pkg/nsq/fakensq"
 	gonsq "github.com/nsqio/go-nsq"
 )
 

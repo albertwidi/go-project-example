@@ -10,7 +10,7 @@ require (
 	github.com/coreos/etcd v3.3.18+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
-	github.com/cucumber/godog v0.9.0 // indirect
+	github.com/cucumber/godog v0.9.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/mock v1.3.1
 	github.com/gomodule/redigo v2.0.0+incompatible
