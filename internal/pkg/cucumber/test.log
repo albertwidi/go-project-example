@@ -1,0 +1,17 @@
+ApiFeature: invoking feature context
+request body:  {
+    "book_id": 10
+}
+request body:  {
+    "book_id": 10
+}
+request body:  {"book_id": 10}
+request body:  {"book_id": 20}
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
+ApiFeature: invoking feature context
