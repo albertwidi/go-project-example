@@ -11,10 +11,6 @@ import (
 )
 
 var (
-	// _buffMultiplier is a multiplier for buffered channel
-	// the multiplier is used with the number for concurrency
-	// the result is _buffMultiplier * numberOfConcurrency
-	_buffMultiplier = 10
 	// ErrTopicWithChannelNotFound for error when channel and topic is not found
 	ErrTopicWithChannelNotFound = errors.New("nsq: topic and channel not found")
 	// prometheus metrics

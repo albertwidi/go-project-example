@@ -37,10 +37,11 @@ func TestThrottleMiddleware(t *testing.T) {
 	}
 	producer := fakensq.NewFakeProducer(consumer)
 
+	_buffMultiplier := 10
 	wc, err := WrapConsumers(ConsumerConfig{
 		LookupdsAddr:     []string{"testing"},
 		Concurrency:      1,
-		BufferMultiplier: 10,
+		BufferMultiplier: _buffMultiplier,
 	}, consumer)
 	if err != nil {
 		t.Error(err)
