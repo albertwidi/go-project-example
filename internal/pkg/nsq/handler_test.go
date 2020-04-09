@@ -12,45 +12,122 @@ import (
 func TestNSQHandlerSetConcurrency(t *testing.T) {
 	t.Parallel()
 
-	concurrencies := []int{0, 1, -1, -10, 10, 20}
+	cases := []struct {
+		concurrency            int
+		buffMultiplier         int
+		expectConcurreny       int
+		expectBufferMultiplier int
+	}{
+		{
+			concurrency:            1,
+			buffMultiplier:         10,
+			expectConcurreny:       1,
+			expectBufferMultiplier: 10,
+		},
+		{
+			concurrency:            -1,
+			buffMultiplier:         -1,
+			expectConcurreny:       1,
+			expectBufferMultiplier: 20,
+		},
+		{
+			concurrency:            1,
+			buffMultiplier:         1,
+			expectConcurreny:       1,
+			expectBufferMultiplier: 1,
+		},
+		{
+			concurrency:            1,
+			buffMultiplier:         -1,
+			expectConcurreny:       1,
+			expectBufferMultiplier: 20,
+		},
+	}
 
-	for _, c := range concurrencies {
-		t.Logf("concurrency: %d", c)
-		buffLen := c * _buffMultiplier
-		handler := nsqHandler{}
-		handler.SetConcurrency(c)
+	var (
+		topic   = "test_concurrency"
+		channel = "test_concurrency"
+	)
 
-		// set to default if value is less than 0
-		if c <= 0 {
-			c = 1
-			buffLen = _buffMultiplier
-		}
+	for _, c := range cases {
+		t.Logf("concurrency: %d", c.concurrency)
+		t.Logf("buff_multiplier: %d", c.buffMultiplier)
 
-		if handler.concurrency != c {
-			t.Errorf("expecting concurrency %d but got %d", c, handler.concurrency)
+		backend, err := fakensq.NewFakeConsumer(topic, channel)
+		if err != nil {
+			t.Error(err)
 			return
 		}
 
-		if handler.buffLength != buffLen {
-			t.Errorf("expecting buffer length of %d but got %d", buffLen, handler.buffLength)
+		wc, err := WrapConsumers(ConsumerConfig{
+			LookupdsAddr:     []string{"testing"},
+			Concurrency:      c.concurrency,
+			BufferMultiplier: c.buffMultiplier,
+		}, backend)
+		if err != nil {
+			t.Error(err)
 			return
 		}
+		// trigger the creation of handler
+		wc.Handle(topic, channel, nil)
+
+		handler := wc.handlers[0]
+		if handler == nil {
+			t.Error("handler should not be nil, as handle is triggered")
+		}
+
+		if handler.concurrency != c.expectConcurreny {
+			t.Errorf("expecting concurrency %d but got %d", c.expectConcurreny, handler.concurrency)
+			return
+		}
+		if handler.buffMultiplier != c.expectBufferMultiplier {
+			t.Errorf("expecting buffer multiplier of %d but got %d", c.expectBufferMultiplier, handler.buffMultiplier)
+			return
+		}
+		if handler.buffLength != c.expectConcurreny*c.expectBufferMultiplier {
+			t.Errorf("expecting buffer length of %d but got %d", c.expectConcurreny*c.expectBufferMultiplier, handler.buffLength)
+			return
+		}
+
 	}
 }
 
 func TestNSQHandlerConcurrencyControl(t *testing.T) {
 	t.Parallel()
 
-	concurrency := 5
+	var (
+		topic       = "test_concurrency"
+		channel     = "test_concurrency"
+		concurrency = 5
+	)
 
-	handler := nsqHandler{}
-	handler.SetConcurrency(concurrency)
+	backend, err := fakensq.NewFakeConsumer(topic, channel)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	wc, err := WrapConsumers(ConsumerConfig{
+		LookupdsAddr: []string{"testing"},
+		Concurrency:  concurrency,
+	}, backend)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	// trigger the creation of handler
+	wc.Handle(topic, channel, nil)
+
+	handler := wc.handlers[0]
+	if handler == nil {
+		t.Error("handler should not be nil, as handle is triggered")
+	}
 
 	for i := 1; i <= 5; i++ {
 		go handler.Work()
 		// wait until the goroutines scheduled
 		// this might be too long, but its ok
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 10)
 		if handler.workerNumber != i {
 			t.Errorf("start: expecting number worker number of %d but got %d", i, handler.workerNumber)
 			return
@@ -75,7 +152,7 @@ func TestDefaultHandlerHandleMessage(t *testing.T) {
 		messageBody = []byte("test message")
 	)
 
-	backend, err := fakensq.NewFakeConsumer("random", "random", nil)
+	backend, err := fakensq.NewFakeConsumer("random", "random")
 	if err != nil {
 		t.Error(err)
 		return
@@ -120,7 +197,7 @@ func TestDefaultHandlerHandleMessage(t *testing.T) {
 func TestDefaultHandlerThrottle(t *testing.T) {
 	t.Parallel()
 
-	backend, err := fakensq.NewFakeConsumer("random", "random", nil)
+	backend, err := fakensq.NewFakeConsumer("random", "random")
 	if err != nil {
 		t.Error(err)
 		return

@@ -52,35 +52,18 @@ type Info struct {
 }
 
 type nsqHandler struct {
-	handler      HandlerFunc
-	concurrency  int
-	workerNumber int
-	topic        string
-	channel      string
+	handler        HandlerFunc
+	concurrency    int
+	buffMultiplier int
+	workerNumber   int
+	topic          string
+	channel        string
 	// messageBuff is a buffered channel to buffer messages
 	messageBuff chan *Message
 	buffLength  int
 	stopChan    chan struct{}
 	mu          sync.Mutex
 	throttle    bool
-}
-
-// SetConcurrency to set concurrency in handler and message buffer
-func (nh *nsqHandler) SetConcurrency(concurrency int) {
-	if concurrency <= 0 {
-		concurrency = 1
-	}
-	nh.concurrency = concurrency
-	// determine the maximum length of buffer based on concurrency number
-	// for example, the concurrency have multiplication factor of 5
-	// |message_processed|buffer|buffer|buffer|limit|
-	//          1           2     3      4      5
-	// or in throttling case
-	// |message_processed|buffer|throttle_limit|throttle_limit|limit|
-	//          1           2            3             4         5
-	buffLen := nh.concurrency * _buffMultiplier
-	nh.buffLength = buffLen
-	nh.messageBuff = make(chan *Message, buffLen)
 }
 
 // SetThrottle to set the handler status if throttled or not

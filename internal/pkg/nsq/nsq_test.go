@@ -18,12 +18,16 @@ func TestStartStop(t *testing.T) {
 		channel = "test_channel"
 	)
 
-	consumer, err := fakensq.NewFakeConsumer(topic, channel, nil)
+	consumer, err := fakensq.NewFakeConsumer(topic, channel)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	wc, err := WrapConsumers([]string{"testing"}, consumer)
+	wc, err := WrapConsumers(ConsumerConfig{
+		LookupdsAddr:     []string{"testing"},
+		Concurrency:      1,
+		BufferMultiplier: 10,
+	}, consumer)
 	if err != nil {
 		t.Error(err)
 		return
@@ -100,14 +104,18 @@ func TestMiddlewareChaining(t *testing.T) {
 		}
 	}
 
-	consumer, err := fakensq.NewFakeConsumer(topic, channel, nil)
+	consumer, err := fakensq.NewFakeConsumer(topic, channel)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	producer := fakensq.NewFakeProducer(consumer)
 
-	wc, err := WrapConsumers([]string{"test"}, consumer)
+	wc, err := WrapConsumers(ConsumerConfig{
+		LookupdsAddr:     []string{"testing"},
+		Concurrency:      1,
+		BufferMultiplier: 10,
+	}, consumer)
 	if err != nil {
 		t.Error(err)
 		return
@@ -143,7 +151,7 @@ func TestMiddlewareChaining(t *testing.T) {
 		return
 	}
 
-	if err := producer.Publish(topic, []byte("testing middleware chaining")); err != nil {
+	if err := producer.Publish(topic, []byte(messageExpect)); err != nil {
 		t.Error(err)
 		return
 	}

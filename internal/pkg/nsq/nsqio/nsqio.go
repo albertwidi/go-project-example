@@ -134,7 +134,6 @@ type ConsumerConfig struct {
 	LookupdAddresses []string
 	Topic            string
 	Channel          string
-	Concurrency      int
 	Lookupd          LookupdConfig
 	Timeout          TimeoutConfig
 	Queue            QueueConfig
@@ -151,10 +150,6 @@ func (cf *ConsumerConfig) Validate() error {
 	}
 	if cf.Channel == "" {
 		return errors.New("consumer_config: channel cannot be empty")
-	}
-	// set default concurrency to 1
-	if cf.Concurrency == 0 {
-		cf.Concurrency = 1
 	}
 	return nil
 }
@@ -222,11 +217,6 @@ func (c *NSQConsumer) AddConcurrentHandlers(handler nsqio.Handler, concurrency i
 // Stop nsq consumer
 func (c *NSQConsumer) Stop() {
 	c.consumer.Stop()
-}
-
-// Concurrency return the number of concurrency in the config
-func (c *NSQConsumer) Concurrency() int {
-	return c.config.Concurrency
 }
 
 // ChangeMaxInFlight will change max in flight number in nsq consumer

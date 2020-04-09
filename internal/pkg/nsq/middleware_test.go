@@ -30,14 +30,18 @@ func TestThrottleMiddleware(t *testing.T) {
 
 	// we are using fake consumer, this means the concurrency is always 1
 	// and the number of message buffer is 1 * _bufferMultiplier
-	consumer, err := fakensq.NewFakeConsumer(topic, channel, nil)
+	consumer, err := fakensq.NewFakeConsumer(topic, channel)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	producer := fakensq.NewFakeProducer(consumer)
 
-	wc, err := WrapConsumers([]string{"test"}, consumer)
+	wc, err := WrapConsumers(ConsumerConfig{
+		LookupdsAddr:     []string{"testing"},
+		Concurrency:      1,
+		BufferMultiplier: 10,
+	}, consumer)
 	if err != nil {
 		t.Error(err)
 		return
@@ -93,15 +97,15 @@ func TestThrottleMiddleware(t *testing.T) {
 		return
 	}
 
-	// send message as much as (_buffMultiplier/2) + 3 to tirgger the throttle mechanism
-	// why we need at least +3 message?
+	// note that in this test, we set the bufferMultiplier to 10
+	// send messages as much as (bufferMultiplier/2) + 3 to tirgger the throttle mechanism
 	//
 	// c = consumed
 	// d = done
 	// m = message in buffer
 	// <nil> = no message, buffer is empty
 	//
-	// _buffMultiplier/2 + 3 = 8 message
+	// _buffMultiplier/2 + 3 = 8 messages
 	// | m | m | m | m | m | m | m | m | <nil> | <nil> |
 	//   1   2   3   4   5   6   7   8     9      10
 	// message_length: 8
@@ -120,10 +124,10 @@ func TestThrottleMiddleware(t *testing.T) {
 	// message_length: 6
 	//
 	// when consuming the message, evaluation of the buffer length will kick in
-	// this is where the evaluator for thorttle know that the number of message
+	// this is where the evaluator for thorttle knows that the number of messages
 	// is more than half of the buffer size, then throttle mechanism will be invoked
-	// this is why, with lower number of message the test won't pass,
-	// because it depends on message number in the buffer
+	// this is why, with lower number of messages the test won't pass,
+	// because it depends on messages number in the buffer
 	for i := 1; i <= (_buffMultiplier/2)+3; i++ {
 		if err := producer.Publish(topic, []byte(messageExpect)); err != nil {
 			t.Error(err)

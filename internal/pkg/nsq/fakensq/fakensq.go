@@ -79,7 +79,7 @@ func (h *nsqHandler) Stop() {
 	return
 }
 
-// MessageDelegator
+// MessageDelegator implement Delegator of nsqio
 type MessageDelegator struct {
 }
 
@@ -102,14 +102,13 @@ type Message struct {
 }
 
 // NewFakeConsumer function
-func NewFakeConsumer(topic, channel string, data []Message) (*FakeConsumer, error) {
+func NewFakeConsumer(topic, channel string) (*FakeConsumer, error) {
 	mock := FakeConsumer{
 		FakeLookupd: &FakeLookupd{
 			topicChannel: make(map[string]map[string]chan *nsqio.Message),
 		},
 		topic:       topic,
 		channel:     channel,
-		data:        data,
 		messageChan: make(chan *nsqio.Message),
 		ErrChan:     make(chan error),
 	}
@@ -216,11 +215,6 @@ func (cm *FakeConsumer) Stop() {
 	cm.stopped = true
 
 	return
-}
-
-// Concurrency return the number of the conccurent
-func (cm *FakeConsumer) Concurrency() int {
-	return 1
 }
 
 // FakeLookupd for storing all information regarding topics and channel
