@@ -5,20 +5,11 @@ import (
 	"time"
 )
 
-// MiddlewareTest for testing the middleware
-// middleware test will store the message and error in log file
-// the tester expected to look the result from the log file
-func MiddlewareTest(handler HandlerFunc) HandlerFunc {
-	return func(ctx context.Context, message *Message) error {
-		return nil
-	}
-}
-
 // Metrics middleware for nsq
 // metrics that might be missleading:
 // - throttled
 // - message_in_buffer
-// the metrics might be missleading because the message is not processed in ordered manner
+// The metrics might be missleading because the message is not processed in ordered manner.
 func Metrics(handler HandlerFunc) HandlerFunc {
 	return func(ctx context.Context, message *Message) error {
 		t := time.Now()
@@ -42,8 +33,8 @@ type ThrottleMiddleware struct {
 	TimeDelay time.Duration
 }
 
-// Throttle middleware for nsq
-// this middleware check whether there is some information about throttling in the message
+// Throttle middleware for nsq.
+// This middleware check whether there is some information about throttling in the message.
 func (tm *ThrottleMiddleware) Throttle(handler HandlerFunc) HandlerFunc {
 	return func(ctx context.Context, message *Message) error {
 		// this means the worker is being throttled

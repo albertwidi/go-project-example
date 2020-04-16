@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/albertwidi/go-project-example/internal/pkg/nsq/fakensq"
+	"github.com/kyolabs/mono/gopkg/nsq/fakensq"
 )
 
 func TestStartStop(t *testing.T) {
@@ -18,11 +18,12 @@ func TestStartStop(t *testing.T) {
 		channel = "test_channel"
 	)
 
-	consumer, err := fakensq.NewFakeConsumer(topic, channel)
+	consumer, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel})
 	if err != nil {
 		t.Error(err)
 		return
 	}
+
 	wc, err := WrapConsumers(ConsumerConfig{
 		LookupdsAddr:     []string{"testing"},
 		Concurrency:      1,
@@ -37,7 +38,7 @@ func TestStartStop(t *testing.T) {
 		return
 	}
 
-	// give time for consumer to start the work
+	// Give time for consumer to start the work.
 	time.Sleep(time.Millisecond * 100)
 
 	for _, h := range wc.handlers {
@@ -104,7 +105,7 @@ func TestMiddlewareChaining(t *testing.T) {
 		}
 	}
 
-	consumer, err := fakensq.NewFakeConsumer(topic, channel)
+	consumer, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel})
 	if err != nil {
 		t.Error(err)
 		return
@@ -121,14 +122,14 @@ func TestMiddlewareChaining(t *testing.T) {
 		return
 	}
 
-	// chain from left to right or top to bottom
+	// Chain from left to right or top to bottom.
 	wc.Use(
 		mw1,
 		mw2,
 		mw3,
 	)
 
-	// handle message and check whether the middleware chaining is correct
+	// Handle message and check whether the middleware chaining is correct.
 	wc.Handle(topic, channel, func(ctx context.Context, message *Message) error {
 		if string(message.Message.Body) != messageExpect {
 			err := fmt.Errorf("epecting message %s but got %s", messageExpect, string(message.Message.Body))

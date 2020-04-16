@@ -55,10 +55,8 @@ func (fp *FakeProducer) Stop() {
 // FakeConsumer struct
 type FakeConsumer struct {
 	*FakeLookupd
-	topic       string
-	channel     string
+	config      ConsumerConfig
 	data        []Message
-	concurrency int
 	messageChan chan *nsqio.Message
 	ErrChan     chan error
 	handlers    []nsqHandler
@@ -101,14 +99,35 @@ type Message struct {
 	Body []byte
 }
 
+// ConsumerConfig of fake nsq
+type ConsumerConfig struct {
+	Topic            string
+	Channel          string
+	Concurrency      int
+	BufferMultiplier int
+}
+
+// Validate consumer configuration
+func (cc *ConsumerConfig) Validate() error {
+	if cc.Topic == "" || cc.Channel == "" {
+		return errors.New("topic or channel cannot be empty")
+	}
+	if cc.Concurrency <= 0 {
+		cc.Concurrency = 1
+	}
+	if cc.BufferMultiplier == 0 {
+		cc.BufferMultiplier = 30
+	}
+	return nil
+}
+
 // NewFakeConsumer function
-func NewFakeConsumer(topic, channel string) (*FakeConsumer, error) {
+func NewFakeConsumer(config ConsumerConfig) (*FakeConsumer, error) {
 	mock := FakeConsumer{
 		FakeLookupd: &FakeLookupd{
 			topicChannel: make(map[string]map[string]chan *nsqio.Message),
 		},
-		topic:       topic,
-		channel:     channel,
+		config:      config,
 		messageChan: make(chan *nsqio.Message),
 		ErrChan:     make(chan error),
 	}
@@ -117,12 +136,12 @@ func NewFakeConsumer(topic, channel string) (*FakeConsumer, error) {
 
 // Topic return the consumer topic
 func (cm *FakeConsumer) Topic() string {
-	return cm.topic
+	return cm.config.Topic
 }
 
 // Channel return the consumer channel
 func (cm *FakeConsumer) Channel() string {
-	return cm.channel
+	return cm.config.Channel
 }
 
 // AddHandler for nsq
@@ -152,8 +171,8 @@ func (cm *FakeConsumer) addHandlers(handler nsqio.Handler, concurrency int) {
 					// send all error to the channel, and decide what to do
 					if err != nil {
 						ecm := ErrorConsumerFake{
-							topic:   cm.topic,
-							channel: cm.channel,
+							topic:   cm.config.Topic,
+							channel: cm.config.Channel,
 							message: msg.Body,
 							err:     fmt.Errorf("nsq-mock-handler: error when handling message, with error: %w", err),
 						}
@@ -178,6 +197,16 @@ func (cm *FakeConsumer) ConnectToNSQLookupds(addresses []string) error {
 // ChangeMaxInFlight message in nsq consumer
 func (cm *FakeConsumer) ChangeMaxInFlight(n int) {
 	cm.MaxInFlight = n
+}
+
+// Concurrency return the number of conccurent worker
+func (cm *FakeConsumer) Concurrency() int {
+	return cm.config.Concurrency
+}
+
+// BufferMultiplier return the number of buffer multiplier
+func (cm *FakeConsumer) BufferMultiplier() int {
+	return cm.config.BufferMultiplier
 }
 
 // start will start the message sending

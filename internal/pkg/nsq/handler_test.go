@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	fakensq "github.com/albertwidi/go-project-example/internal/pkg/nsq/fakensq"
+	fakensq "github.com/kyolabs/mono/gopkg/nsq/fakensq"
 	gonsq "github.com/nsqio/go-nsq"
 )
 
@@ -53,22 +53,20 @@ func TestNSQHandlerSetConcurrency(t *testing.T) {
 		t.Logf("concurrency: %d", c.concurrency)
 		t.Logf("buff_multiplier: %d", c.buffMultiplier)
 
-		backend, err := fakensq.NewFakeConsumer(topic, channel)
+		backend, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel, Concurrency: c.concurrency, BufferMultiplier: c.buffMultiplier})
 		if err != nil {
 			t.Error(err)
 			return
 		}
 
 		wc, err := WrapConsumers(ConsumerConfig{
-			LookupdsAddr:     []string{"testing"},
-			Concurrency:      c.concurrency,
-			BufferMultiplier: c.buffMultiplier,
+			LookupdsAddr: []string{"testing"},
 		}, backend)
 		if err != nil {
 			t.Error(err)
 			return
 		}
-		// trigger the creation of handler
+		// Trigger the creation of handler.
 		wc.Handle(topic, channel, nil)
 
 		handler := wc.handlers[0]
@@ -101,7 +99,7 @@ func TestNSQHandlerConcurrencyControl(t *testing.T) {
 		concurrency = 5
 	)
 
-	backend, err := fakensq.NewFakeConsumer(topic, channel)
+	backend, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel})
 	if err != nil {
 		t.Error(err)
 		return
@@ -115,7 +113,7 @@ func TestNSQHandlerConcurrencyControl(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	// trigger the creation of handler
+	// Trigger the creation of handler.
 	wc.Handle(topic, channel, nil)
 
 	handler := wc.handlers[0]
@@ -125,8 +123,8 @@ func TestNSQHandlerConcurrencyControl(t *testing.T) {
 
 	for i := 1; i <= 5; i++ {
 		go handler.Work()
-		// wait until the goroutines scheduled
-		// this might be too long, but its ok
+		// Wait until the goroutines scheduled
+		// this might be too long, but its ok.
 		time.Sleep(time.Millisecond * 10)
 		if handler.workerNumber != i {
 			t.Errorf("start: expecting number worker number of %d but got %d", i, handler.workerNumber)
@@ -152,7 +150,7 @@ func TestDefaultHandlerHandleMessage(t *testing.T) {
 		messageBody = []byte("test message")
 	)
 
-	backend, err := fakensq.NewFakeConsumer("random", "random")
+	backend, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel})
 	if err != nil {
 		t.Error(err)
 		return
@@ -164,9 +162,9 @@ func TestDefaultHandlerHandleMessage(t *testing.T) {
 			channel:     channel,
 			messageBuff: make(chan *Message, 1),
 		},
-		// using buffered channel with length 1
-		// because in this test we don't listen the message using a worker
-		// and sending the message to this channel will block
+		// Using buffered channel with length 1,
+		// because in this test we don't listen the message using a worker,
+		// and sending the message to this channel will block.
 		consumerBackend: backend,
 	}
 
@@ -197,7 +195,9 @@ func TestDefaultHandlerHandleMessage(t *testing.T) {
 func TestDefaultHandlerThrottle(t *testing.T) {
 	t.Parallel()
 
-	backend, err := fakensq.NewFakeConsumer("random", "random")
+	topic := "random"
+	channel := "random"
+	backend, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel})
 	if err != nil {
 		t.Error(err)
 		return

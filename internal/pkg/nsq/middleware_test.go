@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	fakensq "github.com/albertwidi/go-project-example/internal/pkg/nsq/fakensq"
+	fakensq "github.com/kyolabs/mono/gopkg/nsq/fakensq"
 )
 
 func TestThrottleMiddleware(t *testing.T) {
@@ -29,26 +29,25 @@ func TestThrottleMiddleware(t *testing.T) {
 	)
 
 	// we are using fake consumer, this means the concurrency is always 1
-	// and the number of message buffer is 1 * _bufferMultiplier
-	consumer, err := fakensq.NewFakeConsumer(topic, channel)
+	// and the number of message buffer is 1 * _bufferMultiplier.
+	_buffMultiplier := 10
+	_concurrency := 1
+	consumer, err := fakensq.NewFakeConsumer(fakensq.ConsumerConfig{Topic: topic, Channel: channel, Concurrency: _concurrency, BufferMultiplier: _buffMultiplier})
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	producer := fakensq.NewFakeProducer(consumer)
 
-	_buffMultiplier := 10
 	wc, err := WrapConsumers(ConsumerConfig{
-		LookupdsAddr:     []string{"testing"},
-		Concurrency:      1,
-		BufferMultiplier: _buffMultiplier,
+		LookupdsAddr: []string{"testing"},
 	}, consumer)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	tm := ThrottleMiddleware{TimeDelay: time.Second}
+	tm := ThrottleMiddleware{TimeDelay: time.Millisecond * 100}
 	// use throttle middleware
 	wc.Use(
 		tm.Throttle,
@@ -63,15 +62,15 @@ func TestThrottleMiddleware(t *testing.T) {
 			return err
 		}
 
-		// this means this is the first message, sleep to make other message to wait
+		// This means this is the first message, sleep to make other message to wait
 		// because if the handler is not finished, the worker is not back to consume state
-		// to make sure the buffer is filled first before consuming more message
+		// to make sure the buffer is filled first before consuming more message.
 		if currentMessageNum == 1 {
 			time.Sleep(time.Millisecond * 100)
 		}
 
-		// check whether a throttled message is exists
-		// this message should exists because throttle middleware is used
+		// Check whether a throttled message is exists
+		// this message should exists because throttle middleware is used.
 		if message.Info.Throttled == 1 {
 			atomic.AddInt32(&messageThrottled, 1)
 			errChan <- errNil
@@ -98,8 +97,8 @@ func TestThrottleMiddleware(t *testing.T) {
 		return
 	}
 
-	// note that in this test, we set the bufferMultiplier to 10
-	// send messages as much as (bufferMultiplier/2) + 3 to tirgger the throttle mechanism
+	// Note that in this test, we set the bufferMultiplier to 10.
+	// Send messages as much as (bufferMultiplier/2) + 3 to tirgger the throttle mechanism.
 	//
 	// c = consumed
 	// d = done
@@ -112,23 +111,23 @@ func TestThrottleMiddleware(t *testing.T) {
 	// message_length: 8
 	//
 	//
-	// when the program start, the message will be consumed into the worker right away
-	// then the worker will pause themself for a while, so message is not consumed
-	// at this point, this is the look in the buffer:
+	// When the program start, the message will be consumed into the worker right away
+	// then the worker will pause themself for a while, so message is not consumed.
+	// At this point, this is the look in the buffer:
 	// | m | m | m | m | m | m | m | m | <nil> | <nil> | <nil > |
 	//   c   1   2   3   4   5   6   7     8       9      10
-	// message_length: 7
+	// Message_length: 7
 	//
-	// at this point when consuming more message which is message number 1, the buffer will become:
+	// At this point when consuming more message which is message number 1, the buffer will become:
 	// | m | m | m | m | m | m | m | m | <nil> | <nil> | <nil > | <nil> |
 	//   d   c   1   2   3   4   5   6     7       8       9       10
 	// message_length: 6
 	//
-	// when consuming the message, evaluation of the buffer length will kick in
+	// When consuming the message, evaluation of the buffer length will kick in,
 	// this is where the evaluator for thorttle knows that the number of messages
-	// is more than half of the buffer size, then throttle mechanism will be invoked
+	// is more than half of the buffer size. Then throttle mechanism will be invoked
 	// this is why, with lower number of messages the test won't pass,
-	// because it depends on messages number in the buffer
+	// because it depends on messages number in the buffer.
 	for i := 1; i <= (_buffMultiplier/2)+3; i++ {
 		if err := producer.Publish(topic, []byte(messageExpect)); err != nil {
 			t.Error(err)

@@ -130,26 +130,36 @@ func (np *NSQProducer) Stop() {
 
 // ConsumerConfig for nsq consumer
 type ConsumerConfig struct {
-	Hostname         string
-	LookupdAddresses []string
-	Topic            string
-	Channel          string
-	Lookupd          LookupdConfig
-	Timeout          TimeoutConfig
-	Queue            QueueConfig
-	Compression      CompressionConfig
+	Hostname    string
+	Topic       string
+	Channel     string
+	Lookupd     LookupdConfig
+	Timeout     TimeoutConfig
+	Queue       QueueConfig
+	Compression CompressionConfig
+	Concurrency int
+	// BufferMultiplier means the length of the buffer per concurrent worker
+	// is the multiplier factor of concurrency to set the size of buffer when consuming message
+	// the size of buffer multiplier is number of message being consumed before the buffer will be half full
+	// for example, 20(default value) buffer multiplier means the worker is able to consume more than 10 message
+	// before the buffer is half full from the nsqd message consumption.
+	// To fill this configuration correctly, it is needed to observe the consumption rate of the message and the handling rate of the worker.
+	BufferMultiplier int
 }
 
 // Validate consumer configuration
 func (cf *ConsumerConfig) Validate() error {
-	if len(cf.LookupdAddresses) == 0 {
-		return errors.New("consumer_config: lookupd address cannot be empty")
-	}
 	if cf.Topic == "" {
 		return errors.New("consumer_config: topic cannot be empty")
 	}
 	if cf.Channel == "" {
 		return errors.New("consumer_config: channel cannot be empty")
+	}
+	if cf.Concurrency == 0 {
+		cf.Concurrency = 1
+	}
+	if cf.BufferMultiplier == 0 {
+		cf.BufferMultiplier = 30
 	}
 	return nil
 }
@@ -222,4 +232,14 @@ func (c *NSQConsumer) Stop() {
 // ChangeMaxInFlight will change max in flight number in nsq consumer
 func (c *NSQConsumer) ChangeMaxInFlight(n int) {
 	c.consumer.ChangeMaxInFlight(n)
+}
+
+// Concurrency return the concurrency number for a given consumer
+func (c *NSQConsumer) Concurrency() int {
+	return c.config.Concurrency
+}
+
+// BufferMultiplier return the buffer multiplier number for a given consumer
+func (c *NSQConsumer) BufferMultiplier() int {
+	return c.config.BufferMultiplier
 }

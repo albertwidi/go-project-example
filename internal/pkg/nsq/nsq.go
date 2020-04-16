@@ -101,6 +101,8 @@ type ConsumerBackend interface {
 	AddConcurrentHandlers(handler gonsq.Handler, concurrency int)
 	ConnectToNSQLookupds(addresses []string) error
 	ChangeMaxInFlight(n int)
+	Concurrency() int
+	BufferMultiplier() int
 }
 
 // Producer for nsq
@@ -143,8 +145,8 @@ type ConsumerConfig struct {
 	// Concurrency is the number of worker intended for handling message from nsq
 	Concurrency int
 	// BufferMultiplier is the multiplier factor of concurrency to set the size of buffer when consuming message
-	// the size of buffer multiplier is number of message being consumed before the buffer will be half full
-	// for example, 20(default value) buffer multiplier means the worker is able to consume more than 10 message
+	// the size of buffer multiplier is number of message being consumed before the buffer will be half full.
+	// For example, 20(default value) buffer multiplier means the worker is able to consume more than 10 message,
 	// before the buffer is half full from the nsqd message consumption.
 	// To fill this configuration correctly, it is needed to observe the consumption rate of the message and the handling rate of the worker.
 	BufferMultiplier int
@@ -154,15 +156,6 @@ type ConsumerConfig struct {
 func (cg *ConsumerConfig) Validate() error {
 	if len(cg.LookupdsAddr) == 0 {
 		return errors.New("nsq: lookupd address cannot be empty")
-	}
-
-	// set the default concurrency number to 1
-	if cg.Concurrency <= 0 {
-		cg.Concurrency = 1
-	}
-	// set the default bufferMultiplier number to 20
-	if cg.BufferMultiplier <= 0 {
-		cg.BufferMultiplier = 20
 	}
 	return nil
 }
@@ -256,19 +249,29 @@ func (c *Consumer) Handle(topic, channel string, handler HandlerFunc) {
 		stopChan: make(chan struct{}),
 	}
 
-	// only append this information if backend is found
-	// otherwise let the handler appended without this information
-	// if backend is nil in this step, it will reproduce error when consumer start
+	// Only append this information if backend is found
+	// otherwise let the handler appended without this information.
+	// If backend is nil in this step, it will reproduce error when consumer start,
 	// this is because the name of backends will not detected in start state
-	// so its safe to skip the error here
+	// so its safe to skip the error here.
 	if backend != nil {
-		h.buffMultiplier = c.config.BufferMultiplier
-		h.concurrency = c.config.Concurrency
-		// determine the maximum length of buffer based on concurrency number
-		// for example, the concurrency have multiplication factor of 5
+		// Retrieve and validate concurrency and buffer multiplier.
+		concurrency := backend.Concurrency()
+		buffMultiplier := backend.BufferMultiplier()
+		if concurrency <= 0 {
+			concurrency = 1
+		}
+		if buffMultiplier <= 0 {
+			buffMultiplier = 30
+		}
+
+		h.concurrency = backend.Concurrency()
+		h.buffMultiplier = backend.BufferMultiplier()
+		// Determine the maximum length of buffer based on concurrency number
+		// for example, the concurrency have multiplication factor of 5.
 		// |message_processed|buffer|buffer|buffer|limit|
 		//          1           2     3      4      5
-		// or in throttling case
+		// Or in throttling case.
 		// |message_processed|buffer|throttle_limit|throttle_limit|limit|
 		//          1           2            3             4         5
 		buffLen := h.concurrency * h.buffMultiplier
@@ -278,7 +281,7 @@ func (c *Consumer) Handle(topic, channel string, handler HandlerFunc) {
 	c.handlers = append(c.handlers, h)
 }
 
-// Start the consumer
+// Start the consumer.
 func (c *Consumer) Start() error {
 	for _, handler := range c.handlers {
 		backend, ok := c.backends[handler.topic][handler.channel]
@@ -291,10 +294,10 @@ func (c *Consumer) Start() error {
 			nsqHandler:      handler,
 			consumerBackend: backend,
 		}
-		// consumerConcurrency for consuming message from NSQ
-		// most of the time we don't need consumerConcurrency because consuming message from NSQ is very fast
+		// ConsumerConcurrency for consuming message from NSQ.
+		// Most of the time we don't need consumerConcurrency because consuming message from NSQ is very fast,
 		// the handler or the true consumer might need time to handle the message
-		// so we need to keep the number of message consumer low, for now it is 1:30
+		// so we need to keep the number of message consumer low, for now it is 1:30.
 		consumerConcurrency := handler.concurrency / 30
 		if consumerConcurrency > 1 {
 			backend.AddConcurrentHandlers(&dh, consumerConcurrency)
@@ -324,9 +327,9 @@ func (c *Consumer) Stop() error {
 		}
 	}
 	for _, handler := range c.handlers {
-		// stop all the handler worker based on concurrency number
-		// this step is expected to be blocking
-		// wait until all worker is exited
+		// Stop all the handler worker based on concurrency number
+		// this step is expected to be blocking,
+		// wait until all worker is exited.
 		for i := 0; i < handler.concurrency; i++ {
 			handler.Stop()
 		}

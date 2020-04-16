@@ -76,8 +76,8 @@ func (nh *nsqHandler) SetThrottle(throttle bool) {
 // Work to handle nsq message
 func (nh *nsqHandler) Work() {
 	nh.mu.Lock()
-	// guard with lock
-	// don't let worker number goes more than concurrency number
+	// Guard with lock,
+	// don't let worker number goes more than concurrency number.
 	if nh.workerNumber == nh.concurrency {
 		return
 	}
@@ -89,14 +89,14 @@ func (nh *nsqHandler) Work() {
 		case <-nh.stopChan:
 			return
 		case message := <-nh.messageBuff:
-			// add information about worker to message
+			// Add information about worker to message
 			// this will add additional allocation and memory
-			// but essential to monitor the number of worker
+			// but essential to monitor the number of worker.
 			message.Info.WorkerTotal = nh.concurrency
 			message.Info.WorkerCurrent = nh.workerNumber
 			message.Info.MessageInBuffer = len(nh.messageBuff)
-			// set the next message throttle flag to 1
-			// because the handler is set to throttle from the default handler
+			// Set the next message throttle flag to 1
+			// because the handler is set to throttle from the default handler.
 			if nh.throttle {
 				message.Info.ThrottleFlag = 1
 			}
@@ -120,19 +120,19 @@ type defaultHandler struct {
 // HandleMessage of nsq
 func (dfh *defaultHandler) HandleMessage(message *gonsq.Message) error {
 	_nsqMessageRetrievedCount.WithLabelValues(dfh.topic, dfh.channel).Add(1)
-	// message in the buffer should always less than bufferLength/2
-	// if it already more than half of the buffer size, we should pause the consumption
-	// and wait for the buffer to be consumed first
+	// Message in the buffer should always less than bufferLength/2
+	// if its already more than half of the buffer size, we should pause the consumption
+	// and wait for the buffer to be consumed first.
 	if len(dfh.messageBuff) > (dfh.buffLength / 2) {
 		// set the handler throttle to true, so all message will be throttled right away
 		dfh.SetThrottle(true)
 		// pause the message consumption to NSQD by set the MaxInFlight to 0
 		dfh.consumerBackend.ChangeMaxInFlight(0)
 		for {
-			// sleep every one second to check whether the message number is already decreased in the buffer
-			// it might be better to have a lower evaluation interval, but need some metrics first
-			// the default throttling here won't affect the message consumer because messages already buffered
-			// but will have some effect for the nsqd itself because we pause the message consumption from nsqd
+			// Sleep every one second to check whether the message number is already decreased in the buffer,
+			// it might be better to have a lower evaluation interval, but need some metrics first.
+			// The default throttling here won't affect the message consumer because messages already buffered
+			// but will have some effect for the nsqd itself because we pause the message consumption from nsqd.
 			time.Sleep(time.Second * 1)
 			if len(dfh.messageBuff) < (dfh.buffLength / 2) {
 				// resume the message consumption to NSQD by set the MaxInFlight to buffer size
